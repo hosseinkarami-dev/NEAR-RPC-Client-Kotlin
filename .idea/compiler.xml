@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11">
+    <bytecodeTargetLevel target="21">
       <module name="NearOpenApiClient.server" target="21" />
       <module name="NearOpenApiClient.server.main" target="21" />
       <module name="NearOpenApiClient.server.test" target="21" />

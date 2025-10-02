@@ -5,6 +5,16 @@ plugins {
     `maven-publish`
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    }
+}
+
 group = "io.github.hosseinkarami_dev"
 version = "0.1.0"
 
@@ -26,9 +36,9 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
-}
+    testImplementation(libs.kotlinx.coroutines.test)
 
-dependencies {
+    implementation(kotlin("stdlib"))
     implementation(project(":models"))
     implementation(libs.kotlinx.cli)
     implementation(libs.ktor.client.core)

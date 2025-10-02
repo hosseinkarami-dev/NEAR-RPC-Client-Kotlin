@@ -50,56 +50,6 @@ object SchemaHelper {
         else -> null
     }
 
-    fun resolveType(schema: Schema): TypeName {
-        if (!schema.allOf.isNullOrEmpty()) {
-            val types = schema.allOf.map { resolveType(it) }
-            if (types.size == 1) return types.first()
-            return ANY
-        }
-
-        // Handle anyOf / oneOf
-        val combinators = schema.anyOf ?: schema.oneOf
-        if (!combinators.isNullOrEmpty()) {
-            var nullable = false
-            val candidates = mutableListOf<TypeName>()
-            combinators.forEach { candidate ->
-                if (candidate.enum?.size == 1 && candidate.enum.contains(null)) {
-                    nullable = true
-                } else {
-                    candidates += resolveType(candidate)
-                }
-            }
-            val baseType = when (candidates.size) {
-                0 -> ANY
-                1 -> candidates.first()
-                else -> ANY
-            }
-            return if (nullable || schema.nullable == true) baseType.copy(nullable = true) else baseType
-        }
-
-        val baseType: TypeName = when {
-            schema.ref != null -> {
-                val refClassName = schema.ref.substringAfterLast("/")
-                ClassName("org.near.generator.models", refClassName)
-            }
-
-            schema.enum != null -> String::class.asTypeName()
-            schema.isPrimitiveType() -> schema.getPrimitiveTypeName()!!
-            schema.type == "array" -> {
-                val itemType = schema.items?.let { resolveType(it) } ?: ANY
-                List::class.asClassName().parameterizedBy(itemType)
-            }
-
-            schema.type == "object" -> {
-                MAP.parameterizedBy(String::class.asTypeName(), ANY)
-            }
-
-            else -> ANY
-        }
-
-        return if (schema.nullable == true) baseType.copy(nullable = true) else baseType
-    }
-
     fun Schema.isPrimitiveType() = getPrimitiveTypeName() != null && enum.isNullOrEmpty()
 
 }

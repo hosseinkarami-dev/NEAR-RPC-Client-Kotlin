@@ -3,10 +3,6 @@ package io.github.hosseinkarami_dev.near.rpc.generator
 import java.util.Locale
 
 
-fun String.pascalCase(): String = toPascalCase(this)
-fun String.camelCase(): String = toCamelCase(this)
-fun String.constantName(): String = toEnumConstantName(this)
-
 fun toCamelCase(input: String): String {
     val pascal = toPascalCase(input)
     return pascal.replaceFirstChar { it.lowercase(Locale.getDefault()) }

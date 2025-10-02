@@ -1,6 +1,5 @@
 plugins {
     `maven-publish`
-    application
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -17,6 +16,8 @@ publishing {
     }
 }
 
+
 dependencies {
+    implementation(kotlin("stdlib"))
     implementation(libs.kotlinx.serialization.json)
 }

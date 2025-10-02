@@ -5,13 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import io.github.hosseinkarami_dev.near.rpc.client.NearClient
+import io.github.hosseinkarami_dev.near.rpc.client.RpcResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest
+import io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction
+import io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
-import io.github.hosseinkarami_dev.near.rpc.client.RpcResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +32,13 @@ class MainActivity : ComponentActivity() {
         )
 
         lifecycleScope.launch {
-            val response = nearClient.gasPrice(RpcGasPriceRequest(blockId = null))
+            val response = nearClient.tx(
+                RpcTransactionStatusRequest.SignedTxBase64(
+                signedTxBase64 = SignedTransaction("FtzDPgG7BnX3g6WV7w951TZ1UErFahfp6NwQKiTE9dMp"),
+                waitUntil = TxExecutionStatus.Final
+            ))
+ //           val response = nearClient.status()
+//            val response = nearClient.gasPrice(RpcGasPriceRequest(blockId = null))
 
             when (response) {
                 is RpcResponse.Failure -> {
