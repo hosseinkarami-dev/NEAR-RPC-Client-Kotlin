@@ -17,7 +17,7 @@ A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This reposit
 
 - [Why this project](#why-this-project)  
 - [Status & Goals](#status--goals)  
-- [Packaging & Maven coordinates](#packaging--maven-coordinates)  
+- [Requirements](#requirements)  
 - [Installation](#installation)  
 - [Quickstart — Android example](#quickstart--android-example)  
 - [API design & examples](#api-design--examples)  
