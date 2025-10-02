@@ -20,18 +20,15 @@ fun main(args: Array<String>) {
         ArgType.String,
         fullName = "models-out",
         description = "Output directory for generated models"
-    ).default("models/src/main/kotlin/")
+    ).default("../models/src/main/kotlin/")
 
     val clientOut by parser.option(
         ArgType.String,
         fullName = "client-out",
         description = "Output directory for generated client"
-    ).default("client/src/main/kotlin/")
+    ).default("../client/src/main/kotlin/")
 
     parser.parse(args)
-
-    println(modelsOut)
-    println(clientOut)
 
     val spec = fetchOpenApiSpec(openApiUrl)
 
