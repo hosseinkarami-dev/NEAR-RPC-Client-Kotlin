@@ -17,6 +17,17 @@ publishing {
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    testImplementation(libs.junit)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
 dependencies {
     implementation(project(":models"))
     implementation(libs.kotlinx.cli)

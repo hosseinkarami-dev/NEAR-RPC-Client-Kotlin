@@ -18,6 +18,12 @@ application {
     mainClass.set("io.github.hosseinkarami_dev.near.rpc.generator.MainKt")
 }
 
+dependencies {
+    testImplementation(libs.junit)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+}
 
 dependencies {
     implementation(libs.kotlinx.cli)
