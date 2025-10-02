@@ -5,12 +5,19 @@ on:
   schedule:
     - cron: "0 0 * * 0" # weekly run (every Sunday at midnight)
 
+permissions:
+  contents: write
+
 jobs:
   generate:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -19,12 +26,27 @@ jobs:
           java-version: 17
 
       - name: Run Generator
-        run: ./gradlew :generator:run
+        run: ./gradlew :generator:run --no-daemon --parallel
 
-      - name: Commit changes
+      - name: Commit regenerated sources (if any) and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          # Configure git to attribute commits to the GitHub Actions bot
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+
+          # Ensure we are on the correct branch checked out by actions/checkout
+          BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+          echo "On branch: $BRANCH"
+
           git add .
-          git commit -m "chore: regenerate client from OpenAPI" || echo "No changes to commit"
-          git push
+
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: regenerate client from OpenAPI"
+            # Push changes back to the same branch
+            git push origin "$BRANCH"
+          fi
