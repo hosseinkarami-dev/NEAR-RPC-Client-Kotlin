@@ -21,9 +21,7 @@ A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This reposit
 - [Installation](#installation)  
 - [Quickstart — Android example](#quickstart--android-example)  
 - [API design & examples](#api-design--examples)  
-- [Generator — reproduce models & client](#generator--reproduce-models--client)  
-- [CI / CD & Publishing](#ci--cd--publishing)  
-- [Troubleshooting](#troubleshooting)  
+- [Generator — reproduce models & client](#generator--reproduce-models--client)
 - [Contributing](#contributing)  
 - [License](#license)  
 - [Contact & References](#contact--references)
@@ -175,32 +173,6 @@ Run the generator against NEAR's OpenAPI:
 
 ---
 
-## CI / CD & Publishing
-
-Recommended workflows:
-- **CI** (`.github/workflows/ci.yml`): run `./gradlew build test` on push / PR.  
-- **Generate** (`.github/workflows/generate.yml`): scheduled or on push — fetch OpenAPI, run generator, open PR.  
-- **Publish** (`.github/workflows/publish.yml`): runs on version tags `v*`, publishes to GitHub Packages or Maven Central.
-
-Publishing notes:
-- GitHub Packages: simpler, can publish on tag using `GITHUB_TOKEN`.  
-- Maven Central (OSSRH): requires Sonatype account, PGP signing, and CI secrets (ossrh credentials and PGP key).
-
----
-
-## Troubleshooting
-
-**Invalid JSON-RPC envelope: Unexpected JSON token at path: $.id**  
-- Cause: NEAR node returns `id` as a string but model expected numeric.  
-- Fix: update `JsonRpcEnvelope` to use `String` or `JsonElement?` for `id`. Generator uses `String` by default to avoid this.
-
-**Serializer / result wrapper issues**  
-- If generator yields `RpcResponse<JsonRpcResponseFor...>` instead of `RpcResponse<X>`, fix generator to unwrap the wrapper and use appropriate serializers (including `ListSerializer` for arrays and non-nullable serializers for nullable patterns).
-
-If you hit a problem, open an issue with the failing JSON and generated model snippet.
-
----
-
 ## Contributing
 
 Contributions welcome!
@@ -230,7 +202,3 @@ This project is licensed under the **Apache-2.0 License**. See [LICENSE](./LICEN
 - Reference implementations:
   - Rust client: https://github.com/PolyProgrammist/near-openapi-client  
   - TypeScript client: https://github.com/near/near-jsonrpc-client-ts
-
-If you want, I can also:
-- produce a separate `README.md` for `client/` and `models/` modules, or  
-- create the GitHub Actions workflows (`ci.yml`, `generate.yml`, `publish.yml`) for your repo.
