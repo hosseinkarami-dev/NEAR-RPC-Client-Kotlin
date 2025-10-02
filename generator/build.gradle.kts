@@ -15,7 +15,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("io.github.hosseinkarami_dev.generator.MainKt")
+    mainClass.set("io.github.hosseinkarami_dev.near.rpc.generator.MainKt")
 }
 
 

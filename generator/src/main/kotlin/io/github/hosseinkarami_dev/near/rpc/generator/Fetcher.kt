@@ -8,12 +8,9 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
-private const val OPENAPI_URL =
-    "https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json"
-
-fun fetchOpenApiSpec(): OpenApiSpec = runBlocking {
+fun fetchOpenApiSpec(openApiUrl: String): OpenApiSpec = runBlocking {
     HttpClient(CIO).use { client ->
-        val response: HttpResponse = client.get(OPENAPI_URL)
+        val response: HttpResponse = client.get(openApiUrl)
 
         if (response.status != HttpStatusCode.OK) {
             error("Failed to fetch OpenAPI spec: ${response.status}")

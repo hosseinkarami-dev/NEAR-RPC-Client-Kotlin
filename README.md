@@ -172,7 +172,7 @@ Typical steps (local):
 
 1. Run the generator against NEAR's OpenAPI:
 ```bash
-./gradlew :generator:run --args="--openapi-url=https://raw.githubusercontent.com/near/nearcore/<path>/openapi.json --out-dir=."
+./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated
 ```
 
 2. Inspect generated files under `models` and `client`. Run tests and lint.
