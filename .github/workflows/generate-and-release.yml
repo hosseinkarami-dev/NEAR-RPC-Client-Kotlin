@@ -5,9 +5,6 @@ on:
   push:
   schedule:
     - cron: "0 0 * * 0" # weekly run (every Sunday at midnight)
-  # optionally enable on push to main:
-  # push:
-  #   branches: [ "main" ]
 
 permissions:
   contents: write
