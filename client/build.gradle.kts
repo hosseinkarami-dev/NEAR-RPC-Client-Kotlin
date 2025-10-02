@@ -39,7 +39,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     implementation(kotlin("stdlib"))
-    implementation(project(":models"))
+    api(project(":models"))
     implementation(libs.kotlinx.cli)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
