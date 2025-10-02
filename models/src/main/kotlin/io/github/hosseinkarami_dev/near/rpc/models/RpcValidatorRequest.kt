@@ -1,0 +1,26 @@
+package io.github.hosseinkarami_dev.near.rpc.models
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+public sealed class RpcValidatorRequest {
+  /**
+   *  * Possible values: latest
+   */
+  @Serializable
+  @SerialName("latest")
+  public object Latest : RpcValidatorRequest()
+
+  @Serializable
+  public class EpochId(
+    @SerialName("epoch_id")
+    public val epochId: io.github.hosseinkarami_dev.near.rpc.models.EpochId,
+  ) : RpcValidatorRequest()
+
+  @Serializable
+  public class BlockId(
+    @SerialName("block_id")
+    public val blockId: io.github.hosseinkarami_dev.near.rpc.models.BlockId,
+  ) : RpcValidatorRequest()
+}

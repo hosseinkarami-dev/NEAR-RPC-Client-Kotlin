@@ -1,0 +1,513 @@
+package io.github.hosseinkarami_dev.near.rpc.models
+
+import kotlin.Long
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+public sealed class HostError {
+  /**
+   *  * String encoding is bad UTF-16 sequence
+   *  * Possible values: BadUTF16
+   */
+  @Serializable
+  @SerialName("BadUTF16")
+  public object BadUTF16 : HostError()
+
+  /**
+   *  * String encoding is bad UTF-8 sequence
+   *  * Possible values: BadUTF8
+   */
+  @Serializable
+  @SerialName("BadUTF8")
+  public object BadUTF8 : HostError()
+
+  /**
+   *  * Exceeded the prepaid gas
+   *  * Possible values: GasExceeded
+   */
+  @Serializable
+  @SerialName("GasExceeded")
+  public object GasExceeded : HostError()
+
+  /**
+   *  * Exceeded the maximum amount of gas allowed to burn per contract
+   *  * Possible values: GasLimitExceeded
+   */
+  @Serializable
+  @SerialName("GasLimitExceeded")
+  public object GasLimitExceeded : HostError()
+
+  /**
+   *  * Exceeded the account balance
+   *  * Possible values: BalanceExceeded
+   */
+  @Serializable
+  @SerialName("BalanceExceeded")
+  public object BalanceExceeded : HostError()
+
+  /**
+   *  * Tried to call an empty method name
+   *  * Possible values: EmptyMethodName
+   */
+  @Serializable
+  @SerialName("EmptyMethodName")
+  public object EmptyMethodName : HostError()
+
+  /**
+   *  * Smart contract panicked
+   */
+  @Serializable
+  public class GuestPanic(
+    @SerialName("GuestPanic")
+    public val guestPanic: GuestPanicPayload,
+  ) : HostError() {
+    @Serializable
+    public data class GuestPanicPayload(
+      @SerialName("panic_msg")
+      public val panicMsg: String,
+    )
+  }
+
+  /**
+   *  * IntegerOverflow happened during a contract execution
+   *  * Possible values: IntegerOverflow
+   */
+  @Serializable
+  @SerialName("IntegerOverflow")
+  public object IntegerOverflow : HostError()
+
+  /**
+   *  * `promise_idx` does not correspond to existing promises
+   */
+  @Serializable
+  public class InvalidPromiseIndex(
+    @SerialName("InvalidPromiseIndex")
+    public val invalidPromiseIndex: InvalidPromiseIndexPayload,
+  ) : HostError() {
+    @Serializable
+    public data class InvalidPromiseIndexPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("promise_idx")
+      public val promiseIdx: Long,
+    )
+  }
+
+  /**
+   *  * Actions can only be appended to non-joint promise.
+   *  * Possible values: CannotAppendActionToJointPromise
+   */
+  @Serializable
+  @SerialName("CannotAppendActionToJointPromise")
+  public object CannotAppendActionToJointPromise : HostError()
+
+  /**
+   *  * Returning joint promise is currently prohibited
+   *  * Possible values: CannotReturnJointPromise
+   */
+  @Serializable
+  @SerialName("CannotReturnJointPromise")
+  public object CannotReturnJointPromise : HostError()
+
+  /**
+   *  * Accessed invalid promise result index
+   */
+  @Serializable
+  public class InvalidPromiseResultIndex(
+    @SerialName("InvalidPromiseResultIndex")
+    public val invalidPromiseResultIndex: InvalidPromiseResultIndexPayload,
+  ) : HostError() {
+    @Serializable
+    public data class InvalidPromiseResultIndexPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("result_idx")
+      public val resultIdx: Long,
+    )
+  }
+
+  /**
+   *  * Accessed invalid register id
+   */
+  @Serializable
+  public class InvalidRegisterId(
+    @SerialName("InvalidRegisterId")
+    public val invalidRegisterId: InvalidRegisterIdPayload,
+  ) : HostError() {
+    @Serializable
+    public data class InvalidRegisterIdPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("register_id")
+      public val registerId: Long,
+    )
+  }
+
+  /**
+   *  * Iterator `iterator_index` was invalidated after its creation by performing a mutable operation on trie
+   */
+  @Serializable
+  public class IteratorWasInvalidated(
+    @SerialName("IteratorWasInvalidated")
+    public val iteratorWasInvalidated: IteratorWasInvalidatedPayload,
+  ) : HostError() {
+    @Serializable
+    public data class IteratorWasInvalidatedPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("iterator_index")
+      public val iteratorIndex: Long,
+    )
+  }
+
+  /**
+   *  * Accessed memory outside the bounds
+   *  * Possible values: MemoryAccessViolation
+   */
+  @Serializable
+  @SerialName("MemoryAccessViolation")
+  public object MemoryAccessViolation : HostError()
+
+  /**
+   *  * VM Logic returned an invalid receipt index
+   */
+  @Serializable
+  public class InvalidReceiptIndex(
+    @SerialName("InvalidReceiptIndex")
+    public val invalidReceiptIndex: InvalidReceiptIndexPayload,
+  ) : HostError() {
+    @Serializable
+    public data class InvalidReceiptIndexPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("receipt_index")
+      public val receiptIndex: Long,
+    )
+  }
+
+  /**
+   *  * Iterator index `iterator_index` does not exist
+   */
+  @Serializable
+  public class InvalidIteratorIndex(
+    @SerialName("InvalidIteratorIndex")
+    public val invalidIteratorIndex: InvalidIteratorIndexPayload,
+  ) : HostError() {
+    @Serializable
+    public data class InvalidIteratorIndexPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("iterator_index")
+      public val iteratorIndex: Long,
+    )
+  }
+
+  /**
+   *  * VM Logic returned an invalid account id
+   *  * Possible values: InvalidAccountId
+   */
+  @Serializable
+  @SerialName("InvalidAccountId")
+  public object InvalidAccountId : HostError()
+
+  /**
+   *  * VM Logic returned an invalid method name
+   *  * Possible values: InvalidMethodName
+   */
+  @Serializable
+  @SerialName("InvalidMethodName")
+  public object InvalidMethodName : HostError()
+
+  /**
+   *  * VM Logic provided an invalid public key
+   *  * Possible values: InvalidPublicKey
+   */
+  @Serializable
+  @SerialName("InvalidPublicKey")
+  public object InvalidPublicKey : HostError()
+
+  /**
+   *  * `method_name` is not allowed in view calls
+   */
+  @Serializable
+  public class ProhibitedInView(
+    @SerialName("ProhibitedInView")
+    public val prohibitedInView: ProhibitedInViewPayload,
+  ) : HostError() {
+    @Serializable
+    public data class ProhibitedInViewPayload(
+      @SerialName("method_name")
+      public val methodName: String,
+    )
+  }
+
+  /**
+   *  * The total number of logs will exceed the limit.
+   */
+  @Serializable
+  public class NumberOfLogsExceeded(
+    @SerialName("NumberOfLogsExceeded")
+    public val numberOfLogsExceeded: NumberOfLogsExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class NumberOfLogsExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+    )
+  }
+
+  /**
+   *  * The storage key length exceeded the limit.
+   */
+  @Serializable
+  public class KeyLengthExceeded(
+    @SerialName("KeyLengthExceeded")
+    public val keyLengthExceeded: KeyLengthExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class KeyLengthExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("length")
+      public val length: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+    )
+  }
+
+  /**
+   *  * The storage value length exceeded the limit.
+   */
+  @Serializable
+  public class ValueLengthExceeded(
+    @SerialName("ValueLengthExceeded")
+    public val valueLengthExceeded: ValueLengthExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class ValueLengthExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("length")
+      public val length: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+    )
+  }
+
+  /**
+   *  * The total log length exceeded the limit.
+   */
+  @Serializable
+  public class TotalLogLengthExceeded(
+    @SerialName("TotalLogLengthExceeded")
+    public val totalLogLengthExceeded: TotalLogLengthExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class TotalLogLengthExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("length")
+      public val length: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+    )
+  }
+
+  /**
+   *  * The maximum number of promises within a FunctionCall exceeded the limit.
+   */
+  @Serializable
+  public class NumberPromisesExceeded(
+    @SerialName("NumberPromisesExceeded")
+    public val numberPromisesExceeded: NumberPromisesExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class NumberPromisesExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("number_of_promises")
+      public val numberOfPromises: Long,
+    )
+  }
+
+  /**
+   *  * The maximum number of input data dependencies exceeded the limit.
+   */
+  @Serializable
+  public class NumberInputDataDependenciesExceeded(
+    @SerialName("NumberInputDataDependenciesExceeded")
+    public val numberInputDataDependenciesExceeded: NumberInputDataDependenciesExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class NumberInputDataDependenciesExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("number_of_input_data_dependencies")
+      public val numberOfInputDataDependencies: Long,
+    )
+  }
+
+  /**
+   *  * The returned value length exceeded the limit.
+   */
+  @Serializable
+  public class ReturnedValueLengthExceeded(
+    @SerialName("ReturnedValueLengthExceeded")
+    public val returnedValueLengthExceeded: ReturnedValueLengthExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class ReturnedValueLengthExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("length")
+      public val length: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+    )
+  }
+
+  /**
+   *  * The contract size for DeployContract action exceeded the limit.
+   */
+  @Serializable
+  public class ContractSizeExceeded(
+    @SerialName("ContractSizeExceeded")
+    public val contractSizeExceeded: ContractSizeExceededPayload,
+  ) : HostError() {
+    @Serializable
+    public data class ContractSizeExceededPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("limit")
+      public val limit: Long,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint64
+       */
+      @SerialName("size")
+      public val size: Long,
+    )
+  }
+
+  /**
+   *  * The host function was deprecated.
+   */
+  @Serializable
+  public class Deprecated(
+    @SerialName("Deprecated")
+    public val deprecated: DeprecatedPayload,
+  ) : HostError() {
+    @Serializable
+    public data class DeprecatedPayload(
+      @SerialName("method_name")
+      public val methodName: String,
+    )
+  }
+
+  /**
+   *  * General errors for ECDSA recover.
+   */
+  @Serializable
+  public class ECRecoverError(
+    @SerialName("ECRecoverError")
+    public val eCRecoverError: ECRecoverErrorPayload,
+  ) : HostError() {
+    @Serializable
+    public data class ECRecoverErrorPayload(
+      @SerialName("msg")
+      public val msg: String,
+    )
+  }
+
+  /**
+   *  * Invalid input to alt_bn128 family of functions (e.g., point which isn't
+   * on the curve).
+   */
+  @Serializable
+  public class AltBn128InvalidInput(
+    @SerialName("AltBn128InvalidInput")
+    public val altBn128InvalidInput: AltBn128InvalidInputPayload,
+  ) : HostError() {
+    @Serializable
+    public data class AltBn128InvalidInputPayload(
+      @SerialName("msg")
+      public val msg: String,
+    )
+  }
+
+  /**
+   *  * Invalid input to ed25519 signature verification function (e.g. signature cannot be
+   * derived from bytes).
+   */
+  @Serializable
+  public class Ed25519VerifyInvalidInput(
+    @SerialName("Ed25519VerifyInvalidInput")
+    public val ed25519VerifyInvalidInput: Ed25519VerifyInvalidInputPayload,
+  ) : HostError() {
+    @Serializable
+    public data class Ed25519VerifyInvalidInputPayload(
+      @SerialName("msg")
+      public val msg: String,
+    )
+  }
+}
