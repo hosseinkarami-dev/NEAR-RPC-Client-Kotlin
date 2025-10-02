@@ -1,7 +1,7 @@
 # NEAR JSON-RPC Kotlin Client (Android / JVM)
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#)  
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](#)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](#)
 
 A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This repository contains:
 
