@@ -34,8 +34,7 @@ A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This reposit
 
 NEAR provides an OpenAPI specification for its JSON-RPC interface, but a high-quality Kotlin client optimized for Android developers was missing. This project:
 
-- Auto-generates Kotlin models + a typed client from NEAR's OpenAPI spec.  
-- Converts `snake_case` → `camelCase` to match Kotlin conventions.  
+- Auto-generates Kotlin models + a typed client from NEAR's OpenAPI spec.
 - Uses `kotlinx.serialization` and Ktor for serialization and HTTP.  
 - Splits types and client so consumers can depend only on what they need.
 
@@ -44,29 +43,21 @@ NEAR provides an OpenAPI specification for its JSON-RPC interface, but a high-qu
 ## Status & Goals
 
 - ✅ Generator that parses the OpenAPI spec and produces Kotlin `data class` models.  
-- ✅ JVM / Android client built on Ktor (suspend functions, `RpcResponse<T>` wrapper).  
-- ✅ Basic CI workflows for build and tests (recommended).  
+- ✅ JVM / Android client built on Ktor (suspend functions, `RpcResponse<T>` wrapper).
 - 🚧 Future: optional migration to Kotlin Multiplatform on request.
 
 ---
 
-## Packaging & Maven coordinates
+## Requirements
 
-Published artifacts (example):
+This library is built on top of [Ktor](https://ktor.io/) and [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization).  
+When using `near-rpc-client`, you must add the following Ktor dependencies to your project:
 
-- **Group:** `io.github.hosseinkarami_dev`  
-- **Models artifact:** `near-rpc-models`  
-- **Client artifact:** `near-rpc-client`
-
-Example dependency:
 ```kotlin
-implementation("io.github.hosseinkarami_dev:near-rpc-client:0.1.0")
-implementation("io.github.hosseinkarami_dev:near-rpc-models:0.1.0")
-```
-
-Generated package namespaces:
-- `io.github.hosseinkarami_dev.near_rpc_models`  
-- `io.github.hosseinkarami_dev.near_rpc_client`
+implementation("io.ktor:ktor-client-core:<ktor_version>")
+implementation("io.ktor:ktor-client-cio:<ktor_version>") // or another engine (OkHttp, Darwin, etc.)
+implementation("io.ktor:ktor-client-content-negotiation:<ktor_version>")
+implementation("io.ktor:ktor-serialization-kotlinx-json:<ktor_version>")
 
 ---
 
@@ -79,12 +70,11 @@ Add the repository where you publish your artifacts (Maven Central, GitHub Packa
 ```kotlin
 repositories {
     mavenCentral()
-    // or GitHub Packages when published there:
-    // maven { url = uri("https://maven.pkg.github.com/hosseinkarami-dev/<repo>") }
 }
 
 dependencies {
-    implementation("io.github.hosseinkarami_dev:near-rpc-client:0.1.0")
+  implementation("io.github.hosseinkarami_dev:near-rpc-client:0.1.0")
+  implementation("io.github.hosseinkarami_dev:near-rpc-models:0.1.0")
 }
 ```
 
