@@ -31,16 +31,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+
     buildFeatures {
         compose = true
     }
 }
 
 dependencies {
-    implementation(project(":models"))
     implementation(project(":client"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
