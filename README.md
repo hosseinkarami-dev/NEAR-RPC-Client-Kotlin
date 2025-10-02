@@ -168,20 +168,10 @@ when (val r = nearClient.broadcastTxAsync(req)) {
 
 The `generator` module is a CLI that parses NEAR's OpenAPI spec and writes generated Kotlin types and the `NearClient` implementation.
 
-Typical steps (local):
-
-1. Run the generator against NEAR's OpenAPI:
+Run the generator against NEAR's OpenAPI:
 ```bash
 ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated
 ```
-
-2. Inspect generated files under `models` and `client`. Run tests and lint.
-
-3. Commit generated code or open a PR with the regenerated files.
-
-**Notes**
-- The OpenAPI spec uses separate paths per method, but NEAR JSON-RPC expects one path (usually `/`). The generator patches this and emits JSON-RPC wrapper requests.  
-- The generator unwraps response wrappers (e.g., `JsonRpcResponse_for_X_and_RpcError`) so methods return `RpcResponse<X>`.
 
 ---
 
