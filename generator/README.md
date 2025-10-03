@@ -51,6 +51,18 @@ placed in those custom directories.
 
 ------------------------------------------------------------------------
 
+## ✅ Running Tests
+
+After generating the sources, you can run the test suite to make sure
+the generated code compiles and works as expected:
+
+```bash
+./gradlew :generator:test
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
 ## 📖 Development Notes
 
 -   The generator typically uses a custom implementation
