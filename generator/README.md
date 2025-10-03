@@ -30,7 +30,7 @@ To run the generator manually with default settings:
 The generator accepts parameters via `--args`. Example:
 
 ``` bash
-./gradlew :generator:run   --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated/models --client-out build/generated/client"
+./gradlew :generator:run   --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated"
 ```
 
 **Parameters:** - `--openapi-url` → URL of the OpenAPI spec (local file
