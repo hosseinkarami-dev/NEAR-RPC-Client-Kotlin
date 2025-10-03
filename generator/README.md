@@ -58,6 +58,7 @@ the generated code compiles and works as expected:
 
 ```bash
 ./gradlew :generator:test
+```
 
 ------------------------------------------------------------------------
 
