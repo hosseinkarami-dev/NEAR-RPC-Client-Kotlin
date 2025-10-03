@@ -35,7 +35,7 @@ The generator accepts parameters via `--args`. Example:
 
 **Parameters:** - `--openapi-url` → URL of the OpenAPI spec (local file
 or remote URL)\
-- `--models-out` → Output directory for generated models\
+- `--models-out` → Output directory for generated models
 - `--client-out` → Output directory for the generated client
 
 ------------------------------------------------------------------------
