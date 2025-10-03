@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
 
     ModelGenerator.generateAll(
         spec = spec,
-        outputRoot = File(modelsOut),
+        outputDir = File(modelsOut),
         packageName = modelPackage
     )
 

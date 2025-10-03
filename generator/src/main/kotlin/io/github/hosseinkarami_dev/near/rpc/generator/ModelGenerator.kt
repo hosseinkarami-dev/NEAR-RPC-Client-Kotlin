@@ -18,14 +18,14 @@ class ModelGenerator(
     companion object {
         fun generateAll(
             spec: OpenApiSpec,
-            outputRoot: File,
+            outputDir: File,
             packageName: String
         ) {
-            val gen = ModelGenerator(spec, outputRoot, packageName)
-            outputRoot.mkdirs()
+            val gen = ModelGenerator(spec, outputDir, packageName)
+            outputDir.mkdirs()
 
             gen.modelBuilder.buildModels()
-            println("✅ Models Generated Successfully!")
+            println("✅ Models Generated Successfully to $outputDir")
         }
     }
 
