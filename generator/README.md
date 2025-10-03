@@ -62,8 +62,6 @@ the generated code compiles and works as expected:
 
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
-
 ## 📖 Development Notes
 
 -   The generator typically uses a custom implementation
