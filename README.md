@@ -198,7 +198,7 @@ This project is licensed under the **Apache-2.0 License**. See [LICENSE](./LICEN
 
 ## Contact & References
 
-- NEAR OpenAPI spec: https://github.com/near/nearcore/.../openapi.json  
-- Reference implementations:
+- JSON-RPC interface: https://docs.near.org/api/rpc/introduction  
+- Other References:
   - Rust client: https://github.com/PolyProgrammist/near-openapi-client  
   - TypeScript client: https://github.com/near/near-jsonrpc-client-ts
