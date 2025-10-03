@@ -27,7 +27,7 @@ public sealed class RpcQueryResponse {
      *  * Format: uint64
      */
     @SerialName("storage_paid_at")
-    public val storagePaidAt: Long?,
+    public val storagePaidAt: Long? = 0L,
     /**
      *  * Minimum: 0.0
      *  * Format: uint64
@@ -63,7 +63,7 @@ public sealed class RpcQueryResponse {
   @Serializable
   public class ViewStateResult(
     @SerialName("proof")
-    public val proof: List<String>,
+    public val proof: List<String>? = null,
     @SerialName("values")
     public val values: List<StateItem>,
     @SerialName("block_hash")

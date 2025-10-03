@@ -22,7 +22,7 @@ public sealed class ReceiptEnumView {
       @SerialName("input_data_ids")
       public val inputDataIds: List<CryptoHash>,
       @SerialName("is_promise_yield")
-      public val isPromiseYield: Boolean?,
+      public val isPromiseYield: Boolean? = false,
       @SerialName("output_data_receivers")
       public val outputDataReceivers: List<DataReceiverView>,
       @SerialName("signer_id")
@@ -43,11 +43,11 @@ public sealed class ReceiptEnumView {
        *  * Nullable: true
        */
       @SerialName("data")
-      public val `data`: String?,
+      public val `data`: String? = null,
       @SerialName("data_id")
       public val dataId: CryptoHash,
       @SerialName("is_promise_resume")
-      public val isPromiseResume: Boolean?,
+      public val isPromiseResume: Boolean? = false,
     )
   }
 

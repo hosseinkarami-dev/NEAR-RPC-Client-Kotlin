@@ -35,9 +35,9 @@ public sealed class StateChangeWithCauseView {
       @SerialName("code_hash")
       public val codeHash: CryptoHash,
       @SerialName("global_contract_account_id")
-      public val globalContractAccountId: AccountId?,
+      public val globalContractAccountId: AccountId? = null,
       @SerialName("global_contract_hash")
-      public val globalContractHash: CryptoHash?,
+      public val globalContractHash: CryptoHash? = null,
       @SerialName("locked")
       public val locked: NearToken,
       /**
@@ -46,7 +46,7 @@ public sealed class StateChangeWithCauseView {
        *  * Format: uint64
        */
       @SerialName("storage_paid_at")
-      public val storagePaidAt: Long?,
+      public val storagePaidAt: Long? = 0L,
       /**
        *  * Minimum: 0.0
        *  * Format: uint64

@@ -54,7 +54,7 @@ public data class ChunkHeaderView(
    *  * TODO(2271): deprecated.
    */
   @SerialName("rent_paid")
-  public val rentPaid: NearToken?,
+  public val rentPaid: NearToken? = NearToken("0"),
   @SerialName("shard_id")
   public val shardId: ShardId,
   @SerialName("signature")
@@ -67,5 +67,5 @@ public data class ChunkHeaderView(
    *  * TODO(2271): deprecated.
    */
   @SerialName("validator_reward")
-  public val validatorReward: NearToken?,
+  public val validatorReward: NearToken? = NearToken("0"),
 )

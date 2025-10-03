@@ -16,7 +16,8 @@ public data class LimitConfig(
    * historically.
    */
   @SerialName("account_id_validity_rules_version")
-  public val accountIdValidityRulesVersion: AccountIdValidityRulesVersion?,
+  public val accountIdValidityRulesVersion:
+      AccountIdValidityRulesVersion? = AccountIdValidityRulesVersion(0.toInt()),
   /**
    *  * The initial number of memory pages.
    * NOTE: It's not a limiter itself, but it's a value we use for initial_memory_pages.
@@ -53,7 +54,7 @@ public data class LimitConfig(
    *  * Nullable: true
    */
   @SerialName("max_elements_per_contract_table")
-  public val maxElementsPerContractTable: Int?,
+  public val maxElementsPerContractTable: Int? = null,
   /**
    *  * If present, stores max number of functions in one contract
    *  * Minimum: 0.0
@@ -61,7 +62,7 @@ public data class LimitConfig(
    *  * Nullable: true
    */
   @SerialName("max_functions_number_per_contract")
-  public val maxFunctionsNumberPerContract: Long?,
+  public val maxFunctionsNumberPerContract: Long? = null,
   /**
    *  * Max amount of gas that can be used, excluding gas attached to promises.
    */
@@ -102,7 +103,7 @@ public data class LimitConfig(
    *  * Nullable: true
    */
   @SerialName("max_locals_per_contract")
-  public val maxLocalsPerContract: Long?,
+  public val maxLocalsPerContract: Long? = null,
   /**
    *  * What is the maximal memory pages amount is allowed to have for a contract.
    *  * Minimum: 0.0
@@ -181,7 +182,7 @@ public data class LimitConfig(
    *  * Nullable: true
    */
   @SerialName("max_tables_per_contract")
-  public val maxTablesPerContract: Int?,
+  public val maxTablesPerContract: Int? = null,
   /**
    *  * Maximum total length in bytes of all log messages.
    *  * Minimum: 0.0

@@ -25,7 +25,7 @@ public sealed class AccessKeyPermissionView {
     @Serializable
     public data class FunctionCallPayload(
       @SerialName("allowance")
-      public val allowance: NearToken?,
+      public val allowance: NearToken? = null,
       @SerialName("method_names")
       public val methodNames: List<String>,
       @SerialName("receiver_id")

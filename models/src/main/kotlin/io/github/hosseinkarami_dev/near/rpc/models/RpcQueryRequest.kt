@@ -58,7 +58,7 @@ public sealed class RpcQueryRequest {
     @SerialName("account_id")
     public val accountId: AccountId,
     @SerialName("include_proof")
-    public val includeProof: Boolean?,
+    public val includeProof: Boolean? = null,
     @SerialName("prefix_base64")
     public val prefixBase64: StoreKey,
     /**
@@ -244,7 +244,7 @@ public sealed class RpcQueryRequest {
     @SerialName("account_id")
     public val accountId: AccountId,
     @SerialName("include_proof")
-    public val includeProof: Boolean?,
+    public val includeProof: Boolean? = null,
     @SerialName("prefix_base64")
     public val prefixBase64: StoreKey,
     /**
@@ -430,7 +430,7 @@ public sealed class RpcQueryRequest {
     @SerialName("account_id")
     public val accountId: AccountId,
     @SerialName("include_proof")
-    public val includeProof: Boolean?,
+    public val includeProof: Boolean? = null,
     @SerialName("prefix_base64")
     public val prefixBase64: StoreKey,
     /**

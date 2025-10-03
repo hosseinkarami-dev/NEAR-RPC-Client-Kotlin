@@ -13,7 +13,7 @@ public data class EpochSyncConfig(
    * and testnet it would be infeasible to catch up from genesis without epoch sync.
    */
   @SerialName("disable_epoch_sync_for_bootstrapping")
-  public val disableEpochSyncForBootstrapping: Boolean?,
+  public val disableEpochSyncForBootstrapping: Boolean? = false,
   /**
    *  * This serves as two purposes: (1) the node will not epoch sync and instead resort to
    * header sync, if the genesis block is within this many blocks from the current block;
@@ -33,7 +33,7 @@ public data class EpochSyncConfig(
    * any non-negligible increase in network traffic.
    */
   @SerialName("ignore_epoch_sync_network_requests")
-  public val ignoreEpochSyncNetworkRequests: Boolean?,
+  public val ignoreEpochSyncNetworkRequests: Boolean? = false,
   /**
    *  * Timeout for epoch sync requests. The node will continue retrying indefinitely even
    * if this timeout is exceeded.

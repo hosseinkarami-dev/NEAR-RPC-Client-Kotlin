@@ -16,7 +16,7 @@ public data class GCConfig(
    *  * Format: uint64
    */
   @SerialName("gc_blocks_limit")
-  public val gcBlocksLimit: Long?,
+  public val gcBlocksLimit: Long? = 2L,
   /**
    *  * Maximum number of height to go through at each garbage collection step
    * when cleaning forks during garbage collection.
@@ -24,17 +24,18 @@ public data class GCConfig(
    *  * Format: uint64
    */
   @SerialName("gc_fork_clean_step")
-  public val gcForkCleanStep: Long?,
+  public val gcForkCleanStep: Long? = 100L,
   /**
    *  * Number of epochs for which we keep store data.
    *  * Minimum: 0.0
    *  * Format: uint64
    */
   @SerialName("gc_num_epochs_to_keep")
-  public val gcNumEpochsToKeep: Long?,
+  public val gcNumEpochsToKeep: Long? = 5L,
   /**
    *  * How often gc should be run
    */
   @SerialName("gc_step_period")
-  public val gcStepPeriod: DurationAsStdSchemaProvider?,
+  public val gcStepPeriod:
+      DurationAsStdSchemaProvider? = DurationAsStdSchemaProvider(nanos = 500000000.toInt(), secs = 0L),
 )

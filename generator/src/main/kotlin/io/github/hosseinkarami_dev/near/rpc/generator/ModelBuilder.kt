@@ -19,6 +19,12 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import io.github.hosseinkarami_dev.near.rpc.generator.SchemaHelper.getPrimitiveTypeName
 import io.github.hosseinkarami_dev.near.rpc.generator.SchemaHelper.isPrimitiveType
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
 import java.io.File
 import kotlin.collections.forEach
 
@@ -356,7 +362,12 @@ class ModelBuilder(
                         val paramName = toCamelCase(pn)
 
                         val paramBuilder = ParameterSpec.builder(paramName, localized)
-                        if (isRefOrNullUnion(ps)) paramBuilder.defaultValue("null")
+                        val dv = defaultValueLiteralForSchema(ps, localized)
+                        if (dv != null) {
+                            paramBuilder.defaultValue("%L", dv)
+                        } else if (localized.isNullable) {
+                            paramBuilder.defaultValue("%L", "null")
+                        }
                         subCtor.addParameter(paramBuilder.build())
 
                         val pBuilder = PropertySpec.builder(paramName, localized)
@@ -389,7 +400,12 @@ class ModelBuilder(
                         val paramName = toCamelCase(pname)
 
                         val paramBuilder = ParameterSpec.builder(paramName, localized)
-                        if (isRefOrNullUnion(pschemaRaw)) paramBuilder.defaultValue("null")
+                        val dv = defaultValueLiteralForSchema(pschemaRaw, localized)
+                        if (dv != null) {
+                            paramBuilder.defaultValue("%L", dv)
+                        } else if (localized.isNullable) {
+                            paramBuilder.defaultValue("%L", "null")
+                        }
                         subCtor.addParameter(paramBuilder.build())
 
                         val pBuilder = PropertySpec.builder(paramName, localized)
@@ -433,7 +449,12 @@ class ModelBuilder(
                 val paramName = toCamelCase(caseKey)
 
                 val paramBuilder = ParameterSpec.builder(paramName, innerType)
-                if (isRefOrNullUnion(caseSchema)) paramBuilder.defaultValue("null")
+                val dv = defaultValueLiteralForSchema(caseSchema, innerType)
+                if (dv != null) {
+                    paramBuilder.defaultValue("%L", dv)
+                } else if (innerType.isNullable) {
+                    paramBuilder.defaultValue("%L", "null")
+                }
                 subCtor.addParameter(paramBuilder.build())
 
                 val pb = PropertySpec.builder(paramName, innerType).initializer("%N", paramName)
@@ -491,7 +512,12 @@ class ModelBuilder(
                     val paramName = toCamelCase(pn)
 
                     val paramBuilder = ParameterSpec.builder(paramName, localized)
-                    if (isRefOrNullUnion(ps)) paramBuilder.defaultValue("null")
+                    val dv = defaultValueLiteralForSchema(ps, localized)
+                    if (dv != null) {
+                        paramBuilder.defaultValue("%L", dv)
+                    } else if (localized.isNullable) {
+                        paramBuilder.defaultValue("%L", "null")
+                    }
                     specificCtor.addParameter(paramBuilder.build())
 
                     val pBuilder = PropertySpec.builder(paramName, localized)
@@ -527,7 +553,12 @@ class ModelBuilder(
                     val paramName = toCamelCase(pname)
 
                     val paramBuilder = ParameterSpec.builder(paramName, localized)
-                    if (isRefOrNullUnion(pschemaRaw)) paramBuilder.defaultValue("null")
+                    val dv = defaultValueLiteralForSchema(pschemaRaw, localized)
+                    if (dv != null) {
+                        paramBuilder.defaultValue("%L", dv)
+                    } else if (localized.isNullable) {
+                        paramBuilder.defaultValue("%L", "null")
+                    }
                     specificCtor.addParameter(paramBuilder.build())
 
                     val pBuilder = PropertySpec.builder(paramName, localized)
@@ -570,7 +601,12 @@ class ModelBuilder(
                     val paramName = toCamelCase(pn)
 
                     val paramBuilder = ParameterSpec.builder(paramName, t)
-                    if (isRefOrNullUnion(ps)) paramBuilder.defaultValue("null")
+                    val dv = defaultValueLiteralForSchema(ps, t)
+                    if (dv != null) {
+                        paramBuilder.defaultValue("%L", dv)
+                    } else if (t.isNullable) {
+                        paramBuilder.defaultValue("%L", "null")
+                    }
                     payloadCtor.addParameter(paramBuilder.build())
 
                     val pBuilder = PropertySpec.builder(paramName, t).initializer("%N", paramName)
@@ -621,7 +657,12 @@ class ModelBuilder(
                 val paramName = toCamelCase(pname)
 
                 val paramBuilder = ParameterSpec.builder(paramName, t)
-                if (isRefOrNullUnion(pschemaRaw)) paramBuilder.defaultValue("null")
+                val dv = defaultValueLiteralForSchema(pschemaRaw, t)
+                if (dv != null) {
+                    paramBuilder.defaultValue("%L", dv)
+                } else if (t.isNullable) {
+                    paramBuilder.defaultValue("%L", "null")
+                }
                 subCtor.addParameter(paramBuilder.build())
 
                 val pb = PropertySpec.builder(paramName, t).initializer("%N", paramName)
@@ -674,7 +715,12 @@ class ModelBuilder(
 
                 val paramName = toCamelCase(pname)
                 val paramBuilder = ParameterSpec.builder(paramName, propType)
-                if (isRefOrNullUnion(pschemaRaw)) paramBuilder.defaultValue("null")
+                val dv = defaultValueLiteralForSchema(pschemaRaw, propType)
+                if (dv != null) {
+                    paramBuilder.defaultValue("%L", dv)
+                } else if (propType.isNullable) {
+                    paramBuilder.defaultValue("%L", "null")
+                }
                 ctor.addParameter(paramBuilder.build())
 
                 val pBuilder = PropertySpec.builder(paramName, propType)
@@ -706,7 +752,12 @@ class ModelBuilder(
 
                     val paramName = toCamelCase(pname)
                     val paramBuilder = ParameterSpec.builder(paramName, propType)
-                    if (isRefOrNullUnion(pschemaRaw)) paramBuilder.defaultValue("null")
+                    val dv = defaultValueLiteralForSchema(pschemaRaw, propType)
+                    if (dv != null) {
+                        paramBuilder.defaultValue("%L", dv)
+                    } else if (propType.isNullable) {
+                        paramBuilder.defaultValue("%L", "null")
+                    }
                     ctor.addParameter(paramBuilder.build())
 
                     val pBuilder = PropertySpec.builder(paramName, propType)
@@ -733,7 +784,12 @@ class ModelBuilder(
             )
             val paramName = toCamelCase(pname)
             val paramBuilder = ParameterSpec.builder(paramName, resolvedType)
-            if (isRefOrNullUnion(pschemaRaw)) paramBuilder.defaultValue("null")
+            val dv = defaultValueLiteralForSchema(pschemaRaw, resolvedType)
+            if (dv != null) {
+                paramBuilder.defaultValue("%L", dv)
+            } else if (resolvedType.isNullable) {
+                paramBuilder.defaultValue("%L", "null")
+            }
             ctor.addParameter(paramBuilder.build())
 
             val pBuilder = PropertySpec.builder(paramName, resolvedType)
@@ -786,9 +842,10 @@ class ModelBuilder(
             && (ctxSchema.oneOf.isNullOrEmpty())
             && ctxSchema.ref.isNullOrBlank()
             && (ctxSchema.patternProperties.isNullOrEmpty())
-            && (ctxSchema.additionalProperties == null || (ctxSchema.additionalProperties is Schema))
+            // Only treat as "empty object" when additionalProperties is absent (null) or explicitly false.
+            && (ctxSchema.additionalProperties == null || ctxSchema.additionalProperties == false)
         ) {
-            // respect nullability: if the prop is not required or schema.nullable == true => nullable type
+            // Respect nullability: if the prop is not required or schema.nullable == true => nullable type
             return ClassName("kotlinx.serialization.json", "JsonElement")
                 .copy(nullable = !isRequired || (ctxSchema.nullable == true))
         }
@@ -902,7 +959,9 @@ class ModelBuilder(
                 fileBuilder,
                 builtTypes
             )
-            return ClassName("kotlin.collections", "List").parameterizedBy(inner)
+
+            val listType = ClassName("kotlin.collections", "List").parameterizedBy(inner)
+            return listType.copy(nullable = !isRequired || (ctxSchema.nullable == true))
         }
 
         if (ctxSchema.isPrimitiveType()) {
@@ -951,7 +1010,17 @@ class ModelBuilder(
                 fileBuilder,
                 builtTypes
             )
-            payloadCtor.addParameter(toCamelCase(pn), nestedType)
+            // use ParameterSpec so we can attach default if present
+            val paramName = toCamelCase(pn)
+            val paramBuilder = ParameterSpec.builder(paramName, nestedType)
+            val dv = defaultValueLiteralForSchema(ps, nestedType)
+            if (dv != null) {
+                paramBuilder.defaultValue("%L", dv)
+            } else if (nestedType.isNullable) {
+                paramBuilder.defaultValue("%L", "null")
+            }
+            payloadCtor.addParameter(paramBuilder.build())
+
             val propBuilder = PropertySpec.builder(toCamelCase(pn), nestedType)
                 .initializer(toCamelCase(pn))
                 .addAnnotation(
@@ -978,17 +1047,144 @@ class ModelBuilder(
         return type
     }
 
-    // Helper to detect a oneOf/anyOf union that is (ref + null)
-    fun isRefOrNullUnion(schema: Schema?): Boolean {
-        if (schema == null) return false
-        val variants = (schema.anyOf ?: emptyList()) + (schema.oneOf ?: emptyList())
-        if (variants.size == 2) {
-            val refVariant = variants.find { !it.ref.isNullOrBlank() }
-            val nullVariant = variants.find { v ->
-                (v.enum?.size == 1 && v.enum[0] == null) || (v.nullable == true) || (v.type == "null")
+    private fun defaultValueLiteralForSchema(schema: Schema?, typeHint: TypeName? = null): String? {
+        if (schema == null) return null
+        val def = schema.default ?: return null
+
+        val baseLit = jsonElementToKotlinLiteral(def) ?: return null
+
+        if (baseLit == "null") return "null"
+
+        // --- SIMPLE GUARD: if default is an object that matches a oneOf-variant keyed form
+        // (e.g. {"V2": { ... }}) for a schema that has oneOf variants, ignore the default.
+        // This avoids trying to synthesize deep nested typed constructors for such cases.
+        if (def is JsonObject && typeHint is ClassName) {
+            val refSchema = spec.components.schemas[typeHint.simpleName]
+            if (refSchema != null && !refSchema.oneOf.isNullOrEmpty()) {
+                // collect all variant property keys (e.g. "V0","V1","V2", or other variant names)
+                val variantKeys = refSchema.oneOf
+                    .flatMap { it.properties?.keys ?: emptySet() }
+                    .toSet()
+                // if the default object contains at least one key that matches a variant key,
+                // treat this default as "nested typed" and IGNORE it (return null).
+                if (def.keys.any { it in variantKeys }) {
+                    return null
+                }
             }
-            return refVariant != null && nullVariant != null
         }
-        return false
+        // --- end guard
+
+        if (typeHint is ClassName) {
+            // 1) kotlin primitive types
+            if (typeHint.packageName == "kotlin") {
+                return when (typeHint.simpleName) {
+                    "Long" -> {
+                        val intRegex = Regex("^-?\\d+\$")
+                        if (intRegex.matches(baseLit)) "${baseLit}L" else baseLit
+                    }
+                    "Int", "Short", "Byte" -> baseLit
+                    "Double", "Float" -> baseLit
+                    "Boolean" -> baseLit
+                    "String", "Char" -> baseLit
+                    else -> baseLit
+                }
+            }
+
+            val refSchema = spec.components.schemas[typeHint.simpleName]
+            if (refSchema != null) {
+                if (def is JsonObject && !refSchema.properties.isNullOrEmpty()) {
+                    val assignments = mutableListOf<String>()
+                    for ((propName, propSchema) in refSchema.properties) {
+                        val jsonVal = def[propName] ?: continue
+                        val lit = jsonElementToKotlinLiteral(jsonVal) ?: return null
+
+                        val finalLit = if (propSchema.isPrimitiveType()) {
+                            val prim = propSchema.getPrimitiveTypeName()
+                            val intRegex = Regex("^-?\\d+\$")
+                            when {
+                                prim.toString().endsWith("Long") && intRegex.matches(lit) -> "${lit}L"
+                                prim.toString().endsWith("Int") && intRegex.matches(lit) -> "${lit}.toInt()"
+                                else -> lit
+                            }
+                        } else {
+                            lit
+                        }
+
+                        assignments.add("${toCamelCase(propName)} = $finalLit")
+                    }
+                    if (assignments.isEmpty()) return null
+                    return "${typeHint.simpleName}(" + assignments.joinToString(", ") + ")"
+                }
+
+                val rawString: String? = when (def) {
+                    is JsonPrimitive -> if (def.isString) def.content else null
+                    else -> null
+                }
+                val oneOfList = refSchema.oneOf ?: emptyList()
+                if (rawString != null && oneOfList.isNotEmpty()) {
+                    val match = oneOfList.firstOrNull { v -> v.enum?.any { it == rawString } == true }
+                    if (match != null) {
+                        val objName = toPascalCase(rawString)
+                        return "${typeHint.simpleName}.$objName"
+                    }
+                }
+
+                val topEnum = refSchema.enum?.filterNotNull()
+                if (!topEnum.isNullOrEmpty() && rawString != null) {
+                    val constName = toConstantName(rawString)
+                    return "${typeHint.simpleName}.$constName"
+                }
+
+                val primType = try { refSchema.getPrimitiveTypeName() } catch (_: Throwable) { null }
+                if (primType != null) {
+                    val primStr = primType.toString()
+                    val intRegex = Regex("^-?\\d+\$")
+                    return when {
+                        primStr.endsWith("Long") && intRegex.matches(baseLit) -> "${typeHint.simpleName}(${baseLit}L)"
+                        primStr.endsWith("Int") && intRegex.matches(baseLit) -> "${typeHint.simpleName}(${baseLit}.toInt())"
+                        primStr.endsWith("String") -> "${typeHint.simpleName}(${baseLit})"
+                        primStr.endsWith("Boolean") -> "${typeHint.simpleName}(${baseLit})"
+                        else -> "${typeHint.simpleName}(${baseLit})"
+                    }
+                }
+
+                return "${typeHint.simpleName}(${baseLit})"
+            }
+
+            return null
+        }
+
+        return baseLit
     }
+
+    private fun jsonElementToKotlinLiteral(el: JsonElement?): String? {
+        if (el == null) return null
+
+        return when (el) {
+            is JsonNull -> "null"
+            is JsonPrimitive -> {
+                val content = el.content
+                when {
+                    el.booleanOrNull != null -> content // true/false
+                    el.isString -> "\"" + content.replace("\"", "\\\"") + "\"" // quoted string
+                    else -> content // numeric-like
+                }
+            }
+            is JsonArray -> {
+                val items = el.mapNotNull { jsonElementToKotlinLiteral(it) }
+                if (items.size != el.size) return null
+                "listOf(" + items.joinToString(", ") + ")"
+            }
+            is JsonObject -> {
+                val pairs = mutableListOf<String>()
+                for ((k, v) in el) {
+                    val vLit = jsonElementToKotlinLiteral(v) ?: return null
+                    val keyEsc = k.replace("\"", "\\\"")
+                    pairs.add("\"$keyEsc\" to $vLit")
+                }
+                "mapOf(" + pairs.joinToString(", ") + ")"
+            }
+        }
+    }
+
 }

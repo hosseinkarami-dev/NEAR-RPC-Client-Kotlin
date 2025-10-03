@@ -53,7 +53,7 @@ public data class RpcStatusResponse(
    *  * Nullable: true
    */
   @SerialName("rpc_addr")
-  public val rpcAddr: String?,
+  public val rpcAddr: String? = null,
   /**
    *  * Sync status of the node.
    */

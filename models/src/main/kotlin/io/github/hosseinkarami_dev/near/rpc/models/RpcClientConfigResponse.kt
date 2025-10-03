@@ -261,7 +261,7 @@ public data class RpcClientConfigResponse(
    *  * Nullable: true
    */
   @SerialName("rpc_addr")
-  public val rpcAddr: String?,
+  public val rpcAddr: String? = null,
   /**
    *  * Save observed instances of invalid ChunkStateWitness to the database in DBCol::InvalidChunkStateWitnesses.
    * Saving invalid witnesses is useful for analysis and debugging.
@@ -398,7 +398,7 @@ public data class RpcClientConfigResponse(
    *  * Nullable: true
    */
   @SerialName("transaction_pool_size_limit")
-  public val transactionPoolSizeLimit: Long?,
+  public val transactionPoolSizeLimit: Long? = null,
   /**
    *  * Minimum: 0.0
    *  * Format: uint
@@ -412,7 +412,7 @@ public data class RpcClientConfigResponse(
    *  * Nullable: true
    */
   @SerialName("trie_viewer_state_size_limit")
-  public val trieViewerStateSizeLimit: Long?,
+  public val trieViewerStateSizeLimit: Long? = null,
   /**
    *  * Time to persist Accounts Id in the router without removing them.
    *  * Min Items: 2

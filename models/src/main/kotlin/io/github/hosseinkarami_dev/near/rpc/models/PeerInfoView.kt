@@ -29,7 +29,7 @@ public data class PeerInfoView(
    *  * Nullable: true
    */
   @SerialName("height")
-  public val height: Long?,
+  public val height: Long? = null,
   @SerialName("is_highest_block_invalid")
   public val isHighestBlockInvalid: Boolean,
   @SerialName("is_outbound_peer")

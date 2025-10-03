@@ -14,7 +14,7 @@ public data class Version(
   @SerialName("commit")
   public val commit: String,
   @SerialName("rustc_version")
-  public val rustcVersion: String?,
+  public val rustcVersion: String? = "",
   @SerialName("version")
   public val version: String,
 )

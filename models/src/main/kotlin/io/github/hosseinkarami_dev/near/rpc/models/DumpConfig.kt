@@ -15,7 +15,7 @@ public data class DumpConfig(
    *  * Nullable: true
    */
   @SerialName("credentials_file")
-  public val credentialsFile: String?,
+  public val credentialsFile: String? = null,
   /**
    *  * How often to check if a new epoch has started.
    * Feel free to set to `None`, defaults are sensible.
@@ -33,5 +33,5 @@ public data class DumpConfig(
    *  * Nullable: true
    */
   @SerialName("restart_dump_for_shards")
-  public val restartDumpForShards: List<ShardId>,
+  public val restartDumpForShards: List<ShardId>? = null,
 )

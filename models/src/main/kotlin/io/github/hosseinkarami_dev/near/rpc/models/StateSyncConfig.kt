@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class StateSyncConfig(
   @SerialName("concurrency")
-  public val concurrency: SyncConcurrency?,
+  public val concurrency: SyncConcurrency? = null,
   /**
    *  * `none` value disables state dump to external storage.
    */
@@ -18,7 +18,7 @@ public data class StateSyncConfig(
    *  * Format: int32
    */
   @SerialName("parts_compression_lvl")
-  public val partsCompressionLvl: Int?,
+  public val partsCompressionLvl: Int? = 1,
   @SerialName("sync")
-  public val sync: SyncConfig?,
+  public val sync: SyncConfig? = null,
 )

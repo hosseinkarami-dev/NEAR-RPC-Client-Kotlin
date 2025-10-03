@@ -12,7 +12,7 @@ public data class RpcPeerInfo(
    *  * Nullable: true
    */
   @SerialName("addr")
-  public val addr: String?,
+  public val addr: String? = null,
   @SerialName("id")
   public val id: PeerId,
 )

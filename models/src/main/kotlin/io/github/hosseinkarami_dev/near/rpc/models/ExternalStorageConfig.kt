@@ -14,7 +14,7 @@ public data class ExternalStorageConfig(
    *  * Format: uint64
    */
   @SerialName("external_storage_fallback_threshold")
-  public val externalStorageFallbackThreshold: Long?,
+  public val externalStorageFallbackThreshold: Long? = 3L,
   /**
    *  * Location of state parts.
    */
@@ -28,7 +28,7 @@ public data class ExternalStorageConfig(
    *  * Format: uint8
    */
   @SerialName("num_concurrent_requests")
-  public val numConcurrentRequests: Int?,
+  public val numConcurrentRequests: Int? = 25,
   /**
    *  * During catchup, the node will use a different number of concurrent requests
    * to reduce the performance impact of state sync.
@@ -37,5 +37,5 @@ public data class ExternalStorageConfig(
    *  * Format: uint8
    */
   @SerialName("num_concurrent_requests_during_catchup")
-  public val numConcurrentRequestsDuringCatchup: Int?,
+  public val numConcurrentRequestsDuringCatchup: Int? = 5,
 )

@@ -25,7 +25,7 @@ public data class BlockHeaderView(
    *  * Nullable: true
    */
   @SerialName("block_ordinal")
-  public val blockOrdinal: Long?,
+  public val blockOrdinal: Long? = null,
   @SerialName("challenges_result")
   public val challengesResult: List<SlashedValidator>,
   @SerialName("challenges_root")
@@ -34,7 +34,7 @@ public data class BlockHeaderView(
    *  * Nullable: true
    */
   @SerialName("chunk_endorsements")
-  public val chunkEndorsements: List<List<Int>>,
+  public val chunkEndorsements: List<List<Int>>? = null,
   @SerialName("chunk_headers_root")
   public val chunkHeadersRoot: CryptoHash,
   @SerialName("chunk_mask")
@@ -90,7 +90,7 @@ public data class BlockHeaderView(
    *  * Nullable: true
    */
   @SerialName("prev_height")
-  public val prevHeight: Long?,
+  public val prevHeight: Long? = null,
   @SerialName("prev_state_root")
   public val prevStateRoot: CryptoHash,
   @SerialName("random_value")
@@ -99,7 +99,7 @@ public data class BlockHeaderView(
    *  * TODO(2271): deprecated.
    */
   @SerialName("rent_paid")
-  public val rentPaid: NearToken?,
+  public val rentPaid: NearToken? = NearToken("0"),
   /**
    *  * Signature of the block producer.
    */
@@ -122,5 +122,5 @@ public data class BlockHeaderView(
    *  * TODO(2271): deprecated.
    */
   @SerialName("validator_reward")
-  public val validatorReward: NearToken?,
+  public val validatorReward: NearToken? = NearToken("0"),
 )

@@ -32,7 +32,7 @@ public sealed class RpcError {
      *  * Deprecated please use the `error_struct` instead
      */
     @SerialName("data")
-    public val `data`: JsonElement?,
+    public val `data`: JsonElement? = null,
     /**
      *  * Deprecated please use the `error_struct` instead
      */
@@ -68,7 +68,7 @@ public sealed class RpcError {
      *  * Deprecated please use the `error_struct` instead
      */
     @SerialName("data")
-    public val `data`: JsonElement?,
+    public val `data`: JsonElement? = null,
     /**
      *  * Deprecated please use the `error_struct` instead
      */
@@ -104,7 +104,7 @@ public sealed class RpcError {
      *  * Deprecated please use the `error_struct` instead
      */
     @SerialName("data")
-    public val `data`: JsonElement?,
+    public val `data`: JsonElement? = null,
     /**
      *  * Deprecated please use the `error_struct` instead
      */

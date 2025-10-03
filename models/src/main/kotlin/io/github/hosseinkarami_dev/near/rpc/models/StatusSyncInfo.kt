@@ -16,12 +16,12 @@ public data class StatusSyncInfo(
    *  * Nullable: true
    */
   @SerialName("earliest_block_height")
-  public val earliestBlockHeight: Long?,
+  public val earliestBlockHeight: Long? = null,
   /**
    *  * Nullable: true
    */
   @SerialName("earliest_block_time")
-  public val earliestBlockTime: String?,
+  public val earliestBlockTime: String? = null,
   @SerialName("epoch_id")
   public val epochId: EpochId? = null,
   /**
@@ -30,7 +30,7 @@ public data class StatusSyncInfo(
    *  * Nullable: true
    */
   @SerialName("epoch_start_height")
-  public val epochStartHeight: Long?,
+  public val epochStartHeight: Long? = null,
   @SerialName("latest_block_hash")
   public val latestBlockHash: CryptoHash,
   /**

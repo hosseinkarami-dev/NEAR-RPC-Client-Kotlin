@@ -13,7 +13,7 @@ public data class RpcReceiptResponse(
    *  * Format: uint64
    */
   @SerialName("priority")
-  public val priority: Long?,
+  public val priority: Long? = 0L,
   @SerialName("receipt")
   public val receipt: ReceiptEnumView,
   @SerialName("receipt_id")

@@ -1,13 +1,14 @@
 package io.github.hosseinkarami_dev.near.rpc.models
 
+import kotlin.String
+import kotlin.collections.Map
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 
 @Serializable
 public data class DeterministicAccountStateInitV1(
   @SerialName("code")
   public val code: GlobalContractIdentifier,
   @SerialName("data")
-  public val `data`: JsonElement,
+  public val `data`: Map<String, String>,
 )

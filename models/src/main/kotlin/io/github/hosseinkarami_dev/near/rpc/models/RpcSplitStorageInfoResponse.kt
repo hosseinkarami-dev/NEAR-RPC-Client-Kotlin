@@ -16,24 +16,24 @@ public data class RpcSplitStorageInfoResponse(
    *  * Nullable: true
    */
   @SerialName("cold_head_height")
-  public val coldHeadHeight: Long?,
+  public val coldHeadHeight: Long? = null,
   /**
    *  * Minimum: 0.0
    *  * Format: uint64
    *  * Nullable: true
    */
   @SerialName("final_head_height")
-  public val finalHeadHeight: Long?,
+  public val finalHeadHeight: Long? = null,
   /**
    *  * Minimum: 0.0
    *  * Format: uint64
    *  * Nullable: true
    */
   @SerialName("head_height")
-  public val headHeight: Long?,
+  public val headHeight: Long? = null,
   /**
    *  * Nullable: true
    */
   @SerialName("hot_db_kind")
-  public val hotDbKind: String?,
+  public val hotDbKind: String? = null,
 )

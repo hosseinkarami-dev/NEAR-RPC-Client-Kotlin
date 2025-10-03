@@ -14,7 +14,7 @@ public data class CloudStorageConfig(
    *  * Nullable: true
    */
   @SerialName("credentials_file")
-  public val credentialsFile: String?,
+  public val credentialsFile: String? = null,
   /**
    *  * The storage to persist the archival data.
    */

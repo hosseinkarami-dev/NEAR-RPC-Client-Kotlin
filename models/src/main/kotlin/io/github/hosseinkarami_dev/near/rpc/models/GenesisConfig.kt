@@ -37,7 +37,7 @@ public data class GenesisConfig(
    *  * Format: uint64
    */
   @SerialName("chunk_producer_assignment_changes_limit")
-  public val chunkProducerAssignmentChangesLimit: Long?,
+  public val chunkProducerAssignmentChangesLimit: Long? = 5L,
   /**
    *  * Threshold for kicking out chunk producers, between 0 and 100.
    *  * Minimum: 0.0
@@ -53,7 +53,7 @@ public data class GenesisConfig(
    *  * Format: uint8
    */
   @SerialName("chunk_validator_only_kickout_threshold")
-  public val chunkValidatorOnlyKickoutThreshold: Int?,
+  public val chunkValidatorOnlyKickoutThreshold: Int? = 80,
   /**
    *  * Enable dynamic re-sharding.
    */
@@ -112,7 +112,7 @@ public data class GenesisConfig(
    *  * Format: uint8
    */
   @SerialName("max_kickout_stake_perc")
-  public val maxKickoutStakePerc: Int?,
+  public val maxKickoutStakePerc: Int? = 100,
   /**
    *  * Minimum gas price. It is also the initial gas price.
    */
@@ -124,7 +124,7 @@ public data class GenesisConfig(
    *  * Format: uint64
    */
   @SerialName("minimum_stake_divisor")
-  public val minimumStakeDivisor: Long?,
+  public val minimumStakeDivisor: Long? = 10L,
   /**
    *  * The lowest ratio s/s_total any block producer can have.
    * See <https://github.com/near/NEPs/pull/167> for details
@@ -132,14 +132,14 @@ public data class GenesisConfig(
    *  * Max Items: 2
    */
   @SerialName("minimum_stake_ratio")
-  public val minimumStakeRatio: List<Int>,
+  public val minimumStakeRatio: List<Int>? = listOf(1, 6250),
   /**
    *  * The minimum number of validators each shard must have
    *  * Minimum: 0.0
    *  * Format: uint64
    */
   @SerialName("minimum_validators_per_shard")
-  public val minimumValidatorsPerShard: Long?,
+  public val minimumValidatorsPerShard: Long? = 1L,
   /**
    *  * Number of block producer seats at genesis.
    *  * Minimum: 0.0
@@ -167,7 +167,7 @@ public data class GenesisConfig(
    *  * Format: uint64
    */
   @SerialName("num_chunk_only_producer_seats")
-  public val numChunkOnlyProducerSeats: Long?,
+  public val numChunkOnlyProducerSeats: Long? = 300L,
   /**
    *  * Number of chunk producers.
    * Don't mess it up with chunk-only producers feature which is deprecated.
@@ -175,27 +175,27 @@ public data class GenesisConfig(
    *  * Format: uint64
    */
   @SerialName("num_chunk_producer_seats")
-  public val numChunkProducerSeats: Long?,
+  public val numChunkProducerSeats: Long? = 100L,
   /**
    *  * Minimum: 0.0
    *  * Format: uint64
    */
   @SerialName("num_chunk_validator_seats")
-  public val numChunkValidatorSeats: Long?,
+  public val numChunkValidatorSeats: Long? = 300L,
   /**
    *  * Online maximum threshold above which validator gets full reward.
    *  * Min Items: 2
    *  * Max Items: 2
    */
   @SerialName("online_max_threshold")
-  public val onlineMaxThreshold: List<Int>,
+  public val onlineMaxThreshold: List<Int>? = listOf(99, 100),
   /**
    *  * Online minimum threshold below which validator doesn't receive reward.
    *  * Min Items: 2
    *  * Max Items: 2
    */
   @SerialName("online_min_threshold")
-  public val onlineMinThreshold: List<Int>,
+  public val onlineMinThreshold: List<Int>? = listOf(9, 10),
   /**
    *  * Protocol treasury rate
    *  * Min Items: 2
@@ -214,7 +214,7 @@ public data class GenesisConfig(
    *  * Max Items: 2
    */
   @SerialName("protocol_upgrade_stake_threshold")
-  public val protocolUpgradeStakeThreshold: List<Int>,
+  public val protocolUpgradeStakeThreshold: List<Int>? = listOf(4, 5),
   /**
    *  * Protocol version that this genesis works with.
    *  * Minimum: 0.0
@@ -226,7 +226,7 @@ public data class GenesisConfig(
    *  * Layout information regarding how to split accounts to shards
    */
   @SerialName("shard_layout")
-  public val shardLayout: ShardLayout?,
+  public val shardLayout: ShardLayout? = null,
   /**
    *  * If true, shuffle the chunk producers across shards. In other words, if
    * the shard assignments were `[S_0, S_1, S_2, S_3]` where `S_i` represents
@@ -234,14 +234,14 @@ public data class GenesisConfig(
    * shard assignments might become, for example, `[S_2, S_0, S_3, S_1]`.
    */
   @SerialName("shuffle_shard_assignment_for_chunk_producers")
-  public val shuffleShardAssignmentForChunkProducers: Boolean?,
+  public val shuffleShardAssignmentForChunkProducers: Boolean? = false,
   /**
    *  * Number of target chunk validator mandates for each shard.
    *  * Minimum: 0.0
    *  * Format: uint64
    */
   @SerialName("target_validator_mandates_per_shard")
-  public val targetValidatorMandatesPerShard: Long?,
+  public val targetValidatorMandatesPerShard: Long? = 68L,
   /**
    *  * Total supply of tokens at genesis.
    */
@@ -260,7 +260,7 @@ public data class GenesisConfig(
    * If set to true, the node will use the same config override path as mainnet and testnet.
    */
   @SerialName("use_production_config")
-  public val useProductionConfig: Boolean?,
+  public val useProductionConfig: Boolean? = false,
   /**
    *  * List of initial validators.
    */

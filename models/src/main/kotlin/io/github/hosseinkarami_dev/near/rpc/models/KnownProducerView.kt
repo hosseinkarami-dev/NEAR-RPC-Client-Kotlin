@@ -16,7 +16,7 @@ public data class KnownProducerView(
    *  * Nullable: true
    */
   @SerialName("next_hops")
-  public val nextHops: List<PublicKey>,
+  public val nextHops: List<PublicKey>? = null,
   @SerialName("peer_id")
   public val peerId: PublicKey,
 )

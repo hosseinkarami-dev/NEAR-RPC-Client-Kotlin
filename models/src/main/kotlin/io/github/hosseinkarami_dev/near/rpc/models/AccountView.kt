@@ -25,7 +25,7 @@ public data class AccountView(
    *  * Format: uint64
    */
   @SerialName("storage_paid_at")
-  public val storagePaidAt: Long?,
+  public val storagePaidAt: Long? = 0L,
   /**
    *  * Minimum: 0.0
    *  * Format: uint64

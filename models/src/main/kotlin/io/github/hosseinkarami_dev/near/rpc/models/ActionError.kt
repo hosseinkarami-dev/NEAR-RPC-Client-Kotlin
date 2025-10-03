@@ -17,7 +17,7 @@ public data class ActionError(
    *  * Nullable: true
    */
   @SerialName("index")
-  public val index: Long?,
+  public val index: Long? = null,
   /**
    *  * The kind of ActionError happened
    */

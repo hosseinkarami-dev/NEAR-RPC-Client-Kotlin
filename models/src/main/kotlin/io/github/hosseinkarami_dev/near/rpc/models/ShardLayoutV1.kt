@@ -22,14 +22,14 @@ public data class ShardLayoutV1(
    *  * Nullable: true
    */
   @SerialName("shards_split_map")
-  public val shardsSplitMap: List<List<ShardId>>,
+  public val shardsSplitMap: List<List<ShardId>>? = null,
   /**
    *  * Maps shard in this shard layout to their parent shard
    * Since shard_ids always range from 0 to num_shards - 1, we use vec instead of a hashmap
    *  * Nullable: true
    */
   @SerialName("to_parent_shard_map")
-  public val toParentShardMap: List<ShardId>,
+  public val toParentShardMap: List<ShardId>? = null,
   /**
    *  * Version of the shard layout, this is useful for uniquely identify the shard layout
    *  * Minimum: 0.0

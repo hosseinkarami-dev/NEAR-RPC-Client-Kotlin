@@ -22,7 +22,7 @@ public data class SignedTransactionView(
    *  * Format: uint64
    */
   @SerialName("priority_fee")
-  public val priorityFee: Long?,
+  public val priorityFee: Long? = 0L,
   @SerialName("public_key")
   public val publicKey: PublicKey,
   @SerialName("receiver_id")

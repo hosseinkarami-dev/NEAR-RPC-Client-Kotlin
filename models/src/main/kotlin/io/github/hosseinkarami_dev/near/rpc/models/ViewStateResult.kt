@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class ViewStateResult(
   @SerialName("proof")
-  public val proof: List<String>,
+  public val proof: List<String>? = null,
   @SerialName("values")
   public val values: List<StateItem>,
 )

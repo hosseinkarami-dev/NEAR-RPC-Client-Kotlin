@@ -12,7 +12,7 @@ public data class RpcKnownProducer(
    *  * Nullable: true
    */
   @SerialName("addr")
-  public val addr: String?,
+  public val addr: String? = null,
   @SerialName("peer_id")
   public val peerId: PeerId,
 )
