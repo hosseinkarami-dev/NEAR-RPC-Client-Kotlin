@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcQueryResponse {
   @Serializable
-  public class AccountView(
+  public data class AccountView(
     @SerialName("amount")
     public val amount: NearToken,
     @SerialName("code_hash")
@@ -45,7 +45,7 @@ public sealed class RpcQueryResponse {
   ) : RpcQueryResponse()
 
   @Serializable
-  public class ContractCodeView(
+  public data class ContractCodeView(
     @SerialName("code_base64")
     public val codeBase64: String,
     @SerialName("hash")
@@ -61,7 +61,7 @@ public sealed class RpcQueryResponse {
   ) : RpcQueryResponse()
 
   @Serializable
-  public class ViewStateResult(
+  public data class ViewStateResult(
     @SerialName("proof")
     public val proof: List<String>? = null,
     @SerialName("values")
@@ -77,7 +77,7 @@ public sealed class RpcQueryResponse {
   ) : RpcQueryResponse()
 
   @Serializable
-  public class CallResult(
+  public data class CallResult(
     @SerialName("logs")
     public val logs: List<String>,
     @SerialName("result")
@@ -93,7 +93,7 @@ public sealed class RpcQueryResponse {
   ) : RpcQueryResponse()
 
   @Serializable
-  public class AccessKeyView(
+  public data class AccessKeyView(
     /**
      *  * Minimum: 0.0
      *  * Format: uint64
@@ -113,7 +113,7 @@ public sealed class RpcQueryResponse {
   ) : RpcQueryResponse()
 
   @Serializable
-  public class AccessKeyList(
+  public data class AccessKeyList(
     @SerialName("keys")
     public val keys: List<AccessKeyInfoView>,
     @SerialName("block_hash")

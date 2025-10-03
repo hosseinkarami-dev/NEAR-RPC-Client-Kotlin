@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcLightClientExecutionProofRequest {
   @Serializable
-  public class Transaction(
+  public data class Transaction(
     @SerialName("sender_id")
     public val senderId: AccountId,
     @SerialName("transaction_hash")
@@ -30,7 +30,7 @@ public sealed class RpcLightClientExecutionProofRequest {
   }
 
   @Serializable
-  public class Receipt(
+  public data class Receipt(
     @SerialName("receipt_id")
     public val receiptId: CryptoHash,
     @SerialName("receiver_id")

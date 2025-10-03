@@ -18,7 +18,7 @@ public sealed class ExecutionStatusView {
    *  * The execution has failed.
    */
   @Serializable
-  public class Failure(
+  public data class Failure(
     @SerialName("Failure")
     public val failure: TxExecutionError,
   ) : ExecutionStatusView()
@@ -27,7 +27,7 @@ public sealed class ExecutionStatusView {
    *  * The final action succeeded and returned some value or an empty vec encoded in base64.
    */
   @Serializable
-  public class SuccessValue(
+  public data class SuccessValue(
     @SerialName("SuccessValue")
     public val successValue: String,
   ) : ExecutionStatusView()
@@ -37,7 +37,7 @@ public sealed class ExecutionStatusView {
    * to a receipt. Contains the receipt_id of the generated receipt.
    */
   @Serializable
-  public class SuccessReceiptId(
+  public data class SuccessReceiptId(
     @SerialName("SuccessReceiptId")
     public val successReceiptId: CryptoHash,
   ) : ExecutionStatusView()

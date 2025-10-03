@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class JsonRpcResponseForRpcNetworkInfoResponseAndRpcError {
   @Serializable
-  public class Result(
+  public data class Result(
     @SerialName("result")
     public val result: RpcNetworkInfoResponse,
     @SerialName("id")
@@ -17,7 +17,7 @@ public sealed class JsonRpcResponseForRpcNetworkInfoResponseAndRpcError {
   ) : JsonRpcResponseForRpcNetworkInfoResponseAndRpcError()
 
   @Serializable
-  public class Error(
+  public data class Error(
     @SerialName("error")
     public val error: RpcError,
     @SerialName("id")

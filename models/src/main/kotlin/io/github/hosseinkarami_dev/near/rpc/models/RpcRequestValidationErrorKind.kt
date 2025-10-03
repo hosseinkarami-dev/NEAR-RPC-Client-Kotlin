@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcRequestValidationErrorKind {
   @Serializable
-  public class MethodNotFound(
+  public data class MethodNotFound(
     @SerialName("info")
     public val info: InfoPayload,
     /**
@@ -33,7 +33,7 @@ public sealed class RpcRequestValidationErrorKind {
   }
 
   @Serializable
-  public class ParseError(
+  public data class ParseError(
     @SerialName("info")
     public val info: InfoPayload,
     /**

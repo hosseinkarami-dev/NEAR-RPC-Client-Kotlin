@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcChunkRequest {
   @Serializable
-  public class BlockShardId(
+  public data class BlockShardId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("shard_id")
@@ -14,7 +14,7 @@ public sealed class RpcChunkRequest {
   ) : RpcChunkRequest()
 
   @Serializable
-  public class ChunkHash(
+  public data class ChunkHash(
     @SerialName("chunk_id")
     public val chunkId: CryptoHash,
   ) : RpcChunkRequest()

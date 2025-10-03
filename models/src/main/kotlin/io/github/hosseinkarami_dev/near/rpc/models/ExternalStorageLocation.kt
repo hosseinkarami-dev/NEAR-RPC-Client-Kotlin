@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class ExternalStorageLocation {
   @Serializable
-  public class S3(
+  public data class S3(
     @SerialName("S3")
     public val s3: S3Payload,
   ) : ExternalStorageLocation() {
@@ -27,7 +27,7 @@ public sealed class ExternalStorageLocation {
   }
 
   @Serializable
-  public class Filesystem(
+  public data class Filesystem(
     @SerialName("Filesystem")
     public val filesystem: FilesystemPayload,
   ) : ExternalStorageLocation() {
@@ -39,7 +39,7 @@ public sealed class ExternalStorageLocation {
   }
 
   @Serializable
-  public class Gcs(
+  public data class Gcs(
     @SerialName("GCS")
     public val gcs: GcsPayload,
   ) : ExternalStorageLocation() {

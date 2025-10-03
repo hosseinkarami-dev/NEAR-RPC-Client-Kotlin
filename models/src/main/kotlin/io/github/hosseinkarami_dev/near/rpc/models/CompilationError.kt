@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class CompilationError {
   @Serializable
-  public class CodeDoesNotExist(
+  public data class CodeDoesNotExist(
     @SerialName("CodeDoesNotExist")
     public val codeDoesNotExist: CodeDoesNotExistPayload,
   ) : CompilationError() {
@@ -19,7 +19,7 @@ public sealed class CompilationError {
   }
 
   @Serializable
-  public class PrepareError(
+  public data class PrepareError(
     @SerialName("PrepareError")
     public val prepareError: io.github.hosseinkarami_dev.near.rpc.models.PrepareError,
   ) : CompilationError()
@@ -30,7 +30,7 @@ public sealed class CompilationError {
    * but, if it ever misses something we’ll emit this error
    */
   @Serializable
-  public class WasmerCompileError(
+  public data class WasmerCompileError(
     @SerialName("WasmerCompileError")
     public val wasmerCompileError: WasmerCompileErrorPayload,
   ) : CompilationError() {

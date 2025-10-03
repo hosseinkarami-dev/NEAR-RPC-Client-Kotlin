@@ -22,7 +22,7 @@ public sealed class ValidatorKickoutReason {
    *  * Validator didn't produce enough blocks.
    */
   @Serializable
-  public class NotEnoughBlocks(
+  public data class NotEnoughBlocks(
     @SerialName("NotEnoughBlocks")
     public val notEnoughBlocks: NotEnoughBlocksPayload,
   ) : ValidatorKickoutReason() {
@@ -47,7 +47,7 @@ public sealed class ValidatorKickoutReason {
    *  * Validator didn't produce enough chunks.
    */
   @Serializable
-  public class NotEnoughChunks(
+  public data class NotEnoughChunks(
     @SerialName("NotEnoughChunks")
     public val notEnoughChunks: NotEnoughChunksPayload,
   ) : ValidatorKickoutReason() {
@@ -80,7 +80,7 @@ public sealed class ValidatorKickoutReason {
    *  * Validator stake is now below threshold
    */
   @Serializable
-  public class NotEnoughStake(
+  public data class NotEnoughStake(
     @SerialName("NotEnoughStake")
     public val notEnoughStake: NotEnoughStakePayload,
   ) : ValidatorKickoutReason() {
@@ -105,7 +105,7 @@ public sealed class ValidatorKickoutReason {
    *  * Validator didn't produce enough chunk endorsements.
    */
   @Serializable
-  public class NotEnoughChunkEndorsements(
+  public data class NotEnoughChunkEndorsements(
     @SerialName("NotEnoughChunkEndorsements")
     public val notEnoughChunkEndorsements: NotEnoughChunkEndorsementsPayload,
   ) : ValidatorKickoutReason() {
@@ -131,7 +131,7 @@ public sealed class ValidatorKickoutReason {
    * the network's voted protocol version.
    */
   @Serializable
-  public class ProtocolVersionTooOld(
+  public data class ProtocolVersionTooOld(
     @SerialName("ProtocolVersionTooOld")
     public val protocolVersionTooOld: ProtocolVersionTooOldPayload,
   ) : ValidatorKickoutReason() {

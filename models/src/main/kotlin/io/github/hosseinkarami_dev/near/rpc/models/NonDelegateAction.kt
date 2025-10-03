@@ -14,7 +14,7 @@ public sealed class NonDelegateAction {
    * <https://nomicon.io/DataStructures/Account>.
    */
   @Serializable
-  public class CreateAccount(
+  public data class CreateAccount(
     @SerialName("CreateAccount")
     public val createAccount: CreateAccountAction,
   ) : NonDelegateAction()
@@ -23,61 +23,61 @@ public sealed class NonDelegateAction {
    *  * Sets a Wasm code to a receiver_id
    */
   @Serializable
-  public class DeployContract(
+  public data class DeployContract(
     @SerialName("DeployContract")
     public val deployContract: DeployContractAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class FunctionCall(
+  public data class FunctionCall(
     @SerialName("FunctionCall")
     public val functionCall: FunctionCallAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class Transfer(
+  public data class Transfer(
     @SerialName("Transfer")
     public val transfer: TransferAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class Stake(
+  public data class Stake(
     @SerialName("Stake")
     public val stake: StakeAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class AddKey(
+  public data class AddKey(
     @SerialName("AddKey")
     public val addKey: AddKeyAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class DeleteKey(
+  public data class DeleteKey(
     @SerialName("DeleteKey")
     public val deleteKey: DeleteKeyAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class DeleteAccount(
+  public data class DeleteAccount(
     @SerialName("DeleteAccount")
     public val deleteAccount: DeleteAccountAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class DeployGlobalContract(
+  public data class DeployGlobalContract(
     @SerialName("DeployGlobalContract")
     public val deployGlobalContract: DeployGlobalContractAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class UseGlobalContract(
+  public data class UseGlobalContract(
     @SerialName("UseGlobalContract")
     public val useGlobalContract: UseGlobalContractAction,
   ) : NonDelegateAction()
 
   @Serializable
-  public class DeterministicStateInit(
+  public data class DeterministicStateInit(
     @SerialName("DeterministicStateInit")
     public val deterministicStateInit: DeterministicStateInitAction,
   ) : NonDelegateAction()

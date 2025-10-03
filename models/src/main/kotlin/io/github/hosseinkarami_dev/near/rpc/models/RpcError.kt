@@ -14,7 +14,7 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 public sealed class RpcError {
   @Serializable
-  public class RequestValidationError(
+  public data class RequestValidationError(
     @SerialName("cause")
     public val cause: RpcRequestValidationErrorKind,
     /**
@@ -50,7 +50,7 @@ public sealed class RpcError {
   }
 
   @Serializable
-  public class HandlerError(
+  public data class HandlerError(
     @SerialName("cause")
     public val cause: JsonElement,
     /**
@@ -86,7 +86,7 @@ public sealed class RpcError {
   }
 
   @Serializable
-  public class InternalError(
+  public data class InternalError(
     @SerialName("cause")
     public val cause: JsonElement,
     /**

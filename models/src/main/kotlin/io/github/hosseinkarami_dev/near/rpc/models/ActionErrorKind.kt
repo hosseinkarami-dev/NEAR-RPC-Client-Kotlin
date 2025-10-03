@@ -10,7 +10,7 @@ public sealed class ActionErrorKind {
    *  * Happens when CreateAccount action tries to create an account with account_id which is already exists in the storage
    */
   @Serializable
-  public class AccountAlreadyExists(
+  public data class AccountAlreadyExists(
     @SerialName("AccountAlreadyExists")
     public val accountAlreadyExists: AccountAlreadyExistsPayload,
   ) : ActionErrorKind() {
@@ -25,7 +25,7 @@ public sealed class ActionErrorKind {
    *  * Happens when TX receiver_id doesn't exist (but action is not Action::CreateAccount)
    */
   @Serializable
-  public class AccountDoesNotExist(
+  public data class AccountDoesNotExist(
     @SerialName("AccountDoesNotExist")
     public val accountDoesNotExist: AccountDoesNotExistPayload,
   ) : ActionErrorKind() {
@@ -40,7 +40,7 @@ public sealed class ActionErrorKind {
    *  * A top-level account ID can only be created by registrar.
    */
   @Serializable
-  public class CreateAccountOnlyByRegistrar(
+  public data class CreateAccountOnlyByRegistrar(
     @SerialName("CreateAccountOnlyByRegistrar")
     public val createAccountOnlyByRegistrar: CreateAccountOnlyByRegistrarPayload,
   ) : ActionErrorKind() {
@@ -59,7 +59,7 @@ public sealed class ActionErrorKind {
    *  * A newly created account must be under a namespace of the creator account
    */
   @Serializable
-  public class CreateAccountNotAllowed(
+  public data class CreateAccountNotAllowed(
     @SerialName("CreateAccountNotAllowed")
     public val createAccountNotAllowed: CreateAccountNotAllowedPayload,
   ) : ActionErrorKind() {
@@ -77,7 +77,7 @@ public sealed class ActionErrorKind {
    * or the first TX action is a `CreateAccount` action
    */
   @Serializable
-  public class ActorNoPermission(
+  public data class ActorNoPermission(
     @SerialName("ActorNoPermission")
     public val actorNoPermission: ActorNoPermissionPayload,
   ) : ActionErrorKind() {
@@ -94,7 +94,7 @@ public sealed class ActionErrorKind {
    *  * Account tries to remove an access key that doesn't exist
    */
   @Serializable
-  public class DeleteKeyDoesNotExist(
+  public data class DeleteKeyDoesNotExist(
     @SerialName("DeleteKeyDoesNotExist")
     public val deleteKeyDoesNotExist: DeleteKeyDoesNotExistPayload,
   ) : ActionErrorKind() {
@@ -111,7 +111,7 @@ public sealed class ActionErrorKind {
    *  * The public key is already used for an existing access key
    */
   @Serializable
-  public class AddKeyAlreadyExists(
+  public data class AddKeyAlreadyExists(
     @SerialName("AddKeyAlreadyExists")
     public val addKeyAlreadyExists: AddKeyAlreadyExistsPayload,
   ) : ActionErrorKind() {
@@ -128,7 +128,7 @@ public sealed class ActionErrorKind {
    *  * Account is staking and can not be deleted
    */
   @Serializable
-  public class DeleteAccountStaking(
+  public data class DeleteAccountStaking(
     @SerialName("DeleteAccountStaking")
     public val deleteAccountStaking: DeleteAccountStakingPayload,
   ) : ActionErrorKind() {
@@ -143,7 +143,7 @@ public sealed class ActionErrorKind {
    *  * ActionReceipt can't be completed, because the remaining balance will not be enough to cover storage.
    */
   @Serializable
-  public class LackBalanceForState(
+  public data class LackBalanceForState(
     @SerialName("LackBalanceForState")
     public val lackBalanceForState: LackBalanceForStatePayload,
   ) : ActionErrorKind() {
@@ -166,7 +166,7 @@ public sealed class ActionErrorKind {
    *  * Account is not yet staked, but tries to unstake
    */
   @Serializable
-  public class TriesToUnstake(
+  public data class TriesToUnstake(
     @SerialName("TriesToUnstake")
     public val triesToUnstake: TriesToUnstakePayload,
   ) : ActionErrorKind() {
@@ -181,7 +181,7 @@ public sealed class ActionErrorKind {
    *  * The account doesn't have enough balance to increase the stake.
    */
   @Serializable
-  public class TriesToStake(
+  public data class TriesToStake(
     @SerialName("TriesToStake")
     public val triesToStake: TriesToStakePayload,
   ) : ActionErrorKind() {
@@ -199,7 +199,7 @@ public sealed class ActionErrorKind {
   }
 
   @Serializable
-  public class InsufficientStake(
+  public data class InsufficientStake(
     @SerialName("InsufficientStake")
     public val insufficientStake: InsufficientStakePayload,
   ) : ActionErrorKind() {
@@ -218,7 +218,7 @@ public sealed class ActionErrorKind {
    *  * An error occurred during a `FunctionCall` Action, parameter is debug message.
    */
   @Serializable
-  public class FunctionCallError(
+  public data class FunctionCallError(
     @SerialName("FunctionCallError")
     public val functionCallError: io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError,
   ) : ActionErrorKind()
@@ -228,7 +228,7 @@ public sealed class ActionErrorKind {
    * receipt validation.
    */
   @Serializable
-  public class NewReceiptValidationError(
+  public data class NewReceiptValidationError(
     @SerialName("NewReceiptValidationError")
     public val newReceiptValidationError: ReceiptValidationError,
   ) : ActionErrorKind()
@@ -242,7 +242,7 @@ public sealed class ActionErrorKind {
    * `OnlyNamedAccountCreationAllowed`.
    */
   @Serializable
-  public class OnlyImplicitAccountCreationAllowed(
+  public data class OnlyImplicitAccountCreationAllowed(
     @SerialName("OnlyImplicitAccountCreationAllowed")
     public val onlyImplicitAccountCreationAllowed: OnlyImplicitAccountCreationAllowedPayload,
   ) : ActionErrorKind() {
@@ -257,7 +257,7 @@ public sealed class ActionErrorKind {
    *  * Delete account whose state is large is temporarily banned.
    */
   @Serializable
-  public class DeleteAccountWithLargeState(
+  public data class DeleteAccountWithLargeState(
     @SerialName("DeleteAccountWithLargeState")
     public val deleteAccountWithLargeState: DeleteAccountWithLargeStatePayload,
   ) : ActionErrorKind() {
@@ -280,7 +280,7 @@ public sealed class ActionErrorKind {
    *  * Receiver of the transaction doesn't match Sender of the delegate action
    */
   @Serializable
-  public class DelegateActionSenderDoesNotMatchTxReceiver(
+  public data class DelegateActionSenderDoesNotMatchTxReceiver(
     @SerialName("DelegateActionSenderDoesNotMatchTxReceiver")
     public val delegateActionSenderDoesNotMatchTxReceiver:
         DelegateActionSenderDoesNotMatchTxReceiverPayload,
@@ -306,7 +306,7 @@ public sealed class ActionErrorKind {
    *  * The given public key doesn't exist for Sender account
    */
   @Serializable
-  public class DelegateActionAccessKeyError(
+  public data class DelegateActionAccessKeyError(
     @SerialName("DelegateActionAccessKeyError")
     public val delegateActionAccessKeyError: InvalidAccessKeyError,
   ) : ActionErrorKind()
@@ -315,7 +315,7 @@ public sealed class ActionErrorKind {
    *  * DelegateAction nonce must be greater sender[public_key].nonce
    */
   @Serializable
-  public class DelegateActionInvalidNonce(
+  public data class DelegateActionInvalidNonce(
     @SerialName("DelegateActionInvalidNonce")
     public val delegateActionInvalidNonce: DelegateActionInvalidNoncePayload,
   ) : ActionErrorKind() {
@@ -340,7 +340,7 @@ public sealed class ActionErrorKind {
    *  * DelegateAction nonce is larger than the upper bound given by the block height
    */
   @Serializable
-  public class DelegateActionNonceTooLarge(
+  public data class DelegateActionNonceTooLarge(
     @SerialName("DelegateActionNonceTooLarge")
     public val delegateActionNonceTooLarge: DelegateActionNonceTooLargePayload,
   ) : ActionErrorKind() {
@@ -362,7 +362,7 @@ public sealed class ActionErrorKind {
   }
 
   @Serializable
-  public class GlobalContractDoesNotExist(
+  public data class GlobalContractDoesNotExist(
     @SerialName("GlobalContractDoesNotExist")
     public val globalContractDoesNotExist: GlobalContractDoesNotExistPayload,
   ) : ActionErrorKind() {

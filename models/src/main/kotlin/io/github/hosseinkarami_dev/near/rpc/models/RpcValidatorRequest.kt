@@ -13,13 +13,13 @@ public sealed class RpcValidatorRequest {
   public object Latest : RpcValidatorRequest()
 
   @Serializable
-  public class EpochId(
+  public data class EpochId(
     @SerialName("epoch_id")
     public val epochId: io.github.hosseinkarami_dev.near.rpc.models.EpochId,
   ) : RpcValidatorRequest()
 
   @Serializable
-  public class BlockId(
+  public data class BlockId(
     @SerialName("block_id")
     public val blockId: io.github.hosseinkarami_dev.near.rpc.models.BlockId,
   ) : RpcValidatorRequest()

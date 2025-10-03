@@ -16,7 +16,7 @@ public sealed class InvalidTxError {
    *  * Happens if a wrong AccessKey used or AccessKey has not enough permissions
    */
   @Serializable
-  public class InvalidAccessKeyError(
+  public data class InvalidAccessKeyError(
     @SerialName("InvalidAccessKeyError")
     public val invalidAccessKeyError:
         io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError,
@@ -26,7 +26,7 @@ public sealed class InvalidTxError {
    *  * TX signer_id is not a valid [`AccountId`]
    */
   @Serializable
-  public class InvalidSignerId(
+  public data class InvalidSignerId(
     @SerialName("InvalidSignerId")
     public val invalidSignerId: InvalidSignerIdPayload,
   ) : InvalidTxError() {
@@ -41,7 +41,7 @@ public sealed class InvalidTxError {
    *  * TX signer_id is not found in a storage
    */
   @Serializable
-  public class SignerDoesNotExist(
+  public data class SignerDoesNotExist(
     @SerialName("SignerDoesNotExist")
     public val signerDoesNotExist: SignerDoesNotExistPayload,
   ) : InvalidTxError() {
@@ -56,7 +56,7 @@ public sealed class InvalidTxError {
    *  * Transaction nonce must be strictly greater than `account[access_key].nonce`.
    */
   @Serializable
-  public class InvalidNonce(
+  public data class InvalidNonce(
     @SerialName("InvalidNonce")
     public val invalidNonce: InvalidNoncePayload,
   ) : InvalidTxError() {
@@ -81,7 +81,7 @@ public sealed class InvalidTxError {
    *  * Transaction nonce is larger than the upper bound given by the block height
    */
   @Serializable
-  public class NonceTooLarge(
+  public data class NonceTooLarge(
     @SerialName("NonceTooLarge")
     public val nonceTooLarge: NonceTooLargePayload,
   ) : InvalidTxError() {
@@ -106,7 +106,7 @@ public sealed class InvalidTxError {
    *  * TX receiver_id is not a valid AccountId
    */
   @Serializable
-  public class InvalidReceiverId(
+  public data class InvalidReceiverId(
     @SerialName("InvalidReceiverId")
     public val invalidReceiverId: InvalidReceiverIdPayload,
   ) : InvalidTxError() {
@@ -129,7 +129,7 @@ public sealed class InvalidTxError {
    *  * Account does not have enough balance to cover TX cost
    */
   @Serializable
-  public class NotEnoughBalance(
+  public data class NotEnoughBalance(
     @SerialName("NotEnoughBalance")
     public val notEnoughBalance: NotEnoughBalancePayload,
   ) : InvalidTxError() {
@@ -148,7 +148,7 @@ public sealed class InvalidTxError {
    *  * Signer account doesn't have enough balance after transaction.
    */
   @Serializable
-  public class LackBalanceForState(
+  public data class LackBalanceForState(
     @SerialName("LackBalanceForState")
     public val lackBalanceForState: LackBalanceForStatePayload,
   ) : InvalidTxError() {
@@ -195,7 +195,7 @@ public sealed class InvalidTxError {
    *  * An error occurred while validating actions of a Transaction.
    */
   @Serializable
-  public class ActionsValidation(
+  public data class ActionsValidation(
     @SerialName("ActionsValidation")
     public val actionsValidation: ActionsValidationError,
   ) : InvalidTxError()
@@ -204,7 +204,7 @@ public sealed class InvalidTxError {
    *  * The size of serialized transaction exceeded the limit.
    */
   @Serializable
-  public class TransactionSizeExceeded(
+  public data class TransactionSizeExceeded(
     @SerialName("TransactionSizeExceeded")
     public val transactionSizeExceeded: TransactionSizeExceededPayload,
   ) : InvalidTxError() {
@@ -234,7 +234,7 @@ public sealed class InvalidTxError {
   public object InvalidTransactionVersion : InvalidTxError()
 
   @Serializable
-  public class StorageError(
+  public data class StorageError(
     @SerialName("StorageError")
     public val storageError: io.github.hosseinkarami_dev.near.rpc.models.StorageError,
   ) : InvalidTxError()
@@ -244,7 +244,7 @@ public sealed class InvalidTxError {
    * transactions at the moment.
    */
   @Serializable
-  public class ShardCongested(
+  public data class ShardCongested(
     @SerialName("ShardCongested")
     public val shardCongested: ShardCongestedPayload,
   ) : InvalidTxError() {
@@ -271,7 +271,7 @@ public sealed class InvalidTxError {
    * new transaction until it can make progress again.
    */
   @Serializable
-  public class ShardStuck(
+  public data class ShardStuck(
     @SerialName("ShardStuck")
     public val shardStuck: ShardStuckPayload,
   ) : InvalidTxError() {

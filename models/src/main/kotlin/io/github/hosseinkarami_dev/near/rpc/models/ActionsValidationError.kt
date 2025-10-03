@@ -23,7 +23,7 @@ public sealed class ActionsValidationError {
    *  * The total prepaid gas (for all given actions) exceeded the limit.
    */
   @Serializable
-  public class TotalPrepaidGasExceeded(
+  public data class TotalPrepaidGasExceeded(
     @SerialName("TotalPrepaidGasExceeded")
     public val totalPrepaidGasExceeded: TotalPrepaidGasExceededPayload,
   ) : ActionsValidationError() {
@@ -40,7 +40,7 @@ public sealed class ActionsValidationError {
    *  * The number of actions exceeded the given limit.
    */
   @Serializable
-  public class TotalNumberOfActionsExceeded(
+  public data class TotalNumberOfActionsExceeded(
     @SerialName("TotalNumberOfActionsExceeded")
     public val totalNumberOfActionsExceeded: TotalNumberOfActionsExceededPayload,
   ) : ActionsValidationError() {
@@ -65,7 +65,7 @@ public sealed class ActionsValidationError {
    *  * The total number of bytes of the method names exceeded the limit in a Add Key action.
    */
   @Serializable
-  public class AddKeyMethodNamesNumberOfBytesExceeded(
+  public data class AddKeyMethodNamesNumberOfBytesExceeded(
     @SerialName("AddKeyMethodNamesNumberOfBytesExceeded")
     public val addKeyMethodNamesNumberOfBytesExceeded:
         AddKeyMethodNamesNumberOfBytesExceededPayload,
@@ -91,7 +91,7 @@ public sealed class ActionsValidationError {
    *  * The length of some method name exceeded the limit in a Add Key action.
    */
   @Serializable
-  public class AddKeyMethodNameLengthExceeded(
+  public data class AddKeyMethodNameLengthExceeded(
     @SerialName("AddKeyMethodNameLengthExceeded")
     public val addKeyMethodNameLengthExceeded: AddKeyMethodNameLengthExceededPayload,
   ) : ActionsValidationError() {
@@ -124,7 +124,7 @@ public sealed class ActionsValidationError {
    *  * Invalid account ID.
    */
   @Serializable
-  public class InvalidAccountId(
+  public data class InvalidAccountId(
     @SerialName("InvalidAccountId")
     public val invalidAccountId: InvalidAccountIdPayload,
   ) : ActionsValidationError() {
@@ -139,7 +139,7 @@ public sealed class ActionsValidationError {
    *  * The size of the contract code exceeded the limit in a DeployContract action.
    */
   @Serializable
-  public class ContractSizeExceeded(
+  public data class ContractSizeExceeded(
     @SerialName("ContractSizeExceeded")
     public val contractSizeExceeded: ContractSizeExceededPayload,
   ) : ActionsValidationError() {
@@ -164,7 +164,7 @@ public sealed class ActionsValidationError {
    *  * The length of the method name exceeded the limit in a Function Call action.
    */
   @Serializable
-  public class FunctionCallMethodNameLengthExceeded(
+  public data class FunctionCallMethodNameLengthExceeded(
     @SerialName("FunctionCallMethodNameLengthExceeded")
     public val functionCallMethodNameLengthExceeded: FunctionCallMethodNameLengthExceededPayload,
   ) : ActionsValidationError() {
@@ -189,7 +189,7 @@ public sealed class ActionsValidationError {
    *  * The length of the arguments exceeded the limit in a Function Call action.
    */
   @Serializable
-  public class FunctionCallArgumentsLengthExceeded(
+  public data class FunctionCallArgumentsLengthExceeded(
     @SerialName("FunctionCallArgumentsLengthExceeded")
     public val functionCallArgumentsLengthExceeded: FunctionCallArgumentsLengthExceededPayload,
   ) : ActionsValidationError() {
@@ -214,7 +214,7 @@ public sealed class ActionsValidationError {
    *  * An attempt to stake with a public key that is not convertible to ristretto.
    */
   @Serializable
-  public class UnsuitableStakingKey(
+  public data class UnsuitableStakingKey(
     @SerialName("UnsuitableStakingKey")
     public val unsuitableStakingKey: UnsuitableStakingKeyPayload,
   ) : ActionsValidationError() {
@@ -250,7 +250,7 @@ public sealed class ActionsValidationError {
    * that type into observable borsh serialization.
    */
   @Serializable
-  public class UnsupportedProtocolFeature(
+  public data class UnsupportedProtocolFeature(
     @SerialName("UnsupportedProtocolFeature")
     public val unsupportedProtocolFeature: UnsupportedProtocolFeaturePayload,
   ) : ActionsValidationError() {
@@ -268,7 +268,7 @@ public sealed class ActionsValidationError {
   }
 
   @Serializable
-  public class InvalidDeterministicStateInitReceiver(
+  public data class InvalidDeterministicStateInitReceiver(
     @SerialName("InvalidDeterministicStateInitReceiver")
     public val invalidDeterministicStateInitReceiver: InvalidDeterministicStateInitReceiverPayload,
   ) : ActionsValidationError() {
@@ -282,7 +282,7 @@ public sealed class ActionsValidationError {
   }
 
   @Serializable
-  public class DeterministicStateInitKeyLengthExceeded(
+  public data class DeterministicStateInitKeyLengthExceeded(
     @SerialName("DeterministicStateInitKeyLengthExceeded")
     public val deterministicStateInitKeyLengthExceeded:
         DeterministicStateInitKeyLengthExceededPayload,
@@ -305,7 +305,7 @@ public sealed class ActionsValidationError {
   }
 
   @Serializable
-  public class DeterministicStateInitValueLengthExceeded(
+  public data class DeterministicStateInitValueLengthExceeded(
     @SerialName("DeterministicStateInitValueLengthExceeded")
     public val deterministicStateInitValueLengthExceeded:
         DeterministicStateInitValueLengthExceededPayload,

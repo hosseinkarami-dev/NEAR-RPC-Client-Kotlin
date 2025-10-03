@@ -10,7 +10,7 @@ public sealed class InvalidAccessKeyError {
    *  * The access key identified by the `public_key` doesn't exist for the account
    */
   @Serializable
-  public class AccessKeyNotFound(
+  public data class AccessKeyNotFound(
     @SerialName("AccessKeyNotFound")
     public val accessKeyNotFound: AccessKeyNotFoundPayload,
   ) : InvalidAccessKeyError() {
@@ -27,7 +27,7 @@ public sealed class InvalidAccessKeyError {
    *  * Transaction `receiver_id` doesn't match the access key receiver_id
    */
   @Serializable
-  public class ReceiverMismatch(
+  public data class ReceiverMismatch(
     @SerialName("ReceiverMismatch")
     public val receiverMismatch: ReceiverMismatchPayload,
   ) : InvalidAccessKeyError() {
@@ -44,7 +44,7 @@ public sealed class InvalidAccessKeyError {
    *  * Transaction method name isn't allowed by the access key
    */
   @Serializable
-  public class MethodNameMismatch(
+  public data class MethodNameMismatch(
     @SerialName("MethodNameMismatch")
     public val methodNameMismatch: MethodNameMismatchPayload,
   ) : InvalidAccessKeyError() {
@@ -67,7 +67,7 @@ public sealed class InvalidAccessKeyError {
    *  * Access Key does not have enough allowance to cover transaction cost
    */
   @Serializable
-  public class NotEnoughAllowance(
+  public data class NotEnoughAllowance(
     @SerialName("NotEnoughAllowance")
     public val notEnoughAllowance: NotEnoughAllowancePayload,
   ) : InvalidAccessKeyError() {

@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class JsonRpcResponseForArrayOfRangeOfUint64AndRpcError {
   @Serializable
-  public class Result(
+  public data class Result(
     @SerialName("result")
     public val result: List<RangeOfUint64>,
     @SerialName("id")
@@ -18,7 +18,7 @@ public sealed class JsonRpcResponseForArrayOfRangeOfUint64AndRpcError {
   ) : JsonRpcResponseForArrayOfRangeOfUint64AndRpcError()
 
   @Serializable
-  public class Error(
+  public data class Error(
     @SerialName("error")
     public val error: RpcError,
     @SerialName("id")

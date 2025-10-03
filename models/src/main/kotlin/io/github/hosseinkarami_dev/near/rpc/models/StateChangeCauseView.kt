@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class StateChangeCauseView {
   @Serializable
-  public class NotWritableToDisk(
+  public data class NotWritableToDisk(
     /**
      *  * Possible values: not_writable_to_disk
      */
@@ -27,7 +27,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class InitialState(
+  public data class InitialState(
     /**
      *  * Possible values: initial_state
      */
@@ -45,7 +45,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class TransactionProcessing(
+  public data class TransactionProcessing(
     @SerialName("tx_hash")
     public val txHash: CryptoHash,
     /**
@@ -65,7 +65,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class ActionReceiptProcessingStarted(
+  public data class ActionReceiptProcessingStarted(
     @SerialName("receipt_hash")
     public val receiptHash: CryptoHash,
     /**
@@ -85,7 +85,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class ActionReceiptGasReward(
+  public data class ActionReceiptGasReward(
     @SerialName("receipt_hash")
     public val receiptHash: CryptoHash,
     /**
@@ -105,7 +105,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class ReceiptProcessing(
+  public data class ReceiptProcessing(
     @SerialName("receipt_hash")
     public val receiptHash: CryptoHash,
     /**
@@ -125,7 +125,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class PostponedReceipt(
+  public data class PostponedReceipt(
     @SerialName("receipt_hash")
     public val receiptHash: CryptoHash,
     /**
@@ -145,7 +145,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class UpdatedDelayedReceipts(
+  public data class UpdatedDelayedReceipts(
     /**
      *  * Possible values: updated_delayed_receipts
      */
@@ -163,7 +163,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class ValidatorAccountsUpdate(
+  public data class ValidatorAccountsUpdate(
     /**
      *  * Possible values: validator_accounts_update
      */
@@ -181,7 +181,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class Migration(
+  public data class Migration(
     /**
      *  * Possible values: migration
      */
@@ -199,7 +199,7 @@ public sealed class StateChangeCauseView {
   }
 
   @Serializable
-  public class BandwidthSchedulerStateUpdate(
+  public data class BandwidthSchedulerStateUpdate(
     /**
      *  * Possible values: bandwidth_scheduler_state_update
      */

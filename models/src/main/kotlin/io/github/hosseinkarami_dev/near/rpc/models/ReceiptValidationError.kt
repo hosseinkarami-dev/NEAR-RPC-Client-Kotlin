@@ -14,7 +14,7 @@ public sealed class ReceiptValidationError {
    *  * The `predecessor_id` of a Receipt is not valid.
    */
   @Serializable
-  public class InvalidPredecessorId(
+  public data class InvalidPredecessorId(
     @SerialName("InvalidPredecessorId")
     public val invalidPredecessorId: InvalidPredecessorIdPayload,
   ) : ReceiptValidationError() {
@@ -29,7 +29,7 @@ public sealed class ReceiptValidationError {
    *  * The `receiver_id` of a Receipt is not valid.
    */
   @Serializable
-  public class InvalidReceiverId(
+  public data class InvalidReceiverId(
     @SerialName("InvalidReceiverId")
     public val invalidReceiverId: InvalidReceiverIdPayload,
   ) : ReceiptValidationError() {
@@ -44,7 +44,7 @@ public sealed class ReceiptValidationError {
    *  * The `signer_id` of an ActionReceipt is not valid.
    */
   @Serializable
-  public class InvalidSignerId(
+  public data class InvalidSignerId(
     @SerialName("InvalidSignerId")
     public val invalidSignerId: InvalidSignerIdPayload,
   ) : ReceiptValidationError() {
@@ -59,7 +59,7 @@ public sealed class ReceiptValidationError {
    *  * The `receiver_id` of a DataReceiver within an ActionReceipt is not valid.
    */
   @Serializable
-  public class InvalidDataReceiverId(
+  public data class InvalidDataReceiverId(
     @SerialName("InvalidDataReceiverId")
     public val invalidDataReceiverId: InvalidDataReceiverIdPayload,
   ) : ReceiptValidationError() {
@@ -74,7 +74,7 @@ public sealed class ReceiptValidationError {
    *  * The length of the returned data exceeded the limit in a DataReceipt.
    */
   @Serializable
-  public class ReturnedValueLengthExceeded(
+  public data class ReturnedValueLengthExceeded(
     @SerialName("ReturnedValueLengthExceeded")
     public val returnedValueLengthExceeded: ReturnedValueLengthExceededPayload,
   ) : ReceiptValidationError() {
@@ -99,7 +99,7 @@ public sealed class ReceiptValidationError {
    *  * The number of input data dependencies exceeds the limit in an ActionReceipt.
    */
   @Serializable
-  public class NumberInputDataDependenciesExceeded(
+  public data class NumberInputDataDependenciesExceeded(
     @SerialName("NumberInputDataDependenciesExceeded")
     public val numberInputDataDependenciesExceeded: NumberInputDataDependenciesExceededPayload,
   ) : ReceiptValidationError() {
@@ -124,7 +124,7 @@ public sealed class ReceiptValidationError {
    *  * An error occurred while validating actions of an ActionReceipt.
    */
   @Serializable
-  public class ActionsValidation(
+  public data class ActionsValidation(
     @SerialName("ActionsValidation")
     public val actionsValidation: ActionsValidationError,
   ) : ReceiptValidationError()
@@ -133,7 +133,7 @@ public sealed class ReceiptValidationError {
    *  * Receipt is bigger than the limit.
    */
   @Serializable
-  public class ReceiptSizeExceeded(
+  public data class ReceiptSizeExceeded(
     @SerialName("ReceiptSizeExceeded")
     public val receiptSizeExceeded: ReceiptSizeExceededPayload,
   ) : ReceiptValidationError() {

@@ -22,7 +22,7 @@ public sealed class SyncConfig {
    * Usually as a fallback after some number of attempts to use peers.
    */
   @Serializable
-  public class ExternalStorage(
+  public data class ExternalStorage(
     @SerialName("ExternalStorage")
     public val externalStorage: ExternalStorageConfig,
   ) : SyncConfig()

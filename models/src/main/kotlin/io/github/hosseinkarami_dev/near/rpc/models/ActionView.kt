@@ -15,7 +15,7 @@ public sealed class ActionView {
   public object CreateAccount : ActionView()
 
   @Serializable
-  public class DeployContract(
+  public data class DeployContract(
     @SerialName("DeployContract")
     public val deployContract: DeployContractPayload,
   ) : ActionView() {
@@ -30,7 +30,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class FunctionCall(
+  public data class FunctionCall(
     @SerialName("FunctionCall")
     public val functionCall: FunctionCallPayload,
   ) : ActionView() {
@@ -48,7 +48,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class Transfer(
+  public data class Transfer(
     @SerialName("Transfer")
     public val transfer: TransferPayload,
   ) : ActionView() {
@@ -60,7 +60,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class Stake(
+  public data class Stake(
     @SerialName("Stake")
     public val stake: StakePayload,
   ) : ActionView() {
@@ -74,7 +74,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class AddKey(
+  public data class AddKey(
     @SerialName("AddKey")
     public val addKey: AddKeyPayload,
   ) : ActionView() {
@@ -88,7 +88,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class DeleteKey(
+  public data class DeleteKey(
     @SerialName("DeleteKey")
     public val deleteKey: DeleteKeyPayload,
   ) : ActionView() {
@@ -100,7 +100,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class DeleteAccount(
+  public data class DeleteAccount(
     @SerialName("DeleteAccount")
     public val deleteAccount: DeleteAccountPayload,
   ) : ActionView() {
@@ -112,7 +112,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class Delegate(
+  public data class Delegate(
     @SerialName("Delegate")
     public val `delegate`: DelegatePayload,
   ) : ActionView() {
@@ -126,7 +126,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class DeployGlobalContract(
+  public data class DeployGlobalContract(
     @SerialName("DeployGlobalContract")
     public val deployGlobalContract: DeployGlobalContractPayload,
   ) : ActionView() {
@@ -141,7 +141,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class DeployGlobalContractByAccountId(
+  public data class DeployGlobalContractByAccountId(
     @SerialName("DeployGlobalContractByAccountId")
     public val deployGlobalContractByAccountId: DeployGlobalContractByAccountIdPayload,
   ) : ActionView() {
@@ -156,7 +156,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class UseGlobalContract(
+  public data class UseGlobalContract(
     @SerialName("UseGlobalContract")
     public val useGlobalContract: UseGlobalContractPayload,
   ) : ActionView() {
@@ -168,7 +168,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class UseGlobalContractByAccountId(
+  public data class UseGlobalContractByAccountId(
     @SerialName("UseGlobalContractByAccountId")
     public val useGlobalContractByAccountId: UseGlobalContractByAccountIdPayload,
   ) : ActionView() {
@@ -180,7 +180,7 @@ public sealed class ActionView {
   }
 
   @Serializable
-  public class DeterministicStateInit(
+  public data class DeterministicStateInit(
     @SerialName("DeterministicStateInit")
     public val deterministicStateInit: DeterministicStateInitPayload,
   ) : ActionView() {

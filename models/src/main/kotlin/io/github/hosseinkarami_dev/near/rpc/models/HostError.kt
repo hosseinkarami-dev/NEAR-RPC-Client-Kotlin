@@ -59,7 +59,7 @@ public sealed class HostError {
    *  * Smart contract panicked
    */
   @Serializable
-  public class GuestPanic(
+  public data class GuestPanic(
     @SerialName("GuestPanic")
     public val guestPanic: GuestPanicPayload,
   ) : HostError() {
@@ -82,7 +82,7 @@ public sealed class HostError {
    *  * `promise_idx` does not correspond to existing promises
    */
   @Serializable
-  public class InvalidPromiseIndex(
+  public data class InvalidPromiseIndex(
     @SerialName("InvalidPromiseIndex")
     public val invalidPromiseIndex: InvalidPromiseIndexPayload,
   ) : HostError() {
@@ -117,7 +117,7 @@ public sealed class HostError {
    *  * Accessed invalid promise result index
    */
   @Serializable
-  public class InvalidPromiseResultIndex(
+  public data class InvalidPromiseResultIndex(
     @SerialName("InvalidPromiseResultIndex")
     public val invalidPromiseResultIndex: InvalidPromiseResultIndexPayload,
   ) : HostError() {
@@ -136,7 +136,7 @@ public sealed class HostError {
    *  * Accessed invalid register id
    */
   @Serializable
-  public class InvalidRegisterId(
+  public data class InvalidRegisterId(
     @SerialName("InvalidRegisterId")
     public val invalidRegisterId: InvalidRegisterIdPayload,
   ) : HostError() {
@@ -155,7 +155,7 @@ public sealed class HostError {
    *  * Iterator `iterator_index` was invalidated after its creation by performing a mutable operation on trie
    */
   @Serializable
-  public class IteratorWasInvalidated(
+  public data class IteratorWasInvalidated(
     @SerialName("IteratorWasInvalidated")
     public val iteratorWasInvalidated: IteratorWasInvalidatedPayload,
   ) : HostError() {
@@ -182,7 +182,7 @@ public sealed class HostError {
    *  * VM Logic returned an invalid receipt index
    */
   @Serializable
-  public class InvalidReceiptIndex(
+  public data class InvalidReceiptIndex(
     @SerialName("InvalidReceiptIndex")
     public val invalidReceiptIndex: InvalidReceiptIndexPayload,
   ) : HostError() {
@@ -201,7 +201,7 @@ public sealed class HostError {
    *  * Iterator index `iterator_index` does not exist
    */
   @Serializable
-  public class InvalidIteratorIndex(
+  public data class InvalidIteratorIndex(
     @SerialName("InvalidIteratorIndex")
     public val invalidIteratorIndex: InvalidIteratorIndexPayload,
   ) : HostError() {
@@ -244,7 +244,7 @@ public sealed class HostError {
    *  * `method_name` is not allowed in view calls
    */
   @Serializable
-  public class ProhibitedInView(
+  public data class ProhibitedInView(
     @SerialName("ProhibitedInView")
     public val prohibitedInView: ProhibitedInViewPayload,
   ) : HostError() {
@@ -259,7 +259,7 @@ public sealed class HostError {
    *  * The total number of logs will exceed the limit.
    */
   @Serializable
-  public class NumberOfLogsExceeded(
+  public data class NumberOfLogsExceeded(
     @SerialName("NumberOfLogsExceeded")
     public val numberOfLogsExceeded: NumberOfLogsExceededPayload,
   ) : HostError() {
@@ -278,7 +278,7 @@ public sealed class HostError {
    *  * The storage key length exceeded the limit.
    */
   @Serializable
-  public class KeyLengthExceeded(
+  public data class KeyLengthExceeded(
     @SerialName("KeyLengthExceeded")
     public val keyLengthExceeded: KeyLengthExceededPayload,
   ) : HostError() {
@@ -303,7 +303,7 @@ public sealed class HostError {
    *  * The storage value length exceeded the limit.
    */
   @Serializable
-  public class ValueLengthExceeded(
+  public data class ValueLengthExceeded(
     @SerialName("ValueLengthExceeded")
     public val valueLengthExceeded: ValueLengthExceededPayload,
   ) : HostError() {
@@ -328,7 +328,7 @@ public sealed class HostError {
    *  * The total log length exceeded the limit.
    */
   @Serializable
-  public class TotalLogLengthExceeded(
+  public data class TotalLogLengthExceeded(
     @SerialName("TotalLogLengthExceeded")
     public val totalLogLengthExceeded: TotalLogLengthExceededPayload,
   ) : HostError() {
@@ -353,7 +353,7 @@ public sealed class HostError {
    *  * The maximum number of promises within a FunctionCall exceeded the limit.
    */
   @Serializable
-  public class NumberPromisesExceeded(
+  public data class NumberPromisesExceeded(
     @SerialName("NumberPromisesExceeded")
     public val numberPromisesExceeded: NumberPromisesExceededPayload,
   ) : HostError() {
@@ -378,7 +378,7 @@ public sealed class HostError {
    *  * The maximum number of input data dependencies exceeded the limit.
    */
   @Serializable
-  public class NumberInputDataDependenciesExceeded(
+  public data class NumberInputDataDependenciesExceeded(
     @SerialName("NumberInputDataDependenciesExceeded")
     public val numberInputDataDependenciesExceeded: NumberInputDataDependenciesExceededPayload,
   ) : HostError() {
@@ -403,7 +403,7 @@ public sealed class HostError {
    *  * The returned value length exceeded the limit.
    */
   @Serializable
-  public class ReturnedValueLengthExceeded(
+  public data class ReturnedValueLengthExceeded(
     @SerialName("ReturnedValueLengthExceeded")
     public val returnedValueLengthExceeded: ReturnedValueLengthExceededPayload,
   ) : HostError() {
@@ -428,7 +428,7 @@ public sealed class HostError {
    *  * The contract size for DeployContract action exceeded the limit.
    */
   @Serializable
-  public class ContractSizeExceeded(
+  public data class ContractSizeExceeded(
     @SerialName("ContractSizeExceeded")
     public val contractSizeExceeded: ContractSizeExceededPayload,
   ) : HostError() {
@@ -453,7 +453,7 @@ public sealed class HostError {
    *  * The host function was deprecated.
    */
   @Serializable
-  public class Deprecated(
+  public data class Deprecated(
     @SerialName("Deprecated")
     public val deprecated: DeprecatedPayload,
   ) : HostError() {
@@ -468,7 +468,7 @@ public sealed class HostError {
    *  * General errors for ECDSA recover.
    */
   @Serializable
-  public class ECRecoverError(
+  public data class ECRecoverError(
     @SerialName("ECRecoverError")
     public val eCRecoverError: ECRecoverErrorPayload,
   ) : HostError() {
@@ -484,7 +484,7 @@ public sealed class HostError {
    * on the curve).
    */
   @Serializable
-  public class AltBn128InvalidInput(
+  public data class AltBn128InvalidInput(
     @SerialName("AltBn128InvalidInput")
     public val altBn128InvalidInput: AltBn128InvalidInputPayload,
   ) : HostError() {
@@ -500,7 +500,7 @@ public sealed class HostError {
    * derived from bytes).
    */
   @Serializable
-  public class Ed25519VerifyInvalidInput(
+  public data class Ed25519VerifyInvalidInput(
     @SerialName("Ed25519VerifyInvalidInput")
     public val ed25519VerifyInvalidInput: Ed25519VerifyInvalidInputPayload,
   ) : HostError() {

@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class AccessKeyPermission {
   @Serializable
-  public class FunctionCall(
+  public data class FunctionCall(
     @SerialName("FunctionCall")
     public val functionCall: FunctionCallPermission,
   ) : AccessKeyPermission()

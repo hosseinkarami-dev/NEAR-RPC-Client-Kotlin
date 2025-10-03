@@ -6,13 +6,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class GlobalContractIdentifier {
   @Serializable
-  public class CodeHash(
+  public data class CodeHash(
     @SerialName("CodeHash")
     public val codeHash: CryptoHash,
   ) : GlobalContractIdentifier()
 
   @Serializable
-  public class AccountId(
+  public data class AccountId(
     @SerialName("AccountId")
     public val accountId: io.github.hosseinkarami_dev.near.rpc.models.AccountId,
   ) : GlobalContractIdentifier()

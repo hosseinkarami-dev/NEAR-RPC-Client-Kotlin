@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class StateChangeKindView {
   @Serializable
-  public class AccountTouched(
+  public data class AccountTouched(
     @SerialName("account_id")
     public val accountId: AccountId,
     /**
@@ -32,7 +32,7 @@ public sealed class StateChangeKindView {
   }
 
   @Serializable
-  public class AccessKeyTouched(
+  public data class AccessKeyTouched(
     @SerialName("account_id")
     public val accountId: AccountId,
     /**
@@ -52,7 +52,7 @@ public sealed class StateChangeKindView {
   }
 
   @Serializable
-  public class DataTouched(
+  public data class DataTouched(
     @SerialName("account_id")
     public val accountId: AccountId,
     /**
@@ -72,7 +72,7 @@ public sealed class StateChangeKindView {
   }
 
   @Serializable
-  public class ContractCodeTouched(
+  public data class ContractCodeTouched(
     @SerialName("account_id")
     public val accountId: AccountId,
     /**

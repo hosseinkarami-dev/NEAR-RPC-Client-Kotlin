@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError {
   @Serializable
-  public class Result(
+  public data class Result(
     @SerialName("result")
     public val result: List<ValidatorStakeView>,
     @SerialName("id")
@@ -18,7 +18,7 @@ public sealed class JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError {
   ) : JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError()
 
   @Serializable
-  public class Error(
+  public data class Error(
     @SerialName("error")
     public val error: RpcError,
     @SerialName("id")

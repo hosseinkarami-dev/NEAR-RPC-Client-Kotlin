@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcTransactionResponse {
   @Serializable
-  public class FinalExecutionOutcomeWithReceiptView(
+  public data class FinalExecutionOutcomeWithReceiptView(
     /**
      *  * Receipts generated from the transaction
      */
@@ -42,7 +42,7 @@ public sealed class RpcTransactionResponse {
   ) : RpcTransactionResponse()
 
   @Serializable
-  public class FinalExecutionOutcomeView(
+  public data class FinalExecutionOutcomeView(
     /**
      *  * The execution outcome of receipts.
      */

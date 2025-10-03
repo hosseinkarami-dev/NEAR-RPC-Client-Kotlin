@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class StateChangeWithCauseView {
   @Serializable
-  public class AccountUpdate(
+  public data class AccountUpdate(
     /**
      *  * A view of the account
      */
@@ -66,7 +66,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class AccountDeletion(
+  public data class AccountDeletion(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -94,7 +94,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class AccessKeyUpdate(
+  public data class AccessKeyUpdate(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -126,7 +126,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class AccessKeyDeletion(
+  public data class AccessKeyDeletion(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -156,7 +156,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class GasKeyUpdate(
+  public data class GasKeyUpdate(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -188,7 +188,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class GasKeyNonceUpdate(
+  public data class GasKeyNonceUpdate(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -230,7 +230,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class GasKeyDeletion(
+  public data class GasKeyDeletion(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -260,7 +260,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class DataUpdate(
+  public data class DataUpdate(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -292,7 +292,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class DataDeletion(
+  public data class DataDeletion(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -322,7 +322,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class ContractCodeUpdate(
+  public data class ContractCodeUpdate(
     @SerialName("change")
     public val change: ChangePayload,
     /**
@@ -352,7 +352,7 @@ public sealed class StateChangeWithCauseView {
   }
 
   @Serializable
-  public class ContractCodeDeletion(
+  public data class ContractCodeDeletion(
     @SerialName("change")
     public val change: ChangePayload,
     /**

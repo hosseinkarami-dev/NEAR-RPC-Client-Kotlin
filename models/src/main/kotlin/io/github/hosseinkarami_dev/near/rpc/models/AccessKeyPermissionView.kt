@@ -18,7 +18,7 @@ public sealed class AccessKeyPermissionView {
   public object FullAccess : AccessKeyPermissionView()
 
   @Serializable
-  public class FunctionCall(
+  public data class FunctionCall(
     @SerialName("FunctionCall")
     public val functionCall: FunctionCallPayload,
   ) : AccessKeyPermissionView() {

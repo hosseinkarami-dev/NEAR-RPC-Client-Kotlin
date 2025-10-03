@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcTransactionStatusRequest {
   @Serializable
-  public class SignedTxBase64(
+  public data class SignedTxBase64(
     @SerialName("signed_tx_base64")
     public val signedTxBase64: SignedTransaction,
     @SerialName("wait_until")
@@ -14,7 +14,7 @@ public sealed class RpcTransactionStatusRequest {
   ) : RpcTransactionStatusRequest()
 
   @Serializable
-  public class SenderAccountId(
+  public data class SenderAccountId(
     @SerialName("sender_account_id")
     public val senderAccountId: AccountId,
     @SerialName("tx_hash")

@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class GlobalContractIdentifierView {
   @Serializable
-  public class CryptoHash(
+  public data class CryptoHash(
     public val `value`: io.github.hosseinkarami_dev.near.rpc.models.CryptoHash,
   ) : GlobalContractIdentifierView()
 
   @Serializable
-  public class AccountId(
+  public data class AccountId(
     public val `value`: io.github.hosseinkarami_dev.near.rpc.models.AccountId,
   ) : GlobalContractIdentifierView()
 }

@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcStateChangesInBlockByTypeRequest {
   @Serializable
-  public class AccountChangesByBlockId(
+  public data class AccountChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_ids")
@@ -35,7 +35,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class SingleAccessKeyChangesByBlockId(
+  public data class SingleAccessKeyChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     /**
@@ -57,7 +57,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class SingleGasKeyChangesByBlockId(
+  public data class SingleGasKeyChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     /**
@@ -79,7 +79,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AllAccessKeyChangesByBlockId(
+  public data class AllAccessKeyChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_ids")
@@ -101,7 +101,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AllGasKeyChangesByBlockId(
+  public data class AllGasKeyChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_ids")
@@ -123,7 +123,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class ContractCodeChangesByBlockId(
+  public data class ContractCodeChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_ids")
@@ -145,7 +145,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class DataChangesByBlockId(
+  public data class DataChangesByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_ids")
@@ -169,7 +169,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AccountChangesByFinality(
+  public data class AccountChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_ids")
@@ -191,7 +191,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class SingleAccessKeyChangesByFinality(
+  public data class SingleAccessKeyChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     /**
@@ -213,7 +213,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class SingleGasKeyChangesByFinality(
+  public data class SingleGasKeyChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     /**
@@ -235,7 +235,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AllAccessKeyChangesByFinality(
+  public data class AllAccessKeyChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_ids")
@@ -257,7 +257,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AllGasKeyChangesByFinality(
+  public data class AllGasKeyChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_ids")
@@ -279,7 +279,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class ContractCodeChangesByFinality(
+  public data class ContractCodeChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_ids")
@@ -301,7 +301,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class DataChangesByFinality(
+  public data class DataChangesByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_ids")
@@ -325,7 +325,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AccountChangesBySyncCheckpoint(
+  public data class AccountChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_ids")
@@ -347,7 +347,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class SingleAccessKeyChangesBySyncCheckpoint(
+  public data class SingleAccessKeyChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     /**
@@ -369,7 +369,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class SingleGasKeyChangesBySyncCheckpoint(
+  public data class SingleGasKeyChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     /**
@@ -391,7 +391,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AllAccessKeyChangesBySyncCheckpoint(
+  public data class AllAccessKeyChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_ids")
@@ -413,7 +413,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class AllGasKeyChangesBySyncCheckpoint(
+  public data class AllGasKeyChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_ids")
@@ -435,7 +435,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class ContractCodeChangesBySyncCheckpoint(
+  public data class ContractCodeChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_ids")
@@ -457,7 +457,7 @@ public sealed class RpcStateChangesInBlockByTypeRequest {
   }
 
   @Serializable
-  public class DataChangesBySyncCheckpoint(
+  public data class DataChangesBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_ids")

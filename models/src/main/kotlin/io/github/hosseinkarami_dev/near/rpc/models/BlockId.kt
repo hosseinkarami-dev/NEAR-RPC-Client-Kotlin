@@ -12,12 +12,12 @@ public sealed class BlockId {
    *  * Format: uint64
    */
   @Serializable
-  public class BlockHeight(
+  public data class BlockHeight(
     public val `value`: Long,
   ) : BlockId()
 
   @Serializable
-  public class CryptoHash(
+  public data class CryptoHash(
     public val `value`: io.github.hosseinkarami_dev.near.rpc.models.CryptoHash,
   ) : BlockId()
 }

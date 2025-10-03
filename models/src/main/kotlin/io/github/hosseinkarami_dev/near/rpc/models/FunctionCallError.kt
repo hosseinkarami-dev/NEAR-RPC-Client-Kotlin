@@ -30,7 +30,7 @@ public sealed class FunctionCallError {
    *  * Wasm compilation error
    */
   @Serializable
-  public class CompilationError(
+  public data class CompilationError(
     @SerialName("CompilationError")
     public val compilationError: io.github.hosseinkarami_dev.near.rpc.models.CompilationError,
   ) : FunctionCallError()
@@ -41,7 +41,7 @@ public sealed class FunctionCallError {
    * Note: this is only to deserialize old data, use execution error for new data
    */
   @Serializable
-  public class LinkError(
+  public data class LinkError(
     @SerialName("LinkError")
     public val linkError: LinkErrorPayload,
   ) : FunctionCallError() {
@@ -56,7 +56,7 @@ public sealed class FunctionCallError {
    *  * Import/export resolve error
    */
   @Serializable
-  public class MethodResolveError(
+  public data class MethodResolveError(
     @SerialName("MethodResolveError")
     public val methodResolveError: io.github.hosseinkarami_dev.near.rpc.models.MethodResolveError,
   ) : FunctionCallError()
@@ -67,7 +67,7 @@ public sealed class FunctionCallError {
    * Note: this is only to deserialize old data, use execution error for new data
    */
   @Serializable
-  public class WasmTrap(
+  public data class WasmTrap(
     @SerialName("WasmTrap")
     public val wasmTrap: io.github.hosseinkarami_dev.near.rpc.models.WasmTrap,
   ) : FunctionCallError()
@@ -76,13 +76,13 @@ public sealed class FunctionCallError {
    *  * Note: this is only to deserialize old data, use execution error for new data
    */
   @Serializable
-  public class HostError(
+  public data class HostError(
     @SerialName("HostError")
     public val hostError: io.github.hosseinkarami_dev.near.rpc.models.HostError,
   ) : FunctionCallError()
 
   @Serializable
-  public class ExecutionError(
+  public data class ExecutionError(
     @SerialName("ExecutionError")
     public val executionError: String,
   ) : FunctionCallError()

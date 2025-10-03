@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class ReceiptEnumView {
   @Serializable
-  public class Action(
+  public data class Action(
     @SerialName("Action")
     public val action: ActionPayload,
   ) : ReceiptEnumView() {
@@ -33,7 +33,7 @@ public sealed class ReceiptEnumView {
   }
 
   @Serializable
-  public class Data(
+  public data class Data(
     @SerialName("Data")
     public val `data`: DataPayload,
   ) : ReceiptEnumView() {
@@ -52,7 +52,7 @@ public sealed class ReceiptEnumView {
   }
 
   @Serializable
-  public class GlobalContractDistribution(
+  public data class GlobalContractDistribution(
     @SerialName("GlobalContractDistribution")
     public val globalContractDistribution: GlobalContractDistributionPayload,
   ) : ReceiptEnumView() {

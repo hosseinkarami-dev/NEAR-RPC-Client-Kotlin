@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public sealed class RpcQueryRequest {
   @Serializable
-  public class ViewAccountByBlockId(
+  public data class ViewAccountByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -30,7 +30,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewCodeByBlockId(
+  public data class ViewCodeByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -52,7 +52,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewStateByBlockId(
+  public data class ViewStateByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -78,7 +78,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccessKeyByBlockId(
+  public data class ViewAccessKeyByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -102,7 +102,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccessKeyListByBlockId(
+  public data class ViewAccessKeyListByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -124,7 +124,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class CallFunctionByBlockId(
+  public data class CallFunctionByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -150,7 +150,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewGlobalContractCodeByBlockId(
+  public data class ViewGlobalContractCodeByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("code_hash")
@@ -172,7 +172,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewGlobalContractCodeByAccountIdByBlockId(
+  public data class ViewGlobalContractCodeByAccountIdByBlockId(
     @SerialName("block_id")
     public val blockId: BlockId,
     @SerialName("account_id")
@@ -194,7 +194,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccountByFinality(
+  public data class ViewAccountByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -216,7 +216,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewCodeByFinality(
+  public data class ViewCodeByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -238,7 +238,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewStateByFinality(
+  public data class ViewStateByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -264,7 +264,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccessKeyByFinality(
+  public data class ViewAccessKeyByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -288,7 +288,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccessKeyListByFinality(
+  public data class ViewAccessKeyListByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -310,7 +310,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class CallFunctionByFinality(
+  public data class CallFunctionByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -336,7 +336,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewGlobalContractCodeByFinality(
+  public data class ViewGlobalContractCodeByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("code_hash")
@@ -358,7 +358,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewGlobalContractCodeByAccountIdByFinality(
+  public data class ViewGlobalContractCodeByAccountIdByFinality(
     @SerialName("finality")
     public val finality: Finality,
     @SerialName("account_id")
@@ -380,7 +380,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccountBySyncCheckpoint(
+  public data class ViewAccountBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")
@@ -402,7 +402,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewCodeBySyncCheckpoint(
+  public data class ViewCodeBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")
@@ -424,7 +424,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewStateBySyncCheckpoint(
+  public data class ViewStateBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")
@@ -450,7 +450,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccessKeyBySyncCheckpoint(
+  public data class ViewAccessKeyBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")
@@ -474,7 +474,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewAccessKeyListBySyncCheckpoint(
+  public data class ViewAccessKeyListBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")
@@ -496,7 +496,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class CallFunctionBySyncCheckpoint(
+  public data class CallFunctionBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")
@@ -522,7 +522,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewGlobalContractCodeBySyncCheckpoint(
+  public data class ViewGlobalContractCodeBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("code_hash")
@@ -544,7 +544,7 @@ public sealed class RpcQueryRequest {
   }
 
   @Serializable
-  public class ViewGlobalContractCodeByAccountIdBySyncCheckpoint(
+  public data class ViewGlobalContractCodeByAccountIdBySyncCheckpoint(
     @SerialName("sync_checkpoint")
     public val syncCheckpoint: SyncCheckpoint,
     @SerialName("account_id")

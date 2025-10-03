@@ -22,7 +22,7 @@ public sealed class StorageError {
    *  * Requested trie value by its hash which is missing in storage.
    */
   @Serializable
-  public class MissingTrieValue(
+  public data class MissingTrieValue(
     @SerialName("MissingTrieValue")
     public val missingTrieValue: io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValue,
   ) : StorageError()
@@ -45,7 +45,7 @@ public sealed class StorageError {
    * We can check if db is corrupted by verifying everything in the state trie.
    */
   @Serializable
-  public class StorageInconsistentState(
+  public data class StorageInconsistentState(
     @SerialName("StorageInconsistentState")
     public val storageInconsistentState: String,
   ) : StorageError()
@@ -56,7 +56,7 @@ public sealed class StorageError {
    * must resume normally.
    */
   @Serializable
-  public class FlatStorageBlockNotSupported(
+  public data class FlatStorageBlockNotSupported(
     @SerialName("FlatStorageBlockNotSupported")
     public val flatStorageBlockNotSupported: String,
   ) : StorageError()
@@ -65,7 +65,7 @@ public sealed class StorageError {
    *  * In-memory trie could not be loaded for some reason.
    */
   @Serializable
-  public class MemTrieLoadingError(
+  public data class MemTrieLoadingError(
     @SerialName("MemTrieLoadingError")
     public val memTrieLoadingError: String,
   ) : StorageError()

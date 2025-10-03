@@ -295,7 +295,9 @@ class ModelBuilder(
             val subclassName = toPascalCase(variantTitle)
 
 
-            val subBuilder = TypeSpec.classBuilder(subclassName).addAnnotation(Serializable::class)
+            val subBuilder = TypeSpec.classBuilder(subclassName)
+                .addModifiers(KModifier.DATA)
+                .addAnnotation(Serializable::class)
                 .superclass(ClassName(fileBuilder.build().packageName, className))
             v.generateKdoc()?.let { subBuilder.addKdoc(it) }
 
@@ -490,6 +492,7 @@ class ModelBuilder(
                 // Use variantTitle (already computed above) as the base for the subclass name
                 val variantSimpleName = toPascalCase(variantTitle)
                 val specificSubBuilder = TypeSpec.classBuilder("${variantSimpleName}")
+                    .addModifiers(KModifier.DATA)
                     .addAnnotation(Serializable::class)
                     .superclass(ClassName(fileBuilder.build().packageName, className))
                 v.generateKdoc()?.let { specificSubBuilder.addKdoc(it) }

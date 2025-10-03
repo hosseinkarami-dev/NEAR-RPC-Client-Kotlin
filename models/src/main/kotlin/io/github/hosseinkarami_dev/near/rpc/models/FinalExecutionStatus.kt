@@ -26,7 +26,7 @@ public sealed class FinalExecutionStatus {
    *  * The execution has failed with the given error.
    */
   @Serializable
-  public class Failure(
+  public data class Failure(
     @SerialName("Failure")
     public val failure: TxExecutionError,
   ) : FinalExecutionStatus()
@@ -35,7 +35,7 @@ public sealed class FinalExecutionStatus {
    *  * The execution has succeeded and returned some value or an empty vec encoded in base64.
    */
   @Serializable
-  public class SuccessValue(
+  public data class SuccessValue(
     @SerialName("SuccessValue")
     public val successValue: String,
   ) : FinalExecutionStatus()

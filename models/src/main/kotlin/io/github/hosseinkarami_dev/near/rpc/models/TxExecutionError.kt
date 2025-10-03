@@ -12,7 +12,7 @@ public sealed class TxExecutionError {
    *  * An error happened during Action execution
    */
   @Serializable
-  public class ActionError(
+  public data class ActionError(
     @SerialName("ActionError")
     public val actionError: io.github.hosseinkarami_dev.near.rpc.models.ActionError,
   ) : TxExecutionError()
@@ -21,7 +21,7 @@ public sealed class TxExecutionError {
    *  * An error happened during Transaction execution
    */
   @Serializable
-  public class InvalidTxError(
+  public data class InvalidTxError(
     @SerialName("InvalidTxError")
     public val invalidTxError: io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError,
   ) : TxExecutionError()

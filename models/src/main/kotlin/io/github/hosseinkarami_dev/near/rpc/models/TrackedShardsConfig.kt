@@ -22,7 +22,7 @@ public sealed class TrackedShardsConfig {
    *  * Tracks arbitrary shards.
    */
   @Serializable
-  public class Shards(
+  public data class Shards(
     @SerialName("Shards")
     public val shards: List<ShardUId>,
   ) : TrackedShardsConfig()
@@ -39,7 +39,7 @@ public sealed class TrackedShardsConfig {
    *  * Tracks shards that are assigned to given validator account.
    */
   @Serializable
-  public class ShadowValidator(
+  public data class ShadowValidator(
     @SerialName("ShadowValidator")
     public val shadowValidator: AccountId,
   ) : TrackedShardsConfig()
@@ -49,7 +49,7 @@ public sealed class TrackedShardsConfig {
    * Used to simulate the behavior of chunk only producers without staking tokens.
    */
   @Serializable
-  public class Schedule(
+  public data class Schedule(
     @SerialName("Schedule")
     public val schedule: List<List<ShardId>>,
   ) : TrackedShardsConfig()
@@ -58,7 +58,7 @@ public sealed class TrackedShardsConfig {
    *  * Tracks shards that contain one of the given account.
    */
   @Serializable
-  public class Accounts(
+  public data class Accounts(
     @SerialName("Accounts")
     public val accounts: List<AccountId>,
   ) : TrackedShardsConfig()
