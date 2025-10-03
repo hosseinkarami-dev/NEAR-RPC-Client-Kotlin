@@ -42,9 +42,9 @@ or remote URL)\
 
 ## 🛠️ Output Structure
 
-After running the generator: - `:models` → contains all `data class`es
-and enums for NEAR RPC - `:client` → contains the `NearClient`
-implementation and RPC call functions
+After running the generator: 
+- `:models` → contains all `data classes` and enums for NEAR RPC 
+- `:client` → contains the `NearClient` implementation and RPC call functions
 
 If you use `--models-out` or `--client-out`, the generated files will be
 placed in those custom directories.
@@ -53,12 +53,7 @@ placed in those custom directories.
 
 ## 📖 Development Notes
 
--   The generator typically uses [OpenAPI
-    Generator](https://openapi-generator.tech/) or a custom
-    implementation
--   To customize the output, edit the templates or configuration
--   Before publishing a release, ensure the generator has been executed
-    with the latest OpenAPI spec
+-   The generator typically uses a custom implementation
 
 ------------------------------------------------------------------------
 
