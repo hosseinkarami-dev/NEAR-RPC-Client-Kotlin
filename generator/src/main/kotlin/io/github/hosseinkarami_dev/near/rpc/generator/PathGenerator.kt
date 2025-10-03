@@ -1,5 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
 
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -16,6 +17,7 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
+import java.util.Locale
 import kotlin.collections.iterator
 
 // --- Assumes OpenApiSpec, Operation, PathItem, Schema classes exist in your generator infra
@@ -109,7 +111,7 @@ object PathGenerator {
             val reqWrapperClassName = toClassNameOrBestGuess(reqWrapperStr)
 
             val resultTypeStr = extractResultInnerTypeForOperation(op, spec, modelsPackage)
-                ?: guessResultTypeFromResponseWrapperName(respWrapperStr, modelsPackage)
+                ?: guessResultTypeFromResponseWrapperName(respWrapperStr, modelsPackage, spec)
 
             val resultTypeName = resultTypeStr?.let { toTypeName(it) } ?: ClassName("kotlinx.serialization.json", "JsonElement")
 
@@ -162,6 +164,40 @@ object PathGenerator {
                 paramDesc,
                 rpcResponseClass.parameterizedBy(resultTypeName)
             )
+
+            // --- DEPRECATION HANDLING ---
+            val containsDeprecatedTag = (summary?.contains("[Deprecated]") == true) || (description?.contains("[Deprecated]") == true)
+            val isDeprecated = containsDeprecatedTag
+
+            if (isDeprecated) {
+                // build message
+                val depMessage = buildString {
+                    if (summary != null) append(summary)
+                    else append(description)
+                    append(" — deprecated.")
+                }
+
+                // try extract replacement: "Consider using <name> instead."
+                val replacerRegex = Regex("Consider using ([a-zA-Z0-9_]+) instead", RegexOption.IGNORE_CASE)
+                val replacerSource = (description ?: summary ?: "")
+                val replaceExpr = replacerRegex.find(replacerSource)?.groups?.get(1)?.value?.let { raw ->
+                    // map raw to camelCase method name; append (params) to be a helpful ReplaceWith
+                    val replacementMethod = raw.camelCase()
+                    "${replacementMethod}(params)"
+                }
+
+                val depBuilder = AnnotationSpec.builder(Deprecated::class)
+                    .addMember("message = %S", depMessage)
+                    .apply {
+                        if (replaceExpr != null) {
+                            addMember("replaceWith = %L", CodeBlock.of("ReplaceWith(%S)", replaceExpr))
+                        }
+                    }
+                    .addMember("level = %T.%L", ClassName("kotlin", "DeprecationLevel"), "WARNING")
+                    .build()
+
+                funBuilder.addAnnotation(depBuilder)
+            }
 
             // Build CodeBlock: create request wrapper, post, read body, decode envelope(result serializer), handle errors
             val methodEnumClass = ClassName(reqWrapperClassName.packageName, reqWrapperClassName.simpleName, "Method")
@@ -320,11 +356,11 @@ object PathGenerator {
         val ref = obj["\$ref"]?.jsonPrimitive?.contentOrNull
         if (ref != null) {
             val name = ref.substringAfterLast('/')
-            return "$modelsPackage.${toPascalCase(name)}"
+            return "$modelsPackage.${name.pascalCase()}"
         }
         val title = obj["title"]?.jsonPrimitive?.contentOrNull
         if (title != null) {
-            return "$modelsPackage.${toPascalCase(title)}"
+            return "$modelsPackage.${title.pascalCase()}"
         }
         val type = obj["type"]?.jsonPrimitive?.contentOrNull
         when (type) {
@@ -360,20 +396,33 @@ object PathGenerator {
 
         val paramsSchema = wrapperSchema.properties?.get("params") ?: return null
 
+        // If params is a $ref, resolve referenced schema first (so we can detect enum:[null])
         paramsSchema.ref?.let { pRef ->
             val pName = pRef.substringAfterLast('/')
-            return "$modelsPackage.${toPascalCase(pName)}"
+            val pSchema = spec.components.schemas[pName]
+            // If the referenced schema is literally enum:[null] or nullable-only -> treat as Unit
+            if (pSchema != null) {
+                if ((pSchema.enum != null && pSchema.enum.size == 1 && pSchema.enum[0] == null) || pSchema.nullable == true) {
+                    return "Unit"
+                }
+                // Otherwise, return the referenced model class
+                return "$modelsPackage.${pName.pascalCase()}"
+            }
+            // fallback: if we couldn't find the referenced schema definition, still return a model ref
+            return "$modelsPackage.${pName.pascalCase()}"
         }
 
+        // If params is inline array
         if (paramsSchema.type == "array") {
             val item = paramsSchema.items
             if (item?.ref != null) {
                 val itemName = item.ref.substringAfterLast('/')
-                return "List<$modelsPackage.${toPascalCase(itemName)}>"
+                return "List<$modelsPackage.${itemName.pascalCase()}>"
             }
             return "List<JsonElement>"
         }
 
+        // primitives/object fallback
         when (paramsSchema.type) {
             "string" -> return "String"
             "integer" -> return "Int"
@@ -400,9 +449,7 @@ object PathGenerator {
 
         val paramsSchema = wrapperSchema.properties?.get("params") ?: return true
 
-        if (paramsSchema.nullable == true) return true
-        if (paramsSchema.enum != null && paramsSchema.enum.size == 1 && paramsSchema.enum[0] == null) return true
-
+        // If params is a $ref, inspect the referenced schema
         paramsSchema.ref?.let { pRef ->
             val pName = pRef.substringAfterLast('/')
             val pSchema = spec.components.schemas[pName] ?: return false
@@ -410,6 +457,9 @@ object PathGenerator {
             if (pSchema.enum != null && pSchema.enum.size == 1 && pSchema.enum[0] == null) return true
             return false
         }
+
+        if (paramsSchema.nullable == true) return true
+        if (paramsSchema.enum != null && paramsSchema.enum.size == 1 && paramsSchema.enum[0] == null) return true
 
         return false
     }
@@ -426,7 +476,7 @@ object PathGenerator {
 
         val wrapperRef = schema.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull ?: return null
         val wrapperName = wrapperRef.substringAfterLast('/')
-        val wrapperSchema = spec.components.schemas[wrapperName] ?: return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage)
+        val wrapperSchema = spec.components.schemas[wrapperName] ?: return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage, spec)
 
         // helper lambda to inspect a subschema for properties.result
         fun inspectForResult(schemaObj: Schema?): String? {
@@ -436,7 +486,7 @@ object PathGenerator {
             // case: result is a $ref to some schema
             resultProp.ref?.let { ref ->
                 val innerName = ref.substringAfterLast('/')
-                return "$modelsPackage.${toPascalCase(innerName)}"
+                return "$modelsPackage.${innerName.pascalCase()}"
             }
 
             if (resultProp.anyOf != null) {
@@ -468,7 +518,7 @@ object PathGenerator {
                 val items = resultProp.items
                 if (items?.ref != null) {
                     val itemName = items.ref.substringAfterLast('/')
-                    return "List<$modelsPackage.${toPascalCase(itemName)}>"
+                    return "List<$modelsPackage.${itemName.pascalCase()}>"
                 }
                 return "List<JsonElement>"
             }
@@ -500,27 +550,78 @@ object PathGenerator {
         }
 
         // fallback to regex-based guess
-        return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage)
+        return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage, spec)
     }
 
+    private fun guessResultTypeFromResponseWrapperName(
+        respWrapper: String,
+        modelsPackage: String,
+        spec: OpenApiSpec
+    ): String? {
+        val wrapperName = when {
+            respWrapper.contains("#/components/schemas/") -> respWrapper.substringAfterLast('/')
+            respWrapper.contains('.') -> respWrapper.substringAfterLast('.')
+            else -> respWrapper
+        }
 
-    // utilities: camelCase, pascalCase, constantName helpers
-    private fun String.camelCase(): String {
-        val parts = this.split(Regex("[^A-Za-z0-9]+")).filter { it.isNotEmpty() }
-        if (parts.isEmpty()) return this
-        return parts.first().lowercase() + parts.drop(1).joinToString("") { it.replaceFirstChar { c -> c.uppercase() } }
-    }
+        // try to find the wrapper schema in components
+        val wrapperSchema = spec.components.schemas[wrapperName]
 
-    private fun String.pascalCase(): String {
-        return this.split(Regex("[^A-Za-z0-9]+")).joinToString("") { it.replaceFirstChar { c -> c.uppercase() } }
-    }
+        fun extractFromSchema(schema: Schema?): String? {
+            if (schema == null) return null
 
-    private fun String.constantName(): String {
-        return this.replace(Regex("[^A-Za-z0-9]+"), "_").uppercase()
-    }
+            // direct result property with $ref
+            val resultProp = schema.properties?.get("result")
+            resultProp?.ref?.let { ref ->
+                val inner = ref.substringAfterLast('/')
+                return "$modelsPackage.${inner.pascalCase()}"
+            }
 
-    private fun guessResultTypeFromResponseWrapperName(respWrapper: String, modelsPackage: String): String? {
-        val name = respWrapper.substringAfterLast('.')
+            // result as array of $ref
+            if (resultProp?.type == "array" && resultProp.items?.ref != null) {
+                val item = resultProp.items.ref.substringAfterLast('/')
+                return "List<$modelsPackage.${item.pascalCase()}>"
+            }
+
+            // result could be primitive/object -> map to simple types
+            resultProp?.type?.let { t ->
+                return when (t) {
+                    "string" -> "String"
+                    "integer" -> "Int"
+                    "number" -> "Double"
+                    "boolean" -> "Boolean"
+                    "object" -> "kotlinx.serialization.json.JsonElement"
+                    else -> null
+                }
+            }
+
+            // if this schema itself uses oneOf/anyOf/allOf, inspect variants
+            val variants = mutableListOf<Schema?>()
+            schema.oneOf?.let { variants.addAll(it) }
+            schema.anyOf?.let { variants.addAll(it) }
+            schema.allOf?.let { variants.addAll(it) }
+
+            for (variant in variants) {
+                // variant might be a $ref wrapper in your parsed model (variant.ref), or inline schema object
+                variant?.ref?.let { vref ->
+                    // variant is a $ref to another schema name
+                    val vname = vref.substringAfterLast('/')
+                    val vschema = spec.components.schemas[vname]
+                    extractFromSchema(vschema)?.let { return it }
+                } ?: run {
+                    // inline schema - inspect it directly
+                    extractFromSchema(variant)?.let { return it }
+                }
+            }
+
+            return null
+        }
+
+        // 1) try direct extraction from the wrapper schema (preferred & robust)
+        extractFromSchema(wrapperSchema)?.let { return it }
+
+        // 2) if not found, fallback to the old name-based heuristics (keep backwards-compat)
+        val name = wrapperName
         val prefix = "JsonRpcResponse_for_"
         val suffix = "_and_RpcError"
         if (name.startsWith(prefix) && name.endsWith(suffix)) {
@@ -533,6 +634,7 @@ object PathGenerator {
             val innerRaw = altMatch.groupValues[1]
             return "$modelsPackage.${innerRaw.pascalCase()}"
         }
+
         return null
     }
 }

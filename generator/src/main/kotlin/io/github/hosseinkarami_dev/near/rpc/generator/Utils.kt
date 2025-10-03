@@ -8,6 +8,10 @@ fun toCamelCase(input: String): String {
     return pascal.replaceFirstChar { it.lowercase(Locale.getDefault()) }
 }
 
+fun String.pascalCase() = toPascalCase(this)
+fun String.camelCase() = toCamelCase(this)
+fun String.constantName() = toConstantName(this)
+
 fun toPascalCase(input: String): String {
     // normalize separators: any non-alnum -> underscore
     val cleaned = input.replace(Regex("[^A-Za-z0-9]+"), "_")
@@ -42,7 +46,7 @@ fun toPascalCase(input: String): String {
     return transformed.joinToString("")
 }
 
-fun toEnumConstantName(value: String): String {
+fun toConstantName(value: String): String {
     return when {
         //PascalCase or CamelCase
         value.matches(Regex("^[A-Z][a-zA-Z0-9]*$")) || value.matches(Regex("^[a-z][a-zA-Z0-9]*$")) -> {

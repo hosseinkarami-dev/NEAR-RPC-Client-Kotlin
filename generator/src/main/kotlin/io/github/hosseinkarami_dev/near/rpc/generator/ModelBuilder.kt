@@ -22,16 +22,6 @@ import io.github.hosseinkarami_dev.near.rpc.generator.SchemaHelper.isPrimitiveTy
 import java.io.File
 import kotlin.collections.forEach
 
-/**
- * All schema -> TypeName resolution is handled inline by resolveTypeForSchema.
- *
- * This ModelBuilder was augmented to attach KDoc to generated types and properties
- * where the source Schema contains descriptive metadata. It uses the helper:
- *
- *     fun Schema.generateKdoc(): CodeBlock?
- *
- * found elsewhere in the project (should be accessible from the same package).
- */
 class ModelBuilder(
     private val spec: OpenApiSpec,
     private val packageName: String,
@@ -101,7 +91,7 @@ class ModelBuilder(
             topSchema.generateKdoc()?.let { enumBuilder.addKdoc(it) }
             val used = mutableMapOf<String, Int>()
             topSchema.enum.filterNotNull().forEach { lit ->
-                var constName = toEnumConstantName(lit)
+                var constName = toConstantName(lit)
                 val c = used.getOrDefault(constName, 0)
                 if (c > 0) constName = "${constName}_$c"
                 used[constName] = c + 1
@@ -927,7 +917,7 @@ class ModelBuilder(
             ctxSchema.generateKdoc()?.let { enumBuilder.addKdoc(it) }
             val used = mutableMapOf<String, Int>()
             nonNullLits.forEach { lit ->
-                var constName = toEnumConstantName(lit)
+                var constName = toConstantName(lit)
                 val c = used.getOrDefault(constName, 0)
                 if (c > 0) constName = "${constName}_$c"
                 used[constName] = c + 1

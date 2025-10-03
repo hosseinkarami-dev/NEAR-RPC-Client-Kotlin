@@ -2,7 +2,6 @@ package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
 import io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig
-import io.github.hosseinkarami_dev.near.rpc.models.GenesisConfigRequest
 import io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlock
 import io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlockEffects
 import io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxAsync
@@ -39,13 +38,11 @@ import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcChunkRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcChunkResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcHealthRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcHealthResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofResponse
@@ -54,7 +51,6 @@ import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofR
 import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse
@@ -69,7 +65,6 @@ import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeR
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest
@@ -84,6 +79,8 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import java.util.UUID
+import kotlin.Deprecated
+import kotlin.DeprecationLevel
 import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.builtins.ListSerializer
@@ -105,6 +102,11 @@ public class NearClient(
    * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest` (required).
    * @return Response: `RpcResponse<RpcStateChangesInBlockResponse>`.
    */
+  @Deprecated(
+    message = "[Deprecated] Returns changes for a given account, contract or contract code for given block height or hash. Consider using changes instead. — deprecated.",
+    replaceWith = ReplaceWith("changes(params)"),
+    level = DeprecationLevel.WARNING,
+  )
   public suspend fun experimentalChanges(params: RpcStateChangesInBlockByTypeRequest): RpcResponse<RpcStateChangesInBlockResponse> {
     val request = JsonRpcRequestForExperimentalChanges(
       id = nextId(),
@@ -143,6 +145,11 @@ public class NearClient(
    * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest` (required).
    * @return Response: `RpcResponse<RpcStateChangesInBlockByTypeResponse>`.
    */
+  @Deprecated(
+    message = "[Deprecated] Returns changes in block for given block height or hash over all transactions for all the types. Includes changes like account_touched, access_key_touched, data_touched, contract_code_touched. Consider using block_effects instead — deprecated.",
+    replaceWith = ReplaceWith("blockEffects(params)"),
+    level = DeprecationLevel.WARNING,
+  )
   public suspend fun experimentalChangesInBlock(params: RpcStateChangesInBlockRequest): RpcResponse<RpcStateChangesInBlockByTypeResponse> {
     val request = JsonRpcRequestForExperimentalChangesInBlock(
       id = nextId(),
@@ -216,15 +223,19 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_genesis_config (method: post) — operationId: EXPERIMENTAL_genesis_config
    *
-   * @param params Request parameters (optional): `io.github.hosseinkarami_dev.near.rpc.models.GenesisConfigRequest` — pass `null` or omit to send no params.
+   * @param params This method does not require params; `params` will be sent as `null` in the JSON-RPC request.
    * @return Response: `RpcResponse<GenesisConfig>`.
    */
-  public suspend fun experimentalGenesisConfig(params: GenesisConfigRequest? = null): RpcResponse<GenesisConfig> {
+  @Deprecated(
+    message = "[Deprecated] Get initial state and parameters for the genesis block. Consider genesis_config instead. — deprecated.",
+    level = DeprecationLevel.WARNING,
+  )
+  public suspend fun experimentalGenesisConfig(): RpcResponse<GenesisConfig> {
     val request = JsonRpcRequestForExperimentalGenesisConfig(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalGenesisConfig.Method.EXPERIMENTAL_GENESIS_CONFIG,
-      params = params
+      params = null
     )
     val httpResponse = try {
       httpClient.post(baseUrl) {
@@ -333,6 +344,11 @@ public class NearClient(
    * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest` (required).
    * @return Response: `RpcResponse<List<RangeOfUint64>>`.
    */
+  @Deprecated(
+    message = "[Deprecated] Returns the future windows for maintenance in current epoch for the specified account. In the maintenance windows, the node will not be block producer or chunk producer. Consider using maintenance_windows instead. — deprecated.",
+    replaceWith = ReplaceWith("maintenanceWindows(params)"),
+    level = DeprecationLevel.WARNING,
+  )
   public suspend fun experimentalMaintenanceWindows(params: RpcMaintenanceWindowsRequest): RpcResponse<List<RangeOfUint64>> {
     val request = JsonRpcRequestForExperimentalMaintenanceWindows(
       id = nextId(),
@@ -637,6 +653,11 @@ public class NearClient(
    * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
    * @return Response: `RpcResponse<CryptoHash>`.
    */
+  @Deprecated(
+    message = "[Deprecated] Sends a transaction and immediately returns transaction hash. Consider using send_tx instead. — deprecated.",
+    replaceWith = ReplaceWith("sendTx(params)"),
+    level = DeprecationLevel.WARNING,
+  )
   public suspend fun broadcastTxAsync(params: RpcSendTransactionRequest): RpcResponse<CryptoHash> {
     val request = JsonRpcRequestForBroadcastTxAsync(
       id = nextId(),
@@ -675,6 +696,11 @@ public class NearClient(
    * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
    * @return Response: `RpcResponse<RpcTransactionResponse>`.
    */
+  @Deprecated(
+    message = "[Deprecated] Sends a transaction and waits until transaction is fully complete. (Has a 10 second timeout). Consider using send_tx instead. — deprecated.",
+    replaceWith = ReplaceWith("sendTx(params)"),
+    level = DeprecationLevel.WARNING,
+  )
   public suspend fun broadcastTxCommit(params: RpcSendTransactionRequest): RpcResponse<RpcTransactionResponse> {
     val request = JsonRpcRequestForBroadcastTxCommit(
       id = nextId(),
@@ -786,15 +812,15 @@ public class NearClient(
    *
    * @see path: /client_config (method: post) — operationId: client_config
    *
-   * @param params Request parameters (optional): `io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigRequest` — pass `null` or omit to send no params.
+   * @param params This method does not require params; `params` will be sent as `null` in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcClientConfigResponse>`.
    */
-  public suspend fun clientConfig(params: RpcClientConfigRequest? = null): RpcResponse<RpcClientConfigResponse> {
+  public suspend fun clientConfig(): RpcResponse<RpcClientConfigResponse> {
     val request = JsonRpcRequestForClientConfig(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForClientConfig.Method.CLIENT_CONFIG,
-      params = params
+      params = null
     )
     val httpResponse = try {
       httpClient.post(baseUrl) {
@@ -862,15 +888,15 @@ public class NearClient(
    *
    * @see path: /genesis_config (method: post) — operationId: genesis_config
    *
-   * @param params Request parameters (optional): `io.github.hosseinkarami_dev.near.rpc.models.GenesisConfigRequest` — pass `null` or omit to send no params.
+   * @param params This method does not require params; `params` will be sent as `null` in the JSON-RPC request.
    * @return Response: `RpcResponse<GenesisConfig>`.
    */
-  public suspend fun genesisConfig(params: GenesisConfigRequest? = null): RpcResponse<GenesisConfig> {
+  public suspend fun genesisConfig(): RpcResponse<GenesisConfig> {
     val request = JsonRpcRequestForGenesisConfig(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForGenesisConfig.Method.GENESIS_CONFIG,
-      params = params
+      params = null
     )
     val httpResponse = try {
       httpClient.post(baseUrl) {
@@ -900,15 +926,15 @@ public class NearClient(
    *
    * @see path: /health (method: post) — operationId: health
    *
-   * @param params Request parameters (optional): `io.github.hosseinkarami_dev.near.rpc.models.RpcHealthRequest` — pass `null` or omit to send no params.
+   * @param params This method does not require params; `params` will be sent as `null` in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcHealthResponse?>`.
    */
-  public suspend fun health(params: RpcHealthRequest? = null): RpcResponse<RpcHealthResponse?> {
+  public suspend fun health(): RpcResponse<RpcHealthResponse?> {
     val request = JsonRpcRequestForHealth(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForHealth.Method.HEALTH,
-      params = params
+      params = null
     )
     val httpResponse = try {
       httpClient.post(baseUrl) {
@@ -1014,15 +1040,15 @@ public class NearClient(
    *
    * @see path: /network_info (method: post) — operationId: network_info
    *
-   * @param params Request parameters (optional): `io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoRequest` — pass `null` or omit to send no params.
+   * @param params This method does not require params; `params` will be sent as `null` in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcNetworkInfoResponse>`.
    */
-  public suspend fun networkInfo(params: RpcNetworkInfoRequest? = null): RpcResponse<RpcNetworkInfoResponse> {
+  public suspend fun networkInfo(): RpcResponse<RpcNetworkInfoResponse> {
     val request = JsonRpcRequestForNetworkInfo(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForNetworkInfo.Method.NETWORK_INFO,
-      params = params
+      params = null
     )
     val httpResponse = try {
       httpClient.post(baseUrl) {
@@ -1178,15 +1204,15 @@ public class NearClient(
    *
    * @see path: /status (method: post) — operationId: status
    *
-   * @param params Request parameters (optional): `io.github.hosseinkarami_dev.near.rpc.models.RpcStatusRequest` — pass `null` or omit to send no params.
+   * @param params This method does not require params; `params` will be sent as `null` in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcStatusResponse>`.
    */
-  public suspend fun status(params: RpcStatusRequest? = null): RpcResponse<RpcStatusResponse> {
+  public suspend fun status(): RpcResponse<RpcStatusResponse> {
     val request = JsonRpcRequestForStatus(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForStatus.Method.STATUS,
-      params = params
+      params = null
     )
     val httpResponse = try {
       httpClient.post(baseUrl) {

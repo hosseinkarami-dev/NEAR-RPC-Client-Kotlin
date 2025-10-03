@@ -30,15 +30,16 @@ class NearClientTest {
 
     @Test
     fun testTransactionStatus() = runTest {
+        val response = nearClient.networkInfo()
         //val response = nearClient.status()
-        val response = nearClient.changes(
-            RpcStateChangesInBlockByTypeRequest.DataChangesByFinality(
-                changesType = RpcStateChangesInBlockByTypeRequest.DataChangesByFinality.ChangesType.DATA_CHANGES,
-                finality = Finality.FINAL,
-                accountIds = listOf(AccountId("contract.rpc-examples.testnet")),
-                keyPrefixBase64 = StoreKey("c29tZV9wcmVmaXg="),
-            )
-        )
+//        val response = nearClient.changes(
+//            RpcStateChangesInBlockByTypeRequest.DataChangesByFinality(
+//                changesType = RpcStateChangesInBlockByTypeRequest.DataChangesByFinality.ChangesType.DATA_CHANGES,
+//                finality = Finality.FINAL,
+//                accountIds = listOf(AccountId("contract.rpc-examples.testnet")),
+//                keyPrefixBase64 = StoreKey("c29tZV9wcmVmaXg="),
+//            )
+//        )
 //        val response = nearClient.tx(
 //            RpcTransactionStatusRequest.SignedTxBase64(
 //                signedTxBase64 = SignedTransaction("FtzDPgG7BnX3g6WV7w951TZ1UErFahfp6NwQKiTE9dMp"),
