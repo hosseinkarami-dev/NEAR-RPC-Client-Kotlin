@@ -1,5 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.models
 
+import kotlin.Long
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -7,9 +8,13 @@ public sealed class BlockId {
   /**
    *  * Minimum: 0.0
    *  * Format: uint64
+   *  * Minimum: 0.0
+   *  * Format: uint64
    */
   @Serializable
-  public class BlockHeight() : BlockId()
+  public class BlockHeight(
+    public val `value`: Long,
+  ) : BlockId()
 
   @Serializable
   public class CryptoHash(

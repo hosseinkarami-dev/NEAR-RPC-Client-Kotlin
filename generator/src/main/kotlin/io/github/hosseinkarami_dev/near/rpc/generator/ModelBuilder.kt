@@ -306,6 +306,23 @@ class ModelBuilder(
             val subCtor = FunSpec.constructorBuilder()
             val nestedTypes = mutableListOf<TypeSpec>()
 
+            if (v.isPrimitiveType()) {
+                // determine primitive Kotlin type (uses SchemaHelper.getPrimitiveTypeName)
+                val prim = v.getPrimitiveTypeName() ?: STRING
+                // add constructor param + property "value"
+                subCtor.addParameter("value", prim)
+                subBuilder.addProperty(
+                    PropertySpec.builder("value", prim)
+                        .initializer("value")
+                        .build()
+                )
+                v.generateKdoc()?.let { subBuilder.addKdoc(it) }
+                // finalize subclass and attach to sealed parent
+                subBuilder.primaryConstructor(subCtor.build())
+                sealedBuilder.addType(subBuilder.build())
+                return@forEachIndexed
+            }
+
             // If this variant is just a $ref (e.g. oneOf: { $ref: ... })
             if (!v.ref.isNullOrBlank()) {
                 val ref = v.ref.substringAfterLast("/")
