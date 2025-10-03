@@ -266,4 +266,79 @@ public data class GenesisConfig(
    */
   @SerialName("validators")
   public val validators: List<AccountInfo>,
-)
+) {
+  init {
+    require(avgHiddenValidatorSeatsPerShard?.all { it >= 0 } == true) { "GenesisConfig.avgHiddenValidatorSeatsPerShard elements must be >= 0" }}
+  init {
+    require((blockProducerKickoutThreshold?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.blockProducerKickoutThreshold must be >= 0.0" }}
+  init {
+    require((blockProducerKickoutThreshold?.toDouble() ?: 0.0) <= 255.0) { "GenesisConfig.blockProducerKickoutThreshold must be <= 255.0" }}
+  init {
+    require((chunkProducerAssignmentChangesLimit?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.chunkProducerAssignmentChangesLimit must be >= 0.0" }}
+  init {
+    require((chunkProducerKickoutThreshold?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.chunkProducerKickoutThreshold must be >= 0.0" }}
+  init {
+    require((chunkProducerKickoutThreshold?.toDouble() ?: 0.0) <= 255.0) { "GenesisConfig.chunkProducerKickoutThreshold must be <= 255.0" }}
+  init {
+    require((chunkValidatorOnlyKickoutThreshold?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.chunkValidatorOnlyKickoutThreshold must be >= 0.0" }}
+  init {
+    require((chunkValidatorOnlyKickoutThreshold?.toDouble() ?: 0.0) <= 255.0) { "GenesisConfig.chunkValidatorOnlyKickoutThreshold must be <= 255.0" }}
+  init {
+    require((epochLength?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.epochLength must be >= 0.0" }}
+  init {
+    require((gasPriceAdjustmentRate?.size ?: 0) >= 2) { "GenesisConfig.gasPriceAdjustmentRate must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((gasPriceAdjustmentRate?.size ?: 0) <= 2) { "GenesisConfig.gasPriceAdjustmentRate must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((genesisHeight?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.genesisHeight must be >= 0.0" }}
+  init {
+    require((maxInflationRate?.size ?: 0) >= 2) { "GenesisConfig.maxInflationRate must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((maxInflationRate?.size ?: 0) <= 2) { "GenesisConfig.maxInflationRate must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((maxKickoutStakePerc?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.maxKickoutStakePerc must be >= 0.0" }}
+  init {
+    require((maxKickoutStakePerc?.toDouble() ?: 0.0) <= 255.0) { "GenesisConfig.maxKickoutStakePerc must be <= 255.0" }}
+  init {
+    require((minimumStakeDivisor?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.minimumStakeDivisor must be >= 0.0" }}
+  init {
+    require((minimumStakeRatio?.size ?: 0) >= 2) { "GenesisConfig.minimumStakeRatio must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((minimumStakeRatio?.size ?: 0) <= 2) { "GenesisConfig.minimumStakeRatio must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((minimumValidatorsPerShard?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.minimumValidatorsPerShard must be >= 0.0" }}
+  init {
+    require((numBlockProducerSeats?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.numBlockProducerSeats must be >= 0.0" }}
+  init {
+    require(numBlockProducerSeatsPerShard?.all { it >= 0 } == true) { "GenesisConfig.numBlockProducerSeatsPerShard elements must be >= 0" }}
+  init {
+    require((numBlocksPerYear?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.numBlocksPerYear must be >= 0.0" }}
+  init {
+    require((numChunkOnlyProducerSeats?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.numChunkOnlyProducerSeats must be >= 0.0" }}
+  init {
+    require((numChunkProducerSeats?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.numChunkProducerSeats must be >= 0.0" }}
+  init {
+    require((numChunkValidatorSeats?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.numChunkValidatorSeats must be >= 0.0" }}
+  init {
+    require((onlineMaxThreshold?.size ?: 0) >= 2) { "GenesisConfig.onlineMaxThreshold must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((onlineMaxThreshold?.size ?: 0) <= 2) { "GenesisConfig.onlineMaxThreshold must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((onlineMinThreshold?.size ?: 0) >= 2) { "GenesisConfig.onlineMinThreshold must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((onlineMinThreshold?.size ?: 0) <= 2) { "GenesisConfig.onlineMinThreshold must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((protocolRewardRate?.size ?: 0) >= 2) { "GenesisConfig.protocolRewardRate must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((protocolRewardRate?.size ?: 0) <= 2) { "GenesisConfig.protocolRewardRate must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((protocolUpgradeStakeThreshold?.size ?: 0) >= 2) { "GenesisConfig.protocolUpgradeStakeThreshold must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((protocolUpgradeStakeThreshold?.size ?: 0) <= 2) { "GenesisConfig.protocolUpgradeStakeThreshold must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((protocolVersion?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.protocolVersion must be >= 0.0" }}
+  init {
+    require((targetValidatorMandatesPerShard?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.targetValidatorMandatesPerShard must be >= 0.0" }}
+  init {
+    require((transactionValidityPeriod?.toDouble() ?: 0.0) >= 0.0) { "GenesisConfig.transactionValidityPeriod must be >= 0.0" }}
+}

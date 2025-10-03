@@ -23,4 +23,7 @@ public data class ActionError(
    */
   @SerialName("kind")
   public val kind: ActionErrorKind,
-)
+) {
+  init {
+    require((index?.toDouble() ?: 0.0) >= 0.0) { "ActionError.index must be >= 0.0" }}
+}

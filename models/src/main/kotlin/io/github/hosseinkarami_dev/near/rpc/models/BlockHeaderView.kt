@@ -123,4 +123,17 @@ public data class BlockHeaderView(
    */
   @SerialName("validator_reward")
   public val validatorReward: NearToken? = NearToken("0"),
-)
+) {
+  init {
+    require((blockOrdinal?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderView.blockOrdinal must be >= 0.0" }}
+  init {
+    require((chunksIncluded?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderView.chunksIncluded must be >= 0.0" }}
+  init {
+    require((height?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderView.height must be >= 0.0" }}
+  init {
+    require((latestProtocolVersion?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderView.latestProtocolVersion must be >= 0.0" }}
+  init {
+    require((prevHeight?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderView.prevHeight must be >= 0.0" }}
+  init {
+    require((timestamp?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderView.timestamp must be >= 0.0" }}
+}

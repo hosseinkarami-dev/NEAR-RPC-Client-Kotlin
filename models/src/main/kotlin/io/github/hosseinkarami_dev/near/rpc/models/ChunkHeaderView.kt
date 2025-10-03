@@ -68,4 +68,11 @@ public data class ChunkHeaderView(
    */
   @SerialName("validator_reward")
   public val validatorReward: NearToken? = NearToken("0"),
-)
+) {
+  init {
+    require((encodedLength?.toDouble() ?: 0.0) >= 0.0) { "ChunkHeaderView.encodedLength must be >= 0.0" }}
+  init {
+    require((heightCreated?.toDouble() ?: 0.0) >= 0.0) { "ChunkHeaderView.heightCreated must be >= 0.0" }}
+  init {
+    require((heightIncluded?.toDouble() ?: 0.0) >= 0.0) { "ChunkHeaderView.heightIncluded must be >= 0.0" }}
+}

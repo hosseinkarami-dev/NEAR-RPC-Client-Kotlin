@@ -18,4 +18,7 @@ public data class ExecutionMetadataView(
    */
   @SerialName("version")
   public val version: Int,
-)
+) {
+  init {
+    require((version?.toDouble() ?: 0.0) >= 0.0) { "ExecutionMetadataView.version must be >= 0.0" }}
+}

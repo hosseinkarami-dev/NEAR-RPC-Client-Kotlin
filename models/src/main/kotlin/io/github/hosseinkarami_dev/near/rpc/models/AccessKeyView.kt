@@ -17,4 +17,7 @@ public data class AccessKeyView(
   public val nonce: Long,
   @SerialName("permission")
   public val permission: AccessKeyPermissionView,
-)
+) {
+  init {
+    require((nonce?.toDouble() ?: 0.0) >= 0.0) { "AccessKeyView.nonce must be >= 0.0" }}
+}

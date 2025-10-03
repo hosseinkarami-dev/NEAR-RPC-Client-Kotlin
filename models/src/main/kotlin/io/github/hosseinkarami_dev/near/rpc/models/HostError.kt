@@ -94,7 +94,10 @@ public sealed class HostError {
        */
       @SerialName("promise_idx")
       public val promiseIdx: Long,
-    )
+    ) {
+      init {
+        require((promiseIdx?.toDouble() ?: 0.0) >= 0.0) { "InvalidPromiseIndexPayload.promiseIdx must be >= 0.0" }}
+    }
   }
 
   /**
@@ -129,7 +132,10 @@ public sealed class HostError {
        */
       @SerialName("result_idx")
       public val resultIdx: Long,
-    )
+    ) {
+      init {
+        require((resultIdx?.toDouble() ?: 0.0) >= 0.0) { "InvalidPromiseResultIndexPayload.resultIdx must be >= 0.0" }}
+    }
   }
 
   /**
@@ -148,7 +154,10 @@ public sealed class HostError {
        */
       @SerialName("register_id")
       public val registerId: Long,
-    )
+    ) {
+      init {
+        require((registerId?.toDouble() ?: 0.0) >= 0.0) { "InvalidRegisterIdPayload.registerId must be >= 0.0" }}
+    }
   }
 
   /**
@@ -167,7 +176,10 @@ public sealed class HostError {
        */
       @SerialName("iterator_index")
       public val iteratorIndex: Long,
-    )
+    ) {
+      init {
+        require((iteratorIndex?.toDouble() ?: 0.0) >= 0.0) { "IteratorWasInvalidatedPayload.iteratorIndex must be >= 0.0" }}
+    }
   }
 
   /**
@@ -194,7 +206,10 @@ public sealed class HostError {
        */
       @SerialName("receipt_index")
       public val receiptIndex: Long,
-    )
+    ) {
+      init {
+        require((receiptIndex?.toDouble() ?: 0.0) >= 0.0) { "InvalidReceiptIndexPayload.receiptIndex must be >= 0.0" }}
+    }
   }
 
   /**
@@ -213,7 +228,10 @@ public sealed class HostError {
        */
       @SerialName("iterator_index")
       public val iteratorIndex: Long,
-    )
+    ) {
+      init {
+        require((iteratorIndex?.toDouble() ?: 0.0) >= 0.0) { "InvalidIteratorIndexPayload.iteratorIndex must be >= 0.0" }}
+    }
   }
 
   /**
@@ -271,7 +289,10 @@ public sealed class HostError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "NumberOfLogsExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -296,7 +317,12 @@ public sealed class HostError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "KeyLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "KeyLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -321,7 +347,12 @@ public sealed class HostError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "ValueLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "ValueLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -346,7 +377,12 @@ public sealed class HostError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "TotalLogLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "TotalLogLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -371,7 +407,12 @@ public sealed class HostError {
        */
       @SerialName("number_of_promises")
       public val numberOfPromises: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "NumberPromisesExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((numberOfPromises?.toDouble() ?: 0.0) >= 0.0) { "NumberPromisesExceededPayload.numberOfPromises must be >= 0.0" }}
+    }
   }
 
   /**
@@ -396,7 +437,12 @@ public sealed class HostError {
        */
       @SerialName("number_of_input_data_dependencies")
       public val numberOfInputDataDependencies: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "NumberInputDataDependenciesExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((numberOfInputDataDependencies?.toDouble() ?: 0.0) >= 0.0) { "NumberInputDataDependenciesExceededPayload.numberOfInputDataDependencies must be >= 0.0" }}
+    }
   }
 
   /**
@@ -421,7 +467,12 @@ public sealed class HostError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "ReturnedValueLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "ReturnedValueLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -446,7 +497,12 @@ public sealed class HostError {
        */
       @SerialName("size")
       public val size: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "ContractSizeExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((size?.toDouble() ?: 0.0) >= 0.0) { "ContractSizeExceededPayload.size must be >= 0.0" }}
+    }
   }
 
   /**

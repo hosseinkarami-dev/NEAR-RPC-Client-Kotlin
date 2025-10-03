@@ -29,4 +29,9 @@ public data class ShardUId(
    */
   @SerialName("version")
   public val version: Int,
-)
+) {
+  init {
+    require((shardId?.toDouble() ?: 0.0) >= 0.0) { "ShardUId.shardId must be >= 0.0" }}
+  init {
+    require((version?.toDouble() ?: 0.0) >= 0.0) { "ShardUId.version must be >= 0.0" }}
+}

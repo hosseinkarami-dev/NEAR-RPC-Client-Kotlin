@@ -40,7 +40,12 @@ public sealed class ValidatorKickoutReason {
        */
       @SerialName("produced")
       public val produced: Long,
-    )
+    ) {
+      init {
+        require((expected?.toDouble() ?: 0.0) >= 0.0) { "NotEnoughBlocksPayload.expected must be >= 0.0" }}
+      init {
+        require((produced?.toDouble() ?: 0.0) >= 0.0) { "NotEnoughBlocksPayload.produced must be >= 0.0" }}
+    }
   }
 
   /**
@@ -65,7 +70,12 @@ public sealed class ValidatorKickoutReason {
        */
       @SerialName("produced")
       public val produced: Long,
-    )
+    ) {
+      init {
+        require((expected?.toDouble() ?: 0.0) >= 0.0) { "NotEnoughChunksPayload.expected must be >= 0.0" }}
+      init {
+        require((produced?.toDouble() ?: 0.0) >= 0.0) { "NotEnoughChunksPayload.produced must be >= 0.0" }}
+    }
   }
 
   /**
@@ -123,7 +133,12 @@ public sealed class ValidatorKickoutReason {
        */
       @SerialName("produced")
       public val produced: Long,
-    )
+    ) {
+      init {
+        require((expected?.toDouble() ?: 0.0) >= 0.0) { "NotEnoughChunkEndorsementsPayload.expected must be >= 0.0" }}
+      init {
+        require((produced?.toDouble() ?: 0.0) >= 0.0) { "NotEnoughChunkEndorsementsPayload.produced must be >= 0.0" }}
+    }
   }
 
   /**
@@ -149,6 +164,11 @@ public sealed class ValidatorKickoutReason {
        */
       @SerialName("version")
       public val version: Int,
-    )
+    ) {
+      init {
+        require((networkVersion?.toDouble() ?: 0.0) >= 0.0) { "ProtocolVersionTooOldPayload.networkVersion must be >= 0.0" }}
+      init {
+        require((version?.toDouble() ?: 0.0) >= 0.0) { "ProtocolVersionTooOldPayload.version must be >= 0.0" }}
+    }
   }
 }

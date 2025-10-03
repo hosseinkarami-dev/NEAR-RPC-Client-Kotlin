@@ -69,4 +69,19 @@ public data class PeerInfoView(
   public val sentBytesPerSec: Long,
   @SerialName("tracked_shards")
   public val trackedShards: List<ShardId>,
-)
+) {
+  init {
+    require((connectionEstablishedTimeMillis?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.connectionEstablishedTimeMillis must be >= 0.0" }}
+  init {
+    require((height?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.height must be >= 0.0" }}
+  init {
+    require((lastTimePeerRequestedMillis?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.lastTimePeerRequestedMillis must be >= 0.0" }}
+  init {
+    require((lastTimeReceivedMessageMillis?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.lastTimeReceivedMessageMillis must be >= 0.0" }}
+  init {
+    require((nonce?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.nonce must be >= 0.0" }}
+  init {
+    require((receivedBytesPerSec?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.receivedBytesPerSec must be >= 0.0" }}
+  init {
+    require((sentBytesPerSec?.toDouble() ?: 0.0) >= 0.0) { "PeerInfoView.sentBytesPerSec must be >= 0.0" }}
+}

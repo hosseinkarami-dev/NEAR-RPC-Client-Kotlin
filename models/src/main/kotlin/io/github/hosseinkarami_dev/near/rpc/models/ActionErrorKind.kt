@@ -333,7 +333,12 @@ public sealed class ActionErrorKind {
        */
       @SerialName("delegate_nonce")
       public val delegateNonce: Long,
-    )
+    ) {
+      init {
+        require((akNonce?.toDouble() ?: 0.0) >= 0.0) { "DelegateActionInvalidNoncePayload.akNonce must be >= 0.0" }}
+      init {
+        require((delegateNonce?.toDouble() ?: 0.0) >= 0.0) { "DelegateActionInvalidNoncePayload.delegateNonce must be >= 0.0" }}
+    }
   }
 
   /**
@@ -358,7 +363,12 @@ public sealed class ActionErrorKind {
        */
       @SerialName("upper_bound")
       public val upperBound: Long,
-    )
+    ) {
+      init {
+        require((delegateNonce?.toDouble() ?: 0.0) >= 0.0) { "DelegateActionNonceTooLargePayload.delegateNonce must be >= 0.0" }}
+      init {
+        require((upperBound?.toDouble() ?: 0.0) >= 0.0) { "DelegateActionNonceTooLargePayload.upperBound must be >= 0.0" }}
+    }
   }
 
   @Serializable

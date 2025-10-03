@@ -230,4 +230,59 @@ public data class LimitConfig(
    */
   @SerialName("yield_timeout_length_in_blocks")
   public val yieldTimeoutLengthInBlocks: Long,
-)
+) {
+  init {
+    require((initialMemoryPages?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.initialMemoryPages must be >= 0.0" }}
+  init {
+    require((maxActionsPerReceipt?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxActionsPerReceipt must be >= 0.0" }}
+  init {
+    require((maxArgumentsLength?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxArgumentsLength must be >= 0.0" }}
+  init {
+    require((maxContractSize?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxContractSize must be >= 0.0" }}
+  init {
+    require((maxElementsPerContractTable?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxElementsPerContractTable must be >= 0.0" }}
+  init {
+    require((maxFunctionsNumberPerContract?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxFunctionsNumberPerContract must be >= 0.0" }}
+  init {
+    require((maxLengthMethodName?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxLengthMethodName must be >= 0.0" }}
+  init {
+    require((maxLengthReturnedData?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxLengthReturnedData must be >= 0.0" }}
+  init {
+    require((maxLengthStorageKey?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxLengthStorageKey must be >= 0.0" }}
+  init {
+    require((maxLengthStorageValue?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxLengthStorageValue must be >= 0.0" }}
+  init {
+    require((maxLocalsPerContract?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxLocalsPerContract must be >= 0.0" }}
+  init {
+    require((maxMemoryPages?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxMemoryPages must be >= 0.0" }}
+  init {
+    require((maxNumberBytesMethodNames?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxNumberBytesMethodNames must be >= 0.0" }}
+  init {
+    require((maxNumberInputDataDependencies?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxNumberInputDataDependencies must be >= 0.0" }}
+  init {
+    require((maxNumberLogs?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxNumberLogs must be >= 0.0" }}
+  init {
+    require((maxNumberRegisters?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxNumberRegisters must be >= 0.0" }}
+  init {
+    require((maxPromisesPerFunctionCallAction?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxPromisesPerFunctionCallAction must be >= 0.0" }}
+  init {
+    require((maxReceiptSize?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxReceiptSize must be >= 0.0" }}
+  init {
+    require((maxRegisterSize?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxRegisterSize must be >= 0.0" }}
+  init {
+    require((maxStackHeight?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxStackHeight must be >= 0.0" }}
+  init {
+    require((maxTablesPerContract?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxTablesPerContract must be >= 0.0" }}
+  init {
+    require((maxTotalLogLength?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxTotalLogLength must be >= 0.0" }}
+  init {
+    require((maxTransactionSize?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxTransactionSize must be >= 0.0" }}
+  init {
+    require((maxYieldPayloadSize?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.maxYieldPayloadSize must be >= 0.0" }}
+  init {
+    require((perReceiptStorageProofSizeLimit?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.perReceiptStorageProofSizeLimit must be >= 0.0" }}
+  init {
+    require((registersMemoryLimit?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.registersMemoryLimit must be >= 0.0" }}
+  init {
+    require((yieldTimeoutLengthInBlocks?.toDouble() ?: 0.0) >= 0.0) { "LimitConfig.yieldTimeoutLengthInBlocks must be >= 0.0" }}
+}

@@ -48,4 +48,13 @@ public data class RuntimeFeesConfigView(
    */
   @SerialName("storage_usage_config")
   public val storageUsageConfig: StorageUsageConfigView,
-)
+) {
+  init {
+    require((burntGasReward?.size ?: 0) >= 2) { "RuntimeFeesConfigView.burntGasReward must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((burntGasReward?.size ?: 0) <= 2) { "RuntimeFeesConfigView.burntGasReward must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((pessimisticGasPriceInflationRatio?.size ?: 0) >= 2) { "RuntimeFeesConfigView.pessimisticGasPriceInflationRatio must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((pessimisticGasPriceInflationRatio?.size ?: 0) <= 2) { "RuntimeFeesConfigView.pessimisticGasPriceInflationRatio must contain no more than 2 items (maxItems = 2)" }}
+}

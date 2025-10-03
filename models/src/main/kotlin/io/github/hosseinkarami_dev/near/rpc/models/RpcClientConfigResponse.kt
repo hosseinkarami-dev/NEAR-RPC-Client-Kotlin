@@ -440,4 +440,161 @@ public data class RpcClientConfigResponse(
    */
   @SerialName("view_client_threads")
   public val viewClientThreads: Int,
-)
+) {
+  init {
+    require((blockFetchHorizon?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.blockFetchHorizon must be >= 0.0" }}
+  init {
+    require((blockHeaderFetchHorizon?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.blockHeaderFetchHorizon must be >= 0.0" }}
+  init {
+    require((blockProductionTrackingDelay?.size ?: 0) >= 2) { "RpcClientConfigResponse.blockProductionTrackingDelay must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((blockProductionTrackingDelay?.size ?: 0) <= 2) { "RpcClientConfigResponse.blockProductionTrackingDelay must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(blockProductionTrackingDelay?.all { it >= 0 } == true) { "RpcClientConfigResponse.blockProductionTrackingDelay elements must be >= 0" }}
+  init {
+    require((catchupStepPeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.catchupStepPeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((catchupStepPeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.catchupStepPeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(catchupStepPeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.catchupStepPeriod elements must be >= 0" }}
+  init {
+    require((chunkRequestRetryPeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.chunkRequestRetryPeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((chunkRequestRetryPeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.chunkRequestRetryPeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(chunkRequestRetryPeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.chunkRequestRetryPeriod elements must be >= 0" }}
+  init {
+    require((chunkValidationThreads?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.chunkValidationThreads must be >= 0.0" }}
+  init {
+    require((chunkWaitMult?.size ?: 0) >= 2) { "RpcClientConfigResponse.chunkWaitMult must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((chunkWaitMult?.size ?: 0) <= 2) { "RpcClientConfigResponse.chunkWaitMult must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((clientBackgroundMigrationThreads?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.clientBackgroundMigrationThreads must be >= 0.0" }}
+  init {
+    require((doomslugStepPeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.doomslugStepPeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((doomslugStepPeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.doomslugStepPeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(doomslugStepPeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.doomslugStepPeriod elements must be >= 0" }}
+  init {
+    require((epochLength?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.epochLength must be >= 0.0" }}
+  init {
+    require((headerSyncExpectedHeightPerSecond?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.headerSyncExpectedHeightPerSecond must be >= 0.0" }}
+  init {
+    require((headerSyncInitialTimeout?.size ?: 0) >= 2) { "RpcClientConfigResponse.headerSyncInitialTimeout must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((headerSyncInitialTimeout?.size ?: 0) <= 2) { "RpcClientConfigResponse.headerSyncInitialTimeout must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(headerSyncInitialTimeout?.all { it >= 0 } == true) { "RpcClientConfigResponse.headerSyncInitialTimeout elements must be >= 0" }}
+  init {
+    require((headerSyncProgressTimeout?.size ?: 0) >= 2) { "RpcClientConfigResponse.headerSyncProgressTimeout must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((headerSyncProgressTimeout?.size ?: 0) <= 2) { "RpcClientConfigResponse.headerSyncProgressTimeout must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(headerSyncProgressTimeout?.all { it >= 0 } == true) { "RpcClientConfigResponse.headerSyncProgressTimeout elements must be >= 0" }}
+  init {
+    require((headerSyncStallBanTimeout?.size ?: 0) >= 2) { "RpcClientConfigResponse.headerSyncStallBanTimeout must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((headerSyncStallBanTimeout?.size ?: 0) <= 2) { "RpcClientConfigResponse.headerSyncStallBanTimeout must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(headerSyncStallBanTimeout?.all { it >= 0 } == true) { "RpcClientConfigResponse.headerSyncStallBanTimeout elements must be >= 0" }}
+  init {
+    require((logSummaryPeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.logSummaryPeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((logSummaryPeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.logSummaryPeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(logSummaryPeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.logSummaryPeriod elements must be >= 0" }}
+  init {
+    require((maxBlockProductionDelay?.size ?: 0) >= 2) { "RpcClientConfigResponse.maxBlockProductionDelay must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((maxBlockProductionDelay?.size ?: 0) <= 2) { "RpcClientConfigResponse.maxBlockProductionDelay must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(maxBlockProductionDelay?.all { it >= 0 } == true) { "RpcClientConfigResponse.maxBlockProductionDelay elements must be >= 0" }}
+  init {
+    require((maxBlockWaitDelay?.size ?: 0) >= 2) { "RpcClientConfigResponse.maxBlockWaitDelay must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((maxBlockWaitDelay?.size ?: 0) <= 2) { "RpcClientConfigResponse.maxBlockWaitDelay must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(maxBlockWaitDelay?.all { it >= 0 } == true) { "RpcClientConfigResponse.maxBlockWaitDelay elements must be >= 0" }}
+  init {
+    require((minBlockProductionDelay?.size ?: 0) >= 2) { "RpcClientConfigResponse.minBlockProductionDelay must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((minBlockProductionDelay?.size ?: 0) <= 2) { "RpcClientConfigResponse.minBlockProductionDelay must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(minBlockProductionDelay?.all { it >= 0 } == true) { "RpcClientConfigResponse.minBlockProductionDelay elements must be >= 0" }}
+  init {
+    require((minNumPeers?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.minNumPeers must be >= 0.0" }}
+  init {
+    require((numBlockProducerSeats?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.numBlockProducerSeats must be >= 0.0" }}
+  init {
+    require((orphanStateWitnessMaxSize?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.orphanStateWitnessMaxSize must be >= 0.0" }}
+  init {
+    require((orphanStateWitnessPoolSize?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.orphanStateWitnessPoolSize must be >= 0.0" }}
+  init {
+    require((stateRequestServerThreads?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.stateRequestServerThreads must be >= 0.0" }}
+  init {
+    require((stateRequestThrottlePeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.stateRequestThrottlePeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((stateRequestThrottlePeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.stateRequestThrottlePeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(stateRequestThrottlePeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.stateRequestThrottlePeriod elements must be >= 0" }}
+  init {
+    require((stateRequestsPerThrottlePeriod?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.stateRequestsPerThrottlePeriod must be >= 0.0" }}
+  init {
+    require((stateSyncExternalBackoff?.size ?: 0) >= 2) { "RpcClientConfigResponse.stateSyncExternalBackoff must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((stateSyncExternalBackoff?.size ?: 0) <= 2) { "RpcClientConfigResponse.stateSyncExternalBackoff must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(stateSyncExternalBackoff?.all { it >= 0 } == true) { "RpcClientConfigResponse.stateSyncExternalBackoff elements must be >= 0" }}
+  init {
+    require((stateSyncExternalTimeout?.size ?: 0) >= 2) { "RpcClientConfigResponse.stateSyncExternalTimeout must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((stateSyncExternalTimeout?.size ?: 0) <= 2) { "RpcClientConfigResponse.stateSyncExternalTimeout must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(stateSyncExternalTimeout?.all { it >= 0 } == true) { "RpcClientConfigResponse.stateSyncExternalTimeout elements must be >= 0" }}
+  init {
+    require((stateSyncP2pTimeout?.size ?: 0) >= 2) { "RpcClientConfigResponse.stateSyncP2pTimeout must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((stateSyncP2pTimeout?.size ?: 0) <= 2) { "RpcClientConfigResponse.stateSyncP2pTimeout must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(stateSyncP2pTimeout?.all { it >= 0 } == true) { "RpcClientConfigResponse.stateSyncP2pTimeout elements must be >= 0" }}
+  init {
+    require((stateSyncRetryBackoff?.size ?: 0) >= 2) { "RpcClientConfigResponse.stateSyncRetryBackoff must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((stateSyncRetryBackoff?.size ?: 0) <= 2) { "RpcClientConfigResponse.stateSyncRetryBackoff must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(stateSyncRetryBackoff?.all { it >= 0 } == true) { "RpcClientConfigResponse.stateSyncRetryBackoff elements must be >= 0" }}
+  init {
+    require((syncCheckPeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.syncCheckPeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((syncCheckPeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.syncCheckPeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(syncCheckPeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.syncCheckPeriod elements must be >= 0" }}
+  init {
+    require((syncHeightThreshold?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.syncHeightThreshold must be >= 0.0" }}
+  init {
+    require((syncMaxBlockRequests?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.syncMaxBlockRequests must be >= 0.0" }}
+  init {
+    require((syncStepPeriod?.size ?: 0) >= 2) { "RpcClientConfigResponse.syncStepPeriod must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((syncStepPeriod?.size ?: 0) <= 2) { "RpcClientConfigResponse.syncStepPeriod must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(syncStepPeriod?.all { it >= 0 } == true) { "RpcClientConfigResponse.syncStepPeriod elements must be >= 0" }}
+  init {
+    require((transactionPoolSizeLimit?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.transactionPoolSizeLimit must be >= 0.0" }}
+  init {
+    require((transactionRequestHandlerThreads?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.transactionRequestHandlerThreads must be >= 0.0" }}
+  init {
+    require((trieViewerStateSizeLimit?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.trieViewerStateSizeLimit must be >= 0.0" }}
+  init {
+    require((ttlAccountIdRouter?.size ?: 0) >= 2) { "RpcClientConfigResponse.ttlAccountIdRouter must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((ttlAccountIdRouter?.size ?: 0) <= 2) { "RpcClientConfigResponse.ttlAccountIdRouter must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require(ttlAccountIdRouter?.all { it >= 0 } == true) { "RpcClientConfigResponse.ttlAccountIdRouter elements must be >= 0" }}
+  init {
+    require((txRoutingHeightHorizon?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.txRoutingHeightHorizon must be >= 0.0" }}
+  init {
+    require((viewClientThreads?.toDouble() ?: 0.0) >= 0.0) { "RpcClientConfigResponse.viewClientThreads must be >= 0.0" }}
+}

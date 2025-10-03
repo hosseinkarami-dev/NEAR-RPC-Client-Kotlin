@@ -85,4 +85,9 @@ public data class RpcStatusResponse(
    */
   @SerialName("version")
   public val version: Version,
-)
+) {
+  init {
+    require((latestProtocolVersion?.toDouble() ?: 0.0) >= 0.0) { "RpcStatusResponse.latestProtocolVersion must be >= 0.0" }}
+  init {
+    require((protocolVersion?.toDouble() ?: 0.0) >= 0.0) { "RpcStatusResponse.protocolVersion must be >= 0.0" }}
+}

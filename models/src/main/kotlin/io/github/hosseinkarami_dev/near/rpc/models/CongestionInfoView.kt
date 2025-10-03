@@ -28,4 +28,11 @@ public data class CongestionInfoView(
    */
   @SerialName("receipt_bytes")
   public val receiptBytes: Long,
-)
+) {
+  init {
+    require((allowedShard?.toDouble() ?: 0.0) >= 0.0) { "CongestionInfoView.allowedShard must be >= 0.0" }}
+  init {
+    require((allowedShard?.toDouble() ?: 0.0) <= 65_535.0) { "CongestionInfoView.allowedShard must be <= 65535.0" }}
+  init {
+    require((receiptBytes?.toDouble() ?: 0.0) >= 0.0) { "CongestionInfoView.receiptBytes must be >= 0.0" }}
+}

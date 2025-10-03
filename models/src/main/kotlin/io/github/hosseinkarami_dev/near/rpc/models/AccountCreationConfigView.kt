@@ -23,4 +23,9 @@ public data class AccountCreationConfigView(
    */
   @SerialName("registrar_account_id")
   public val registrarAccountId: AccountId,
-)
+) {
+  init {
+    require((minAllowedTopLevelAccountLength?.toDouble() ?: 0.0) >= 0.0) { "AccountCreationConfigView.minAllowedTopLevelAccountLength must be >= 0.0" }}
+  init {
+    require((minAllowedTopLevelAccountLength?.toDouble() ?: 0.0) <= 255.0) { "AccountCreationConfigView.minAllowedTopLevelAccountLength must be <= 255.0" }}
+}

@@ -16,4 +16,7 @@ public data class GasKeyView(
   public val numNonces: Int,
   @SerialName("permission")
   public val permission: AccessKeyPermissionView,
-)
+) {
+  init {
+    require((numNonces?.toDouble() ?: 0.0) >= 0.0) { "GasKeyView.numNonces must be >= 0.0" }}
+}

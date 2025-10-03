@@ -81,4 +81,25 @@ public data class CurrentEpochValidatorInfo(
   public val shardsEndorsed: List<ShardId>? = listOf(),
   @SerialName("stake")
   public val stake: NearToken,
-)
+) {
+  init {
+    require((numExpectedBlocks?.toDouble() ?: 0.0) >= 0.0) { "CurrentEpochValidatorInfo.numExpectedBlocks must be >= 0.0" }}
+  init {
+    require((numExpectedChunks?.toDouble() ?: 0.0) >= 0.0) { "CurrentEpochValidatorInfo.numExpectedChunks must be >= 0.0" }}
+  init {
+    require(numExpectedChunksPerShard?.all { it >= 0 } == true) { "CurrentEpochValidatorInfo.numExpectedChunksPerShard elements must be >= 0" }}
+  init {
+    require((numExpectedEndorsements?.toDouble() ?: 0.0) >= 0.0) { "CurrentEpochValidatorInfo.numExpectedEndorsements must be >= 0.0" }}
+  init {
+    require(numExpectedEndorsementsPerShard?.all { it >= 0 } == true) { "CurrentEpochValidatorInfo.numExpectedEndorsementsPerShard elements must be >= 0" }}
+  init {
+    require((numProducedBlocks?.toDouble() ?: 0.0) >= 0.0) { "CurrentEpochValidatorInfo.numProducedBlocks must be >= 0.0" }}
+  init {
+    require((numProducedChunks?.toDouble() ?: 0.0) >= 0.0) { "CurrentEpochValidatorInfo.numProducedChunks must be >= 0.0" }}
+  init {
+    require(numProducedChunksPerShard?.all { it >= 0 } == true) { "CurrentEpochValidatorInfo.numProducedChunksPerShard elements must be >= 0" }}
+  init {
+    require((numProducedEndorsements?.toDouble() ?: 0.0) >= 0.0) { "CurrentEpochValidatorInfo.numProducedEndorsements must be >= 0.0" }}
+  init {
+    require(numProducedEndorsementsPerShard?.all { it >= 0 } == true) { "CurrentEpochValidatorInfo.numProducedEndorsementsPerShard elements must be >= 0" }}
+}

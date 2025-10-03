@@ -18,4 +18,9 @@ public data class RangeOfUint64(
    */
   @SerialName("start")
   public val start: Long,
-)
+) {
+  init {
+    require((end?.toDouble() ?: 0.0) >= 0.0) { "RangeOfUint64.end must be >= 0.0" }}
+  init {
+    require((start?.toDouble() ?: 0.0) >= 0.0) { "RangeOfUint64.start must be >= 0.0" }}
+}

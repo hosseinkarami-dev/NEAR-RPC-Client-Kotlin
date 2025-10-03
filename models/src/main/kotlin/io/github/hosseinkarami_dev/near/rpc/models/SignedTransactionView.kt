@@ -31,4 +31,9 @@ public data class SignedTransactionView(
   public val signature: Signature,
   @SerialName("signer_id")
   public val signerId: AccountId,
-)
+) {
+  init {
+    require((nonce?.toDouble() ?: 0.0) >= 0.0) { "SignedTransactionView.nonce must be >= 0.0" }}
+  init {
+    require((priorityFee?.toDouble() ?: 0.0) >= 0.0) { "SignedTransactionView.priorityFee must be >= 0.0" }}
+}

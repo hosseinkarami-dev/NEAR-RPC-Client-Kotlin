@@ -92,7 +92,12 @@ public sealed class ReceiptValidationError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "ReturnedValueLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "ReturnedValueLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -117,7 +122,12 @@ public sealed class ReceiptValidationError {
        */
       @SerialName("number_of_input_data_dependencies")
       public val numberOfInputDataDependencies: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "NumberInputDataDependenciesExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((numberOfInputDataDependencies?.toDouble() ?: 0.0) >= 0.0) { "NumberInputDataDependenciesExceededPayload.numberOfInputDataDependencies must be >= 0.0" }}
+    }
   }
 
   /**
@@ -151,6 +161,11 @@ public sealed class ReceiptValidationError {
        */
       @SerialName("size")
       public val size: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "ReceiptSizeExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((size?.toDouble() ?: 0.0) >= 0.0) { "ReceiptSizeExceededPayload.size must be >= 0.0" }}
+    }
   }
 }

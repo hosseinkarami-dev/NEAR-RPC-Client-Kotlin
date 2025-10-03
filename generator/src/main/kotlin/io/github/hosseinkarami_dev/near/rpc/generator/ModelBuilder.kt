@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.generator
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -491,7 +492,7 @@ class ModelBuilder(
             else if (effectiveProps.isNotEmpty() && effectiveProps.size > 1) {
                 // Use variantTitle (already computed above) as the base for the subclass name
                 val variantSimpleName = toPascalCase(variantTitle)
-                val specificSubBuilder = TypeSpec.classBuilder("${variantSimpleName}")
+                val specificSubBuilder = TypeSpec.classBuilder(variantSimpleName)
                     .addModifiers(KModifier.DATA)
                     .addAnnotation(Serializable::class)
                     .superclass(ClassName(fileBuilder.build().packageName, className))
@@ -590,6 +591,8 @@ class ModelBuilder(
                         .addAnnotation(Serializable::class)
                 v.generateKdoc()?.let { payloadBuilder.addKdoc(it) }
 
+                val payloadInitChecks = mutableListOf<CodeBlock>()
+
                 effectiveProps.forEach { (pn, ps) ->
                     val isReq = effectiveRequired.contains(pn)
                     val t = resolveTypeForSchema(
@@ -619,9 +622,15 @@ class ModelBuilder(
                         )
                     ps.generateKdoc()?.let { pBuilder.addKdoc(it) }
                     payloadBuilder.addProperty(pBuilder.build())
+
+                    // collect validations for this payload property
+                    payloadInitChecks.addAll(collectValidationChecksForProperty(paramName, ps, payloadName))
                 }
 
                 if (effectiveProps.isNotEmpty()) {
+                    // attach payload init checks (if any)
+                    payloadInitChecks.forEach { payloadBuilder.addInitializerBlock(it) }
+
                     payloadBuilder.primaryConstructor(payloadCtor.build())
                     subBuilder.addType(payloadBuilder.build())
                     val payloadType = ClassName(
@@ -700,6 +709,9 @@ class ModelBuilder(
             .addAnnotation(Serializable::class)
         parentSchema?.generateKdoc()?.let { classBuilder.addKdoc(it) }
 
+        // collect initializer checks here
+        val initChecks = mutableListOf<CodeBlock>()
+
         propsMap.forEach { (pname, pschemaRaw) ->
             // resolve property-level $ref if present by deref'ing and ensuring top-level file
             if (!pschemaRaw.ref.isNullOrBlank()) {
@@ -733,6 +745,10 @@ class ModelBuilder(
                     )
                 pschemaRaw.generateKdoc()?.let { pBuilder.addKdoc(it) }
                 classBuilder.addProperty(pBuilder.build())
+
+                // add validations if applicable
+                initChecks.addAll(collectValidationChecksForProperty(paramName, pschemaRaw, className))
+
                 return@forEach
             }
 
@@ -771,6 +787,10 @@ class ModelBuilder(
                         )
                     pschemaRaw.generateKdoc()?.let { pBuilder.addKdoc(it) }
                     classBuilder.addProperty(pBuilder.build())
+
+                    // add validations if applicable
+                    initChecks.addAll(collectValidationChecksForProperty(paramName, pschemaRaw, className))
+
                     return@forEach
                 }
             }
@@ -801,9 +821,15 @@ class ModelBuilder(
                 )
             pschemaRaw.generateKdoc()?.let { pBuilder.addKdoc(it) }
             classBuilder.addProperty(pBuilder.build())
+
+            // add validations if applicable (for inline-resolved props)
+            initChecks.addAll(collectValidationChecksForProperty(paramName, pschemaRaw, className))
         }
 
         nested.forEach { classBuilder.addType(it) }
+        // attach init checks
+        initChecks.forEach { classBuilder.addInitializerBlock(it) }
+
         classBuilder.primaryConstructor(ctor.build())
         fileBuilder.addType(classBuilder.build())
         builtTypes.add(className)
@@ -1002,6 +1028,9 @@ class ModelBuilder(
             .addAnnotation(Serializable::class)
         ctxSchema.generateKdoc()?.let { payloadBuilder.addKdoc(it) }
 
+        // collect init checks for this inline payload
+        val payloadInitChecks = mutableListOf<CodeBlock>()
+
         ctxSchema.properties?.forEach { (pn, ps) ->
             val iIsReq = ctxSchema.required?.contains(pn) == true
             val nestedType = resolveTypeForSchema(
@@ -1031,7 +1060,13 @@ class ModelBuilder(
                 )
             ps.generateKdoc()?.let { propBuilder.addKdoc(it) }
             payloadBuilder.addProperty(propBuilder.build())
+
+            // collect validations for this inline payload property
+            payloadInitChecks.addAll(collectValidationChecksForProperty(paramName, ps, payloadName))
         }
+
+        // attach payload init checks (if any)
+        payloadInitChecks.forEach { payloadBuilder.addInitializerBlock(it) }
 
         payloadBuilder.primaryConstructor(payloadCtor.build())
         nestedCollector.add(payloadBuilder.build())
@@ -1048,6 +1083,116 @@ class ModelBuilder(
             }
         }
         return type
+    }
+
+    /**
+     * Collect validation checks (CodeBlock) for a property schema.
+     * This helper centralizes generation of:
+     *  - array length checks (minItems/maxItems)
+     *  - array item range checks (items.minimum/items.maximum)
+     *  - numeric min/max checks (minimum/maximum for integer/number)
+     *
+     * Returns a list of CodeBlock to be added as initializer blocks on the generated class.
+     */
+    private fun collectValidationChecksForProperty(
+        paramName: String,
+        schema: Schema,
+        ownerName: String
+    ): List<CodeBlock> {
+        val checks = mutableListOf<CodeBlock>()
+
+        // patternProperties key regex checks
+        if (!schema.patternProperties.isNullOrEmpty()) {
+            val patterns = schema.patternProperties.keys.toList()
+            // build expression like: Regex("%S").matches(it) || Regex("%S").matches(it) ...
+            val checkExprBuilder = CodeBlock.builder()
+            patterns.forEachIndexed { idx, pat ->
+                if (idx > 0) checkExprBuilder.add(" || ")
+                checkExprBuilder.add("Regex(%S).matches(it)", pat)
+            }
+            val checkExpr = checkExprBuilder.build()
+
+            checks.add(
+                CodeBlock.of(
+                    "require(%N?.keys?.all { %L } != false) { %S }",
+                    paramName,
+                    checkExpr,
+                    "$ownerName.$paramName keys must match pattern(s): ${patterns.joinToString(", ")}"
+                )
+            )
+        }
+
+        // array checks
+        if (schema.type == "array") {
+            schema.minItems?.let { minItems ->
+                checks.add(
+                    CodeBlock.of(
+                        "require((%N?.size ?: 0) >= %L) { %S }",
+                        paramName, minItems, "$ownerName.$paramName must contain at least $minItems items (minItems = $minItems)"
+                    )
+                )
+            }
+            schema.maxItems?.let { maxItems ->
+                checks.add(
+                    CodeBlock.of(
+                        "require((%N?.size ?: 0) <= %L) { %S }",
+                        paramName, maxItems, "$ownerName.$paramName must contain no more than $maxItems items (maxItems = $maxItems)"
+                    )
+                )
+            }
+
+            val itemMin = schema.items?.minimum
+            val itemMax = schema.items?.maximum
+            if (itemMin != null || itemMax != null) {
+                if (itemMin != null && itemMax != null) {
+                    checks.add(
+                        CodeBlock.of(
+                            "require(%N?.all { it >= %L && it <= %L } == true) { %S }",
+                            paramName, itemMin.toInt(), itemMax.toInt(),
+                            "$ownerName.$paramName elements must be in range ${itemMin.toInt()}..${itemMax.toInt()}"
+                        )
+                    )
+                } else if (itemMin != null) {
+                    checks.add(
+                        CodeBlock.of(
+                            "require(%N?.all { it >= %L } == true) { %S }",
+                            paramName, itemMin.toInt(),
+                            "$ownerName.$paramName elements must be >= ${itemMin.toInt()}"
+                        )
+                    )
+                } else {
+                    checks.add(
+                        CodeBlock.of(
+                            "require(%N?.all { it <= %L } == true) { %S }",
+                            paramName, itemMax?.toInt(),
+                            "$ownerName.$paramName elements must be <= ${itemMax?.toInt()}"
+                        )
+                    )
+                }
+            }
+        }
+
+        // numeric min/max checks for integer/number
+        if (schema.type == "integer" || schema.type == "number") {
+            schema.minimum?.let { minVal ->
+                checks.add(
+                    CodeBlock.of(
+                        "require((%N?.toDouble() ?: 0.0) >= %L) { %S }",
+                        paramName, minVal, "$ownerName.$paramName must be >= $minVal"
+                    )
+                )
+            }
+            schema.maximum?.let { maxVal ->
+                checks.add(
+                    CodeBlock.of(
+                        "require((%N?.toDouble() ?: 0.0) <= %L) { %S }",
+                        paramName, maxVal, "$ownerName.$paramName must be <= $maxVal"
+                    )
+                )
+            }
+        }
+
+        return checks
     }
 
     private fun defaultValueLiteralForSchema(schema: Schema?, typeHint: TypeName? = null): String? {

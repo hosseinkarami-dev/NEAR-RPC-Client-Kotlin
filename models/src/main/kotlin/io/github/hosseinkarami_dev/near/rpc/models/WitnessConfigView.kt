@@ -35,4 +35,11 @@ public data class WitnessConfigView(
    */
   @SerialName("new_transactions_validation_state_size_soft_limit")
   public val newTransactionsValidationStateSizeSoftLimit: Long,
-)
+) {
+  init {
+    require((combinedTransactionsSizeLimit?.toDouble() ?: 0.0) >= 0.0) { "WitnessConfigView.combinedTransactionsSizeLimit must be >= 0.0" }}
+  init {
+    require((mainStorageProofSizeSoftLimit?.toDouble() ?: 0.0) >= 0.0) { "WitnessConfigView.mainStorageProofSizeSoftLimit must be >= 0.0" }}
+  init {
+    require((newTransactionsValidationStateSizeSoftLimit?.toDouble() ?: 0.0) >= 0.0) { "WitnessConfigView.newTransactionsValidationStateSizeSoftLimit must be >= 0.0" }}
+}

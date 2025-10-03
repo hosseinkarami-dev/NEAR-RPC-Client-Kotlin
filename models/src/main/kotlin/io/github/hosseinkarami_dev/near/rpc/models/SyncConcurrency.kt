@@ -44,4 +44,21 @@ public data class SyncConcurrency(
    */
   @SerialName("per_shard")
   public val perShard: Int,
-)
+) {
+  init {
+    require((apply?.toDouble() ?: 0.0) >= 0.0) { "SyncConcurrency.apply must be >= 0.0" }}
+  init {
+    require((apply?.toDouble() ?: 0.0) <= 255.0) { "SyncConcurrency.apply must be <= 255.0" }}
+  init {
+    require((applyDuringCatchup?.toDouble() ?: 0.0) >= 0.0) { "SyncConcurrency.applyDuringCatchup must be >= 0.0" }}
+  init {
+    require((applyDuringCatchup?.toDouble() ?: 0.0) <= 255.0) { "SyncConcurrency.applyDuringCatchup must be <= 255.0" }}
+  init {
+    require((peerDownloads?.toDouble() ?: 0.0) >= 0.0) { "SyncConcurrency.peerDownloads must be >= 0.0" }}
+  init {
+    require((peerDownloads?.toDouble() ?: 0.0) <= 255.0) { "SyncConcurrency.peerDownloads must be <= 255.0" }}
+  init {
+    require((perShard?.toDouble() ?: 0.0) >= 0.0) { "SyncConcurrency.perShard must be >= 0.0" }}
+  init {
+    require((perShard?.toDouble() ?: 0.0) <= 255.0) { "SyncConcurrency.perShard must be <= 255.0" }}
+}

@@ -53,7 +53,12 @@ public sealed class StateChangeWithCauseView {
        */
       @SerialName("storage_usage")
       public val storageUsage: Long,
-    )
+    ) {
+      init {
+        require((storagePaidAt?.toDouble() ?: 0.0) >= 0.0) { "ChangePayload.storagePaidAt must be >= 0.0" }}
+      init {
+        require((storageUsage?.toDouble() ?: 0.0) >= 0.0) { "ChangePayload.storageUsage must be >= 0.0" }}
+    }
 
     /**
      *  * Possible values: account_update
@@ -217,7 +222,12 @@ public sealed class StateChangeWithCauseView {
       public val nonce: Long,
       @SerialName("public_key")
       public val publicKey: PublicKey,
-    )
+    ) {
+      init {
+        require((index?.toDouble() ?: 0.0) >= 0.0) { "ChangePayload.index must be >= 0.0" }}
+      init {
+        require((nonce?.toDouble() ?: 0.0) >= 0.0) { "ChangePayload.nonce must be >= 0.0" }}
+    }
 
     /**
      *  * Possible values: gas_key_nonce_update

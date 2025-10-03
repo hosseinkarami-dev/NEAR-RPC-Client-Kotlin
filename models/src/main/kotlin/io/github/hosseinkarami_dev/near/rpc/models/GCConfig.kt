@@ -38,4 +38,11 @@ public data class GCConfig(
   @SerialName("gc_step_period")
   public val gcStepPeriod:
       DurationAsStdSchemaProvider? = DurationAsStdSchemaProvider(nanos = 500000000.toInt(), secs = 0L),
-)
+) {
+  init {
+    require((gcBlocksLimit?.toDouble() ?: 0.0) >= 0.0) { "GCConfig.gcBlocksLimit must be >= 0.0" }}
+  init {
+    require((gcForkCleanStep?.toDouble() ?: 0.0) >= 0.0) { "GCConfig.gcForkCleanStep must be >= 0.0" }}
+  init {
+    require((gcNumEpochsToKeep?.toDouble() ?: 0.0) >= 0.0) { "GCConfig.gcNumEpochsToKeep must be >= 0.0" }}
+}

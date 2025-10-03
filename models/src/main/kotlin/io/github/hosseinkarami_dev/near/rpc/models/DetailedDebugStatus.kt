@@ -24,4 +24,7 @@ public data class DetailedDebugStatus(
   public val networkInfo: NetworkInfoView,
   @SerialName("sync_status")
   public val syncStatus: String,
-)
+) {
+  init {
+    require((blockProductionDelayMillis?.toDouble() ?: 0.0) >= 0.0) { "DetailedDebugStatus.blockProductionDelayMillis must be >= 0.0" }}
+}

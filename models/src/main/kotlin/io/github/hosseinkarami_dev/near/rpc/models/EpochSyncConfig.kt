@@ -40,4 +40,7 @@ public data class EpochSyncConfig(
    */
   @SerialName("timeout_for_epoch_sync")
   public val timeoutForEpochSync: DurationAsStdSchemaProvider,
-)
+) {
+  init {
+    require((epochSyncHorizon?.toDouble() ?: 0.0) >= 0.0) { "EpochSyncConfig.epochSyncHorizon must be >= 0.0" }}
+}

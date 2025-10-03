@@ -24,4 +24,9 @@ public data class BandwidthRequest(
    */
   @SerialName("to_shard")
   public val toShard: Int,
-)
+) {
+  init {
+    require((toShard?.toDouble() ?: 0.0) >= 0.0) { "BandwidthRequest.toShard must be >= 0.0" }}
+  init {
+    require((toShard?.toDouble() ?: 0.0) <= 65_535.0) { "BandwidthRequest.toShard must be <= 65535.0" }}
+}

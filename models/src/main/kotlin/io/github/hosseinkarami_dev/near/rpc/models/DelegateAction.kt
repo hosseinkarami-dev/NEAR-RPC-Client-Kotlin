@@ -49,4 +49,9 @@ public data class DelegateAction(
    */
   @SerialName("sender_id")
   public val senderId: AccountId,
-)
+) {
+  init {
+    require((maxBlockHeight?.toDouble() ?: 0.0) >= 0.0) { "DelegateAction.maxBlockHeight must be >= 0.0" }}
+  init {
+    require((nonce?.toDouble() ?: 0.0) >= 0.0) { "DelegateAction.nonce must be >= 0.0" }}
+}

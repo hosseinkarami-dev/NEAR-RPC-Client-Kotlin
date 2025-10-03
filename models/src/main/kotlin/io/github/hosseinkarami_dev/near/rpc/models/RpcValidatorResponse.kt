@@ -54,4 +54,9 @@ public data class RpcValidatorResponse(
    */
   @SerialName("prev_epoch_kickout")
   public val prevEpochKickout: List<ValidatorKickoutView>,
-)
+) {
+  init {
+    require((epochHeight?.toDouble() ?: 0.0) >= 0.0) { "RpcValidatorResponse.epochHeight must be >= 0.0" }}
+  init {
+    require((epochStartHeight?.toDouble() ?: 0.0) >= 0.0) { "RpcValidatorResponse.epochStartHeight must be >= 0.0" }}
+}

@@ -39,4 +39,13 @@ public data class RpcNetworkInfoResponse(
    */
   @SerialName("sent_bytes_per_sec")
   public val sentBytesPerSec: Long,
-)
+) {
+  init {
+    require((numActivePeers?.toDouble() ?: 0.0) >= 0.0) { "RpcNetworkInfoResponse.numActivePeers must be >= 0.0" }}
+  init {
+    require((peerMaxCount?.toDouble() ?: 0.0) >= 0.0) { "RpcNetworkInfoResponse.peerMaxCount must be >= 0.0" }}
+  init {
+    require((receivedBytesPerSec?.toDouble() ?: 0.0) >= 0.0) { "RpcNetworkInfoResponse.receivedBytesPerSec must be >= 0.0" }}
+  init {
+    require((sentBytesPerSec?.toDouble() ?: 0.0) >= 0.0) { "RpcNetworkInfoResponse.sentBytesPerSec must be >= 0.0" }}
+}

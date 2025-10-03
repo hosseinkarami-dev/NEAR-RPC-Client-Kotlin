@@ -36,4 +36,11 @@ public data class RpcSplitStorageInfoResponse(
    */
   @SerialName("hot_db_kind")
   public val hotDbKind: String? = null,
-)
+) {
+  init {
+    require((coldHeadHeight?.toDouble() ?: 0.0) >= 0.0) { "RpcSplitStorageInfoResponse.coldHeadHeight must be >= 0.0" }}
+  init {
+    require((finalHeadHeight?.toDouble() ?: 0.0) >= 0.0) { "RpcSplitStorageInfoResponse.finalHeadHeight must be >= 0.0" }}
+  init {
+    require((headHeight?.toDouble() ?: 0.0) >= 0.0) { "RpcSplitStorageInfoResponse.headHeight must be >= 0.0" }}
+}

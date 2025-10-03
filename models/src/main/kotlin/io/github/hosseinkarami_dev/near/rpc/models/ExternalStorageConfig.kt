@@ -38,4 +38,15 @@ public data class ExternalStorageConfig(
    */
   @SerialName("num_concurrent_requests_during_catchup")
   public val numConcurrentRequestsDuringCatchup: Int? = 5,
-)
+) {
+  init {
+    require((externalStorageFallbackThreshold?.toDouble() ?: 0.0) >= 0.0) { "ExternalStorageConfig.externalStorageFallbackThreshold must be >= 0.0" }}
+  init {
+    require((numConcurrentRequests?.toDouble() ?: 0.0) >= 0.0) { "ExternalStorageConfig.numConcurrentRequests must be >= 0.0" }}
+  init {
+    require((numConcurrentRequests?.toDouble() ?: 0.0) <= 255.0) { "ExternalStorageConfig.numConcurrentRequests must be <= 255.0" }}
+  init {
+    require((numConcurrentRequestsDuringCatchup?.toDouble() ?: 0.0) >= 0.0) { "ExternalStorageConfig.numConcurrentRequestsDuringCatchup must be >= 0.0" }}
+  init {
+    require((numConcurrentRequestsDuringCatchup?.toDouble() ?: 0.0) <= 255.0) { "ExternalStorageConfig.numConcurrentRequestsDuringCatchup must be <= 255.0" }}
+}

@@ -105,4 +105,13 @@ public data class CongestionControlConfigView(
    */
   @SerialName("reject_tx_congestion_threshold")
   public val rejectTxCongestionThreshold: Double,
-)
+) {
+  init {
+    require((maxCongestionMemoryConsumption?.toDouble() ?: 0.0) >= 0.0) { "CongestionControlConfigView.maxCongestionMemoryConsumption must be >= 0.0" }}
+  init {
+    require((maxCongestionMissedChunks?.toDouble() ?: 0.0) >= 0.0) { "CongestionControlConfigView.maxCongestionMissedChunks must be >= 0.0" }}
+  init {
+    require((outgoingReceiptsBigSizeLimit?.toDouble() ?: 0.0) >= 0.0) { "CongestionControlConfigView.outgoingReceiptsBigSizeLimit must be >= 0.0" }}
+  init {
+    require((outgoingReceiptsUsualSizeLimit?.toDouble() ?: 0.0) >= 0.0) { "CongestionControlConfigView.outgoingReceiptsUsualSizeLimit must be >= 0.0" }}
+}

@@ -225,4 +225,71 @@ public data class RpcProtocolConfigResponse(
    */
   @SerialName("transaction_validity_period")
   public val transactionValidityPeriod: Long,
-)
+) {
+  init {
+    require(avgHiddenValidatorSeatsPerShard?.all { it >= 0 } == true) { "RpcProtocolConfigResponse.avgHiddenValidatorSeatsPerShard elements must be >= 0" }}
+  init {
+    require((blockProducerKickoutThreshold?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.blockProducerKickoutThreshold must be >= 0.0" }}
+  init {
+    require((blockProducerKickoutThreshold?.toDouble() ?: 0.0) <= 255.0) { "RpcProtocolConfigResponse.blockProducerKickoutThreshold must be <= 255.0" }}
+  init {
+    require((chunkProducerKickoutThreshold?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.chunkProducerKickoutThreshold must be >= 0.0" }}
+  init {
+    require((chunkProducerKickoutThreshold?.toDouble() ?: 0.0) <= 255.0) { "RpcProtocolConfigResponse.chunkProducerKickoutThreshold must be <= 255.0" }}
+  init {
+    require((chunkValidatorOnlyKickoutThreshold?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.chunkValidatorOnlyKickoutThreshold must be >= 0.0" }}
+  init {
+    require((chunkValidatorOnlyKickoutThreshold?.toDouble() ?: 0.0) <= 255.0) { "RpcProtocolConfigResponse.chunkValidatorOnlyKickoutThreshold must be <= 255.0" }}
+  init {
+    require((epochLength?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.epochLength must be >= 0.0" }}
+  init {
+    require((gasPriceAdjustmentRate?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.gasPriceAdjustmentRate must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((gasPriceAdjustmentRate?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.gasPriceAdjustmentRate must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((genesisHeight?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.genesisHeight must be >= 0.0" }}
+  init {
+    require((maxInflationRate?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.maxInflationRate must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((maxInflationRate?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.maxInflationRate must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((maxKickoutStakePerc?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.maxKickoutStakePerc must be >= 0.0" }}
+  init {
+    require((maxKickoutStakePerc?.toDouble() ?: 0.0) <= 255.0) { "RpcProtocolConfigResponse.maxKickoutStakePerc must be <= 255.0" }}
+  init {
+    require((minimumStakeDivisor?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.minimumStakeDivisor must be >= 0.0" }}
+  init {
+    require((minimumStakeRatio?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.minimumStakeRatio must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((minimumStakeRatio?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.minimumStakeRatio must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((minimumValidatorsPerShard?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.minimumValidatorsPerShard must be >= 0.0" }}
+  init {
+    require((numBlockProducerSeats?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.numBlockProducerSeats must be >= 0.0" }}
+  init {
+    require(numBlockProducerSeatsPerShard?.all { it >= 0 } == true) { "RpcProtocolConfigResponse.numBlockProducerSeatsPerShard elements must be >= 0" }}
+  init {
+    require((numBlocksPerYear?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.numBlocksPerYear must be >= 0.0" }}
+  init {
+    require((onlineMaxThreshold?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.onlineMaxThreshold must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((onlineMaxThreshold?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.onlineMaxThreshold must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((onlineMinThreshold?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.onlineMinThreshold must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((onlineMinThreshold?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.onlineMinThreshold must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((protocolRewardRate?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.protocolRewardRate must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((protocolRewardRate?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.protocolRewardRate must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((protocolUpgradeStakeThreshold?.size ?: 0) >= 2) { "RpcProtocolConfigResponse.protocolUpgradeStakeThreshold must contain at least 2 items (minItems = 2)" }}
+  init {
+    require((protocolUpgradeStakeThreshold?.size ?: 0) <= 2) { "RpcProtocolConfigResponse.protocolUpgradeStakeThreshold must contain no more than 2 items (maxItems = 2)" }}
+  init {
+    require((protocolVersion?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.protocolVersion must be >= 0.0" }}
+  init {
+    require((targetValidatorMandatesPerShard?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.targetValidatorMandatesPerShard must be >= 0.0" }}
+  init {
+    require((transactionValidityPeriod?.toDouble() ?: 0.0) >= 0.0) { "RpcProtocolConfigResponse.transactionValidityPeriod must be >= 0.0" }}
+}

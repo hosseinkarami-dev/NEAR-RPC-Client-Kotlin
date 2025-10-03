@@ -23,4 +23,9 @@ public data class StorageUsageConfigView(
    */
   @SerialName("num_extra_bytes_record")
   public val numExtraBytesRecord: Long,
-)
+) {
+  init {
+    require((numBytesAccount?.toDouble() ?: 0.0) >= 0.0) { "StorageUsageConfigView.numBytesAccount must be >= 0.0" }}
+  init {
+    require((numExtraBytesRecord?.toDouble() ?: 0.0) >= 0.0) { "StorageUsageConfigView.numExtraBytesRecord must be >= 0.0" }}
+}

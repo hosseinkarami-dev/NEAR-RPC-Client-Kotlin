@@ -58,7 +58,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("total_number_of_actions")
       public val totalNumberOfActions: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "TotalNumberOfActionsExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((totalNumberOfActions?.toDouble() ?: 0.0) >= 0.0) { "TotalNumberOfActionsExceededPayload.totalNumberOfActions must be >= 0.0" }}
+    }
   }
 
   /**
@@ -84,7 +89,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("total_number_of_bytes")
       public val totalNumberOfBytes: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "AddKeyMethodNamesNumberOfBytesExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((totalNumberOfBytes?.toDouble() ?: 0.0) >= 0.0) { "AddKeyMethodNamesNumberOfBytesExceededPayload.totalNumberOfBytes must be >= 0.0" }}
+    }
   }
 
   /**
@@ -109,7 +119,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "AddKeyMethodNameLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "AddKeyMethodNameLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -157,7 +172,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("size")
       public val size: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "ContractSizeExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((size?.toDouble() ?: 0.0) >= 0.0) { "ContractSizeExceededPayload.size must be >= 0.0" }}
+    }
   }
 
   /**
@@ -182,7 +202,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "FunctionCallMethodNameLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "FunctionCallMethodNameLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -207,7 +232,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "FunctionCallArgumentsLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "FunctionCallArgumentsLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   /**
@@ -264,7 +294,10 @@ public sealed class ActionsValidationError {
        */
       @SerialName("version")
       public val version: Int,
-    )
+    ) {
+      init {
+        require((version?.toDouble() ?: 0.0) >= 0.0) { "UnsupportedProtocolFeaturePayload.version must be >= 0.0" }}
+    }
   }
 
   @Serializable
@@ -301,7 +334,12 @@ public sealed class ActionsValidationError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "DeterministicStateInitKeyLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "DeterministicStateInitKeyLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 
   @Serializable
@@ -324,6 +362,11 @@ public sealed class ActionsValidationError {
        */
       @SerialName("limit")
       public val limit: Long,
-    )
+    ) {
+      init {
+        require((length?.toDouble() ?: 0.0) >= 0.0) { "DeterministicStateInitValueLengthExceededPayload.length must be >= 0.0" }}
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "DeterministicStateInitValueLengthExceededPayload.limit must be >= 0.0" }}
+    }
   }
 }

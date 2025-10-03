@@ -37,4 +37,7 @@ public data class ShardLayoutV1(
    */
   @SerialName("version")
   public val version: Int,
-)
+) {
+  init {
+    require((version?.toDouble() ?: 0.0) >= 0.0) { "ShardLayoutV1.version must be >= 0.0" }}
+}

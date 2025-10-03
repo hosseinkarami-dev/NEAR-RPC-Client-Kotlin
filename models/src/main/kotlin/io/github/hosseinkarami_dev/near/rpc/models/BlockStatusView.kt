@@ -17,4 +17,7 @@ public data class BlockStatusView(
    */
   @SerialName("height")
   public val height: Long,
-)
+) {
+  init {
+    require((height?.toDouble() ?: 0.0) >= 0.0) { "BlockStatusView.height must be >= 0.0" }}
+}

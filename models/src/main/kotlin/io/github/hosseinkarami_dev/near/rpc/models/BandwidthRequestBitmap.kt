@@ -17,4 +17,11 @@ public data class BandwidthRequestBitmap(
    */
   @SerialName("data")
   public val `data`: List<Int>,
-)
+) {
+  init {
+    require((`data`?.size ?: 0) >= 5) { "BandwidthRequestBitmap.data must contain at least 5 items (minItems = 5)" }}
+  init {
+    require((`data`?.size ?: 0) <= 5) { "BandwidthRequestBitmap.data must contain no more than 5 items (maxItems = 5)" }}
+  init {
+    require(`data`?.all { it >= 0 && it <= 255 } == true) { "BandwidthRequestBitmap.data elements must be in range 0..255" }}
+}

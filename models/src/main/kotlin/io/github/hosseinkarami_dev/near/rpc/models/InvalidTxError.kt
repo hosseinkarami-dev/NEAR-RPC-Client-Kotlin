@@ -74,7 +74,12 @@ public sealed class InvalidTxError {
        */
       @SerialName("tx_nonce")
       public val txNonce: Long,
-    )
+    ) {
+      init {
+        require((akNonce?.toDouble() ?: 0.0) >= 0.0) { "InvalidNoncePayload.akNonce must be >= 0.0" }}
+      init {
+        require((txNonce?.toDouble() ?: 0.0) >= 0.0) { "InvalidNoncePayload.txNonce must be >= 0.0" }}
+    }
   }
 
   /**
@@ -99,7 +104,12 @@ public sealed class InvalidTxError {
        */
       @SerialName("upper_bound")
       public val upperBound: Long,
-    )
+    ) {
+      init {
+        require((txNonce?.toDouble() ?: 0.0) >= 0.0) { "NonceTooLargePayload.txNonce must be >= 0.0" }}
+      init {
+        require((upperBound?.toDouble() ?: 0.0) >= 0.0) { "NonceTooLargePayload.upperBound must be >= 0.0" }}
+    }
   }
 
   /**
@@ -222,7 +232,12 @@ public sealed class InvalidTxError {
        */
       @SerialName("size")
       public val size: Long,
-    )
+    ) {
+      init {
+        require((limit?.toDouble() ?: 0.0) >= 0.0) { "TransactionSizeExceededPayload.limit must be >= 0.0" }}
+      init {
+        require((size?.toDouble() ?: 0.0) >= 0.0) { "TransactionSizeExceededPayload.size must be >= 0.0" }}
+    }
   }
 
   /**
@@ -263,7 +278,10 @@ public sealed class InvalidTxError {
        */
       @SerialName("shard_id")
       public val shardId: Int,
-    )
+    ) {
+      init {
+        require((shardId?.toDouble() ?: 0.0) >= 0.0) { "ShardCongestedPayload.shardId must be >= 0.0" }}
+    }
   }
 
   /**
@@ -291,6 +309,11 @@ public sealed class InvalidTxError {
        */
       @SerialName("shard_id")
       public val shardId: Int,
-    )
+    ) {
+      init {
+        require((missedChunks?.toDouble() ?: 0.0) >= 0.0) { "ShardStuckPayload.missedChunks must be >= 0.0" }}
+      init {
+        require((shardId?.toDouble() ?: 0.0) >= 0.0) { "ShardStuckPayload.shardId must be >= 0.0" }}
+    }
   }
 }

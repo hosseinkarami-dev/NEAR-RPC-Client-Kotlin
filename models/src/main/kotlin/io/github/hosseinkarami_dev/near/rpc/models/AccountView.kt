@@ -32,4 +32,9 @@ public data class AccountView(
    */
   @SerialName("storage_usage")
   public val storageUsage: Long,
-)
+) {
+  init {
+    require((storagePaidAt?.toDouble() ?: 0.0) >= 0.0) { "AccountView.storagePaidAt must be >= 0.0" }}
+  init {
+    require((storageUsage?.toDouble() ?: 0.0) >= 0.0) { "AccountView.storageUsage must be >= 0.0" }}
+}

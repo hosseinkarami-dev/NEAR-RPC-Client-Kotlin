@@ -49,4 +49,9 @@ public data class BlockHeaderInnerLiteView(
   public val timestamp: Long,
   @SerialName("timestamp_nanosec")
   public val timestampNanosec: String,
-)
+) {
+  init {
+    require((height?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderInnerLiteView.height must be >= 0.0" }}
+  init {
+    require((timestamp?.toDouble() ?: 0.0) >= 0.0) { "BlockHeaderInnerLiteView.timestamp must be >= 0.0" }}
+}

@@ -29,4 +29,9 @@ public data class NetworkInfoView(
   public val tier1AccountsKeys: List<PublicKey>,
   @SerialName("tier1_connections")
   public val tier1Connections: List<PeerInfoView>,
-)
+) {
+  init {
+    require((numConnectedPeers?.toDouble() ?: 0.0) >= 0.0) { "NetworkInfoView.numConnectedPeers must be >= 0.0" }}
+  init {
+    require((peerMaxCount?.toDouble() ?: 0.0) >= 0.0) { "NetworkInfoView.peerMaxCount must be >= 0.0" }}
+}

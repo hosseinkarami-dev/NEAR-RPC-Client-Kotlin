@@ -24,4 +24,9 @@ public data class CatchupStatusView(
    */
   @SerialName("sync_block_height")
   public val syncBlockHeight: Long,
-)
+) {
+  init {
+    require(shardSyncStatus?.keys?.all { Regex("^\\d+${'$'}").matches(it) } != false) { "CatchupStatusView.shardSyncStatus keys must match pattern(s): ^\\d+${'$'}" }}
+  init {
+    require((syncBlockHeight?.toDouble() ?: 0.0) >= 0.0) { "CatchupStatusView.syncBlockHeight must be >= 0.0" }}
+}

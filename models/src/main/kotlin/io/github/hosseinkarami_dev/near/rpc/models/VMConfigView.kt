@@ -84,4 +84,9 @@ public data class VMConfigView(
    */
   @SerialName("vm_kind")
   public val vmKind: VMKind,
-)
+) {
+  init {
+    require((growMemCost?.toDouble() ?: 0.0) >= 0.0) { "VMConfigView.growMemCost must be >= 0.0" }}
+  init {
+    require((regularOpCost?.toDouble() ?: 0.0) >= 0.0) { "VMConfigView.regularOpCost must be >= 0.0" }}
+}

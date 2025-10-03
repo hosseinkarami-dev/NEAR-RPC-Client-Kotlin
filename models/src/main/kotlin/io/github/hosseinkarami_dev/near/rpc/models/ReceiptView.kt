@@ -20,4 +20,7 @@ public data class ReceiptView(
   public val receiptId: CryptoHash,
   @SerialName("receiver_id")
   public val receiverId: AccountId,
-)
+) {
+  init {
+    require((priority?.toDouble() ?: 0.0) >= 0.0) { "ReceiptView.priority must be >= 0.0" }}
+}

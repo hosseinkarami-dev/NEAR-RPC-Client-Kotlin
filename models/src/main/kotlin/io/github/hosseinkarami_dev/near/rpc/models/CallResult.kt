@@ -15,4 +15,7 @@ public data class CallResult(
   public val logs: List<String>,
   @SerialName("result")
   public val result: List<Int>,
-)
+) {
+  init {
+    require(result?.all { it >= 0 && it <= 255 } == true) { "CallResult.result elements must be in range 0..255" }}
+}

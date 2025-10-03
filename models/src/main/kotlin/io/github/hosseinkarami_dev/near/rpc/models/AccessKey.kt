@@ -27,4 +27,7 @@ public data class AccessKey(
    */
   @SerialName("permission")
   public val permission: AccessKeyPermission,
-)
+) {
+  init {
+    require((nonce?.toDouble() ?: 0.0) >= 0.0) { "AccessKey.nonce must be >= 0.0" }}
+}

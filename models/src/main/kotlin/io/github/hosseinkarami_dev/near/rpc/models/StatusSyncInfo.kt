@@ -45,4 +45,11 @@ public data class StatusSyncInfo(
   public val latestStateRoot: CryptoHash,
   @SerialName("syncing")
   public val syncing: Boolean,
-)
+) {
+  init {
+    require((earliestBlockHeight?.toDouble() ?: 0.0) >= 0.0) { "StatusSyncInfo.earliestBlockHeight must be >= 0.0" }}
+  init {
+    require((epochStartHeight?.toDouble() ?: 0.0) >= 0.0) { "StatusSyncInfo.epochStartHeight must be >= 0.0" }}
+  init {
+    require((latestBlockHeight?.toDouble() ?: 0.0) >= 0.0) { "StatusSyncInfo.latestBlockHeight must be >= 0.0" }}
+}
