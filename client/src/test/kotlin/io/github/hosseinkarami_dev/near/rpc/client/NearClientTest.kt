@@ -1,28 +1,11 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
-import io.github.hosseinkarami_dev.near.rpc.models.AccountId
-import io.github.hosseinkarami_dev.near.rpc.models.BlockId
-import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
-import io.github.hosseinkarami_dev.near.rpc.models.EpochId
-import io.github.hosseinkarami_dev.near.rpc.models.Finality
-import io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig
-import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest
-import org.junit.jupiter.api.Test
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Test
 
 class NearClientTest {
 

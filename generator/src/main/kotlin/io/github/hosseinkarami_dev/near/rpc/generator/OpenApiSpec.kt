@@ -1,4 +1,4 @@
-package io.github.hosseinkarami_dev.near.rpc.generator.models
+package io.github.hosseinkarami_dev.near.rpc.generator
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,4 +1,4 @@
-package io.github.hosseinkarami_dev.near.rpc.generator.models
+package io.github.hosseinkarami_dev.near.rpc.generator
 
 data class SealedInfo(
     val packageName: String,

@@ -12,9 +12,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
-import io.github.hosseinkarami_dev.near.rpc.generator.models.OpenApiSpec
-import io.github.hosseinkarami_dev.near.rpc.generator.models.Operation
-import io.github.hosseinkarami_dev.near.rpc.generator.models.Schema
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject

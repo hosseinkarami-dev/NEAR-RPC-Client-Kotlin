@@ -11,7 +11,6 @@ import com.squareup.kotlinpoet.U_BYTE
 import com.squareup.kotlinpoet.U_INT
 import com.squareup.kotlinpoet.U_LONG
 import com.squareup.kotlinpoet.U_SHORT
-import io.github.hosseinkarami_dev.near.rpc.generator.models.Schema
 import kotlin.collections.isNullOrEmpty
 
 object SchemaHelper {

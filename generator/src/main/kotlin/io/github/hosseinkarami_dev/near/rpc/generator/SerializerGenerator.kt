@@ -9,8 +9,6 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import io.github.hosseinkarami_dev.near.rpc.generator.models.SealedInfo
-import io.github.hosseinkarami_dev.near.rpc.generator.models.VariantInfo
 import kotlinx.serialization.SerializationException
 import java.io.File
 
