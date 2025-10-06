@@ -9,7 +9,7 @@ A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This reposit
 - `near-rpc-client` — Ergonomic Kotlin client built on Ktor that exposes NEAR JSON-RPC methods as `suspend` functions.  
 - `generator` — CLI tool that parses the NEAR OpenAPI spec and regenerates `models` and `client`.
 
-> **Current status:** This library is published for **Android / JVM**. The base code is written entirely in Kotlinx Serialization and Ktor, so it can be easily ported to Kotlin MultiPlatform (with some minor changes, of course). If the NEAR team or the community requests an official multi-platform release, migration to Kotlin Multiplatform (KMP) for iOS and Desktop will be considered.
+> **Current status:** This library is published for **Android / JVM**. The base code is written entirely in Kotlinx Serialization and Ktor, so it can be easily ported to Kotlin MultiPlatform (with some minor changes, of course). If the NEAR team or the community requests an official multi-platform release, migration to KMP for iOS and Desktop will be considered.
 
 ---
 

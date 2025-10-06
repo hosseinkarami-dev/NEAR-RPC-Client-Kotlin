@@ -1,18 +1,17 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
 
-import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.DOUBLE
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.LONG
-import com.squareup.kotlinpoet.MAP
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.U_BYTE
+import com.squareup.kotlinpoet.U_INT
+import com.squareup.kotlinpoet.U_LONG
+import com.squareup.kotlinpoet.U_SHORT
+import io.github.hosseinkarami_dev.near.rpc.generator.models.Schema
 import kotlin.collections.isNullOrEmpty
 
 object SchemaHelper {
@@ -41,12 +40,16 @@ object SchemaHelper {
         "boolean" -> BOOLEAN
         "number" -> DOUBLE
         "integer" -> when (format) {
-            "uint64", "int64", "long" -> LONG
-            "uint32", "int32" -> INT
-            "uint16", "uint8", "uint" -> INT
+            "int64" -> LONG
+            "uint64" -> U_LONG
+            "int32" -> INT
+            "uint32" -> U_INT
+            "uint16" -> U_SHORT
+            "uint8" -> U_BYTE
+            "uint" -> U_INT
+            "long" -> LONG
             else -> INT
         }
-
         else -> null
     }
 

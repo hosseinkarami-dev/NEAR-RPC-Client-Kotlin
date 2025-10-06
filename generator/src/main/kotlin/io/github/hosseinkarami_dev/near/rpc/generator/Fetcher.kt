@@ -1,5 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
 
+import io.github.hosseinkarami_dev.near.rpc.generator.models.OpenApiSpec
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*

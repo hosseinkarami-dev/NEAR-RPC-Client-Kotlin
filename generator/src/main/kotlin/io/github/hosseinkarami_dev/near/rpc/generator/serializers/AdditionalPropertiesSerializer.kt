@@ -12,7 +12,7 @@ import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
-import io.github.hosseinkarami_dev.near.rpc.generator.Schema
+import io.github.hosseinkarami_dev.near.rpc.generator.models.Schema
 
 object AdditionalPropertiesSerializer : KSerializer<Any?> {
     override val descriptor: SerialDescriptor =

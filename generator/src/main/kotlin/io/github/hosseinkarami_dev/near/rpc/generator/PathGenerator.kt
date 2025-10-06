@@ -12,31 +12,22 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
+import io.github.hosseinkarami_dev.near.rpc.generator.models.OpenApiSpec
+import io.github.hosseinkarami_dev.near.rpc.generator.models.Operation
+import io.github.hosseinkarami_dev.near.rpc.generator.models.Schema
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
-import java.util.Locale
 import kotlin.collections.iterator
 
-// --- Assumes OpenApiSpec, Operation, PathItem, Schema classes exist in your generator infra
-// --- Adjust imports / types for your spec parser accordingly.
-
+// PathGenerator: generates a NearClient class with typed suspend functions for each operation.
 object PathGenerator {
 
-    /**
-     * Generate a NearClient class file implementing typed suspend functions for each operation.
-     *
-     * @param spec parsed OpenApi spec
-     * @param outputDir directory to write generated file(s)
-     * @param clientPackage package for the generated client (where RpcResponse/RpcError also reside)
-     * @param modelsPackage package where the generated models live (JsonRpcRequestForX, JsonRpcEnvelope, responses)
-     * @param clientClassName generated class name (default "NearClient")
-     */
     fun generateNearClientFile(
         spec: OpenApiSpec,
-        outputDir: File,
+        output: File,
         clientPackage: String,
         modelsPackage: String,
         clientClassName: String = "NearClient"
@@ -53,7 +44,6 @@ object PathGenerator {
         val classBuilder = TypeSpec.classBuilder(clientClassName)
             .addModifiers(KModifier.PUBLIC)
 
-        // primary constructor(httpClient: HttpClient, baseUrl: String, json: Json = Json { ignoreUnknownKeys = true })
         val ctor = FunSpec.constructorBuilder()
             .addParameter("httpClient", httpClientClass)
             .addParameter("baseUrl", stringClass)
@@ -65,7 +55,6 @@ object PathGenerator {
             .build()
         classBuilder.primaryConstructor(ctor)
 
-        // properties
         classBuilder.addProperty(
             PropertySpec.builder("httpClient", httpClientClass)
                 .addModifiers(KModifier.PRIVATE)
@@ -85,7 +74,6 @@ object PathGenerator {
                 .build()
         )
 
-        // nextId helper (returns String UUID)
         val nextIdFun = FunSpec.builder("nextId")
             .addModifiers(KModifier.PRIVATE)
             .returns(stringClass)
@@ -93,41 +81,37 @@ object PathGenerator {
             .build()
         classBuilder.addFunction(nextIdFun)
 
-        // Iterate operations (prefer POST then GET)
         for ((path, pathItem) in spec.paths) {
             val op = pathItem.post ?: pathItem.get ?: continue
             val rawOperationId = op.operationId
             val methodName = rawOperationId.camelCase()
 
-            // determine wrapper request/response types from spec
-            val reqWrapperStr = extractRequestType(op, modelsPackage) // e.g. org.near.rpc_models.JsonRpcRequestForStatus
-            val respWrapperStr = extractResponseType(op, modelsPackage) // e.g. org.near.rpc_models.JsonRpcResponse_for_RpcStatusResponse...
+            val reqWrapperStr = extractRequestType(op, modelsPackage)
+            val respWrapperStr = extractResponseType(op, modelsPackage)
+            val respWrapperRef = extractResponseWrapperRef(op)
 
             if (reqWrapperStr == null || respWrapperStr == null) {
-                // skip when we can't determine both request wrapper and response wrapper
                 continue
             }
 
             val reqWrapperClassName = toClassNameOrBestGuess(reqWrapperStr)
+            val respWrapperClassName = toClassNameOrBestGuess(respWrapperStr)
 
             val resultTypeStr = extractResultInnerTypeForOperation(op, spec, modelsPackage)
                 ?: guessResultTypeFromResponseWrapperName(respWrapperStr, modelsPackage, spec)
 
             val resultTypeName = resultTypeStr?.let { toTypeName(it) } ?: ClassName("kotlinx.serialization.json", "JsonElement")
 
-            // Determine params type (params inside the wrapper) so function signature can have typed param
             val paramsTypeStr = resolveParamsTypeFromOperation(op, spec, modelsPackage)
             val isUnitOnly = paramsTypeStr == "Unit"
             val hasParams = paramsTypeStr != null && !isUnitOnly
             val paramsTypeName = if (hasParams) toTypeName(paramsTypeStr) else UNIT
             val paramsNullable = if (hasParams) paramsAreNullableFromOperation(op, spec) else true
 
-            // Build function
             val funBuilder = FunSpec.builder(methodName)
                 .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
                 .returns(rpcResponseClass.parameterizedBy(resultTypeName))
 
-            // Add params param if needed
             if (hasParams) {
                 if (paramsNullable) {
                     val nullableType = paramsTypeName.copy(nullable = true)
@@ -143,7 +127,6 @@ object PathGenerator {
                 }
             }
 
-            // KDoc
             val summary = op.summary?.trim().takeIf { !it.isNullOrBlank() }
             val description = op.description?.trim().takeIf { !it.isNullOrBlank() }
             val mainParts = mutableListOf<String>()
@@ -165,23 +148,19 @@ object PathGenerator {
                 rpcResponseClass.parameterizedBy(resultTypeName)
             )
 
-            // --- DEPRECATION HANDLING ---
             val containsDeprecatedTag = (summary?.contains("[Deprecated]") == true) || (description?.contains("[Deprecated]") == true)
             val isDeprecated = containsDeprecatedTag
 
             if (isDeprecated) {
-                // build message
                 val depMessage = buildString {
                     if (summary != null) append(summary)
                     else append(description)
                     append(" — deprecated.")
                 }
 
-                // try extract replacement: "Consider using <name> instead."
                 val replacerRegex = Regex("Consider using ([a-zA-Z0-9_]+) instead", RegexOption.IGNORE_CASE)
                 val replacerSource = (description ?: summary ?: "")
                 val replaceExpr = replacerRegex.find(replacerSource)?.groups?.get(1)?.value?.let { raw ->
-                    // map raw to camelCase method name; append (params) to be a helpful ReplaceWith
                     val replacementMethod = raw.camelCase()
                     "${replacementMethod}(params)"
                 }
@@ -199,7 +178,6 @@ object PathGenerator {
                 funBuilder.addAnnotation(depBuilder)
             }
 
-            // Build CodeBlock: create request wrapper, post, read body, decode envelope(result serializer), handle errors
             val methodEnumClass = ClassName(reqWrapperClassName.packageName, reqWrapperClassName.simpleName, "Method")
             val constantName = rawOperationId.constantName()
 
@@ -215,65 +193,35 @@ object PathGenerator {
             }
             cb.addStatement(")")
 
-            // HTTP POST with encoded request body
-            cb.addStatement("val httpResponse = try {")
-            cb.addStatement("  httpClient.post(baseUrl) {")
+            cb.addStatement("val httpResponse = httpClient.post(baseUrl) {")
             cb.addStatement("    contentType(%T.Application.Json)", ClassName("io.ktor.http", "ContentType"))
             cb.addStatement("    setBody(json.encodeToString(%T.serializer(), request))", reqWrapperClassName)
             cb.addStatement("  }")
-            cb.addStatement("} catch (e: Exception) {")
-            cb.addStatement("  return %T.Failure(%T(-1000, \"Network error: \${e.message}\"))", rpcResponseClass, rpcErrorClass)
-            cb.addStatement("}")
 
-            // Read body text
-            cb.addStatement("val respBody = try {")
-            cb.addStatement("  httpResponse.bodyAsText()")
-            cb.addStatement("} catch (e: Exception) {")
-            cb.addStatement("  return %T.Failure(%T(-1001, \"Could not read body: \${e.message}\"))", rpcResponseClass, rpcErrorClass)
-            cb.addStatement("}")
+            cb.addStatement("val respBody = httpResponse.bodyAsText()")
 
-            // ------------------ robust envelope decode ------------------
-            if (resultTypeStr != null && resultTypeStr.startsWith("List<")) {
-                // List case: might be "List<...>" or "List<...>?"
-                val innerRaw = resultTypeStr.removePrefix("List<").removeSuffix(">").removeSuffix("?")
-                val innerClass = toClassNameOrBestGuess(innerRaw)
-                val listSerializer = ClassName("kotlinx.serialization.builtins", "ListSerializer")
+            // ------------------ robust decode: prefer using response-wrapper schema ref when present
+            if (respWrapperRef != null) {
+                val localErrorClass = ClassName(modelsPackage, "LocalError")
 
-                cb.addStatement("val envelope = try {")
-                cb.addStatement("  json.decodeFromString(%T.serializer(%T(%T.serializer())), respBody)", jsonRpcEnvelopeClass, listSerializer, innerClass)
-                cb.addStatement("} catch (e: Exception) {")
-                cb.addStatement("  return %T.Failure(%T(-1002, \"Invalid JSON-RPC envelope: \${e.message}\"))", rpcResponseClass, rpcErrorClass)
+                cb.addStatement("try {")
+                // Use the exact response-wrapper schema referenced by the operation (modelsPackage + wrapper name)
+                cb.addStatement("val decoded = json.decodeFromString(%T.serializer(), respBody)", respWrapperClassName)
+                // Map sealed variants to RpcResponse
+                cb.addStatement("return when (decoded) {")
+                cb.addStatement("  is %T.Result -> %T.Success(decoded.result)", respWrapperClassName, rpcResponseClass)
+                cb.addStatement("  is %T.Error -> %T.Failure(decoded.error)", respWrapperClassName, rpcResponseClass)
                 cb.addStatement("}")
-            } else {
-                // Non-list case: ensure we call .serializer() on the non-nullable class name
-                val serializerClassName = if (resultTypeStr != null) {
-                    // strip trailing ? if present
-                    val clean = if (resultTypeStr.endsWith("?")) resultTypeStr.removeSuffix("?") else resultTypeStr
-                    toClassNameOrBestGuess(clean)
-                } else {
-                    ClassName("kotlinx.serialization.json", "JsonElement")
-                }
-
-                cb.addStatement("val envelope = try {")
-                cb.addStatement("  json.decodeFromString(%T.serializer(%T.serializer()), respBody)", jsonRpcEnvelopeClass, serializerClassName)
-                cb.addStatement("} catch (e: Exception) {")
-                cb.addStatement("  return %T.Failure(%T(-1002, \"Invalid JSON-RPC envelope: \${e.message}\"))", rpcResponseClass, rpcErrorClass)
+                cb.addStatement("} catch(e: Exception) {")
+                cb.addStatement("return RpcResponse.Failure(localToRpcError(e, -1001L))")
                 cb.addStatement("}")
             }
 
-            // Handle error/result
-            cb.addStatement("envelope.error?.let { return %T.Failure(it) }", rpcResponseClass)
-            cb.addStatement("val result = envelope.result ?: return %T.Failure(%T(-1003, \"Missing result field\"))", rpcResponseClass, rpcErrorClass)
-            cb.addStatement("return %T.Success(result)", rpcResponseClass)
-
             funBuilder.addCode(cb.build())
-
             classBuilder.addFunction(funBuilder.build())
         }
 
-        // Build file with imports
         val fileSpec = FileSpec.builder(clientPackage, clientClassName)
-            // .addComment("Auto-generated by PathGenerator. Do not edit by hand.")
             .addImport("io.ktor.client.request", "post", "setBody")
             .addImport("io.ktor.client.statement", "bodyAsText")
             .addImport("io.ktor.http", "ContentType", "contentType")
@@ -284,20 +232,18 @@ object PathGenerator {
             .addType(classBuilder.build())
             .build()
 
-        fileSpec.writeTo(outputDir)
-        println("✅ Routes Generated Successfully to $outputDir")
+        fileSpec.writeTo(output)
+        println("✅ Routes Generated Successfully to $output")
     }
 
-    // ------------------- helper utilities (same as earlier) -------------------
+    // ------------------- helper utilities -------------------
 
     private fun toTypeName(typeString: String): TypeName {
-        // handle trailing nullable "?"
         if (typeString.endsWith("?")) {
             val inner = typeString.removeSuffix("?")
             return toTypeName(inner).copy(nullable = true)
         }
 
-        // List<T> case
         if (typeString.startsWith("List<") && typeString.endsWith(">")) {
             val inner = typeString.removePrefix("List<").removeSuffix(">")
             val innerType = toTypeName(inner)
@@ -350,6 +296,14 @@ object PathGenerator {
         return schemaTypeName(schema, modelsPackage)
     }
 
+    private fun extractResponseWrapperRef(op: Operation): String? {
+        val candidate = op.responses["200"] ?: op.responses["201"] ?: op.responses["default"]
+        ?: op.responses.values.firstOrNull()
+        val media = candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
+        val schema = media?.schema ?: return null
+        return schema.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull
+    }
+
     private fun schemaTypeName(schema: JsonElement?, modelsPackage: String): String? {
         if (schema == null) return null
         val obj = schema.jsonObject
@@ -396,23 +350,18 @@ object PathGenerator {
 
         val paramsSchema = wrapperSchema.properties?.get("params") ?: return null
 
-        // If params is a $ref, resolve referenced schema first (so we can detect enum:[null])
         paramsSchema.ref?.let { pRef ->
             val pName = pRef.substringAfterLast('/')
             val pSchema = spec.components.schemas[pName]
-            // If the referenced schema is literally enum:[null] or nullable-only -> treat as Unit
             if (pSchema != null) {
                 if ((pSchema.enum != null && pSchema.enum.size == 1 && pSchema.enum[0] == null) || pSchema.nullable == true) {
                     return "Unit"
                 }
-                // Otherwise, return the referenced model class
                 return "$modelsPackage.${pName.pascalCase()}"
             }
-            // fallback: if we couldn't find the referenced schema definition, still return a model ref
             return "$modelsPackage.${pName.pascalCase()}"
         }
 
-        // If params is inline array
         if (paramsSchema.type == "array") {
             val item = paramsSchema.items
             if (item?.ref != null) {
@@ -422,7 +371,6 @@ object PathGenerator {
             return "List<JsonElement>"
         }
 
-        // primitives/object fallback
         when (paramsSchema.type) {
             "string" -> return "String"
             "integer" -> return "Int"
@@ -449,7 +397,6 @@ object PathGenerator {
 
         val paramsSchema = wrapperSchema.properties?.get("params") ?: return true
 
-        // If params is a $ref, inspect the referenced schema
         paramsSchema.ref?.let { pRef ->
             val pName = pRef.substringAfterLast('/')
             val pSchema = spec.components.schemas[pName] ?: return false
@@ -478,12 +425,10 @@ object PathGenerator {
         val wrapperName = wrapperRef.substringAfterLast('/')
         val wrapperSchema = spec.components.schemas[wrapperName] ?: return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage, spec)
 
-        // helper lambda to inspect a subschema for properties.result
         fun inspectForResult(schemaObj: Schema?): String? {
             if (schemaObj == null) return null
             val resultProp = schemaObj.properties?.get("result") ?: return null
 
-            // case: result is a $ref to some schema
             resultProp.ref?.let { ref ->
                 val innerName = ref.substringAfterLast('/')
                 return "$modelsPackage.${innerName.pascalCase()}"
@@ -496,14 +441,12 @@ object PathGenerator {
                     (v.enum?.size == 1 && v.enum[0] == null) || (v.nullable == true) || (v.type == "null")
                 }
                 if (refVariant != null && nullVariant != null) {
-                    // case: refVariant is a direct $ref to a schema
                     if (!refVariant.ref.isNullOrBlank()) {
                         val ref = refVariant.ref.substringAfterLast("/")
                         val refClass = ref.pascalCase()
                         return "$modelsPackage.${refClass}?"
                     }
 
-                    // case: refVariant is an array of $ref (items.ref)
                     if (refVariant.type == "array" && refVariant.items?.ref != null) {
                         val itemRef = refVariant.items.ref.substringAfterLast("/")
                         val itemClass = itemRef.pascalCase()
@@ -512,8 +455,6 @@ object PathGenerator {
                 }
             }
 
-
-            // case: result is array of items.$ref
             if (resultProp.type == "array") {
                 val items = resultProp.items
                 if (items?.ref != null) {
@@ -523,7 +464,6 @@ object PathGenerator {
                 return "List<JsonElement>"
             }
 
-            // primitives/object fallback
             return when (resultProp.type) {
                 "string" -> "String"
                 "integer" -> "Int"
@@ -534,12 +474,9 @@ object PathGenerator {
             }
         }
 
-        // 1) check top-level wrapper schema itself
         inspectForResult(wrapperSchema)?.let { return it }
 
-        // 2) if wrapper uses oneOf/anyOf/allOf, inspect each alternative
         wrapperSchema.oneOf?.forEach { altNameOrRef ->
-            // altNameOrRef might be a $ref or an inline schema object in your parsed model
             val altSchema = if (altNameOrRef.ref != null) {
                 val alt = altNameOrRef.ref.substringAfterLast('/')
                 spec.components.schemas[alt]
@@ -549,7 +486,6 @@ object PathGenerator {
             inspectForResult(altSchema)?.let { return it }
         }
 
-        // fallback to regex-based guess
         return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage, spec)
     }
 
@@ -564,26 +500,22 @@ object PathGenerator {
             else -> respWrapper
         }
 
-        // try to find the wrapper schema in components
         val wrapperSchema = spec.components.schemas[wrapperName]
 
         fun extractFromSchema(schema: Schema?): String? {
             if (schema == null) return null
 
-            // direct result property with $ref
             val resultProp = schema.properties?.get("result")
             resultProp?.ref?.let { ref ->
                 val inner = ref.substringAfterLast('/')
                 return "$modelsPackage.${inner.pascalCase()}"
             }
 
-            // result as array of $ref
             if (resultProp?.type == "array" && resultProp.items?.ref != null) {
                 val item = resultProp.items.ref.substringAfterLast('/')
                 return "List<$modelsPackage.${item.pascalCase()}>"
             }
 
-            // result could be primitive/object -> map to simple types
             resultProp?.type?.let { t ->
                 return when (t) {
                     "string" -> "String"
@@ -595,21 +527,17 @@ object PathGenerator {
                 }
             }
 
-            // if this schema itself uses oneOf/anyOf/allOf, inspect variants
             val variants = mutableListOf<Schema?>()
             schema.oneOf?.let { variants.addAll(it) }
             schema.anyOf?.let { variants.addAll(it) }
             schema.allOf?.let { variants.addAll(it) }
 
             for (variant in variants) {
-                // variant might be a $ref wrapper in your parsed model (variant.ref), or inline schema object
                 variant?.ref?.let { vref ->
-                    // variant is a $ref to another schema name
                     val vname = vref.substringAfterLast('/')
                     val vschema = spec.components.schemas[vname]
                     extractFromSchema(vschema)?.let { return it }
                 } ?: run {
-                    // inline schema - inspect it directly
                     extractFromSchema(variant)?.let { return it }
                 }
             }
@@ -617,10 +545,8 @@ object PathGenerator {
             return null
         }
 
-        // 1) try direct extraction from the wrapper schema (preferred & robust)
         extractFromSchema(wrapperSchema)?.let { return it }
 
-        // 2) if not found, fallback to the old name-based heuristics (keep backwards-compat)
         val name = wrapperName
         val prefix = "JsonRpcResponse_for_"
         val suffix = "_and_RpcError"
