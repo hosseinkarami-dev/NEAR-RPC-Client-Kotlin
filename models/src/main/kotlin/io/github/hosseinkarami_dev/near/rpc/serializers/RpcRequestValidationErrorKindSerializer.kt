@@ -1,0 +1,106 @@
+package io.github.hosseinkarami_dev.near.rpc.serializers
+
+import io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind
+import kotlin.collections.mutableMapOf
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.serializer
+
+public object RpcRequestValidationErrorKindSerializer : KSerializer<RpcRequestValidationErrorKind> {
+  override val descriptor: SerialDescriptor =
+      buildClassSerialDescriptor("io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind")
+
+  override fun serialize(encoder: Encoder, `value`: RpcRequestValidationErrorKind) {
+    if (encoder is JsonEncoder) {
+      val jsonEncoder = encoder
+      when (value) {
+        is RpcRequestValidationErrorKind.MethodNotFound -> {
+          val map = mutableMapOf<String, JsonElement>()
+          map["info"] = jsonEncoder.json.encodeToJsonElement(serializer<RpcRequestValidationErrorKind.MethodNotFound.InfoPayload>(), value.info)
+          map["name"] = jsonEncoder.json.encodeToJsonElement(serializer<RpcRequestValidationErrorKind.MethodNotFound.Name>(), value.name)
+          val payload = JsonObject(map)
+          jsonEncoder.encodeJsonElement(payload)
+        }
+        is RpcRequestValidationErrorKind.ParseError -> {
+          val map = mutableMapOf<String, JsonElement>()
+          map["info"] = jsonEncoder.json.encodeToJsonElement(serializer<RpcRequestValidationErrorKind.ParseError.InfoPayload>(), value.info)
+          map["name"] = jsonEncoder.json.encodeToJsonElement(serializer<RpcRequestValidationErrorKind.ParseError.Name>(), value.name)
+          val payload = JsonObject(map)
+          jsonEncoder.encodeJsonElement(payload)
+        }
+      }
+      return
+    }
+    val out = encoder.beginStructure(descriptor)
+    when (value) {
+      is RpcRequestValidationErrorKind.MethodNotFound -> out.encodeSerializableElement(descriptor, 0, serializer<RpcRequestValidationErrorKind.MethodNotFound.InfoPayload>(), value.info)
+      is RpcRequestValidationErrorKind.ParseError -> out.encodeSerializableElement(descriptor, 1, serializer<RpcRequestValidationErrorKind.ParseError.InfoPayload>(), value.info)
+    }
+    out.endStructure(descriptor)
+  }
+
+  override fun deserialize(decoder: Decoder): RpcRequestValidationErrorKind {
+    if (decoder is JsonDecoder) {
+      val element = decoder.decodeJsonElement()
+      when (element) {
+        is JsonPrimitive -> {
+          if (element.isString) {
+            val s = element.content
+            throw SerializationException("Unknown discriminator string for RpcRequestValidationErrorKind: " + s)
+          }
+        }
+        is JsonArray -> {
+          throw SerializationException("Unexpected JSON array while deserializing RpcRequestValidationErrorKind")
+        }
+        is JsonObject -> {
+          val jobj = element
+          if (jobj.size == 1) {
+            val entry = jobj.entries.first()
+            val key = entry.key
+            val valueElem = entry.value
+            when (key) {
+              "METHOD_NOT_FOUND" -> {
+                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant " + key)
+                val infoVal = decoder.json.decodeFromJsonElement(serializer<RpcRequestValidationErrorKind.MethodNotFound.InfoPayload>(), obj["info"] ?: throw SerializationException("Missing field 'info' for variant " + key))
+                val nameVal = decoder.json.decodeFromJsonElement(serializer<RpcRequestValidationErrorKind.MethodNotFound.Name>(), obj["name"] ?: throw SerializationException("Missing field 'name' for variant " + key))
+                return RpcRequestValidationErrorKind.MethodNotFound(infoVal, nameVal)
+              }
+              "PARSE_ERROR" -> {
+                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant " + key)
+                val infoVal = decoder.json.decodeFromJsonElement(serializer<RpcRequestValidationErrorKind.ParseError.InfoPayload>(), obj["info"] ?: throw SerializationException("Missing field 'info' for variant " + key))
+                val nameVal = decoder.json.decodeFromJsonElement(serializer<RpcRequestValidationErrorKind.ParseError.Name>(), obj["name"] ?: throw SerializationException("Missing field 'name' for variant " + key))
+                return RpcRequestValidationErrorKind.ParseError(infoVal, nameVal)
+              }
+              else -> throw SerializationException("Unknown discriminator key for RpcRequestValidationErrorKind: " + key)
+            }
+          }
+          else {
+            val typeField = jobj["type"]?.jsonPrimitive?.contentOrNull ?: throw SerializationException("Missing 'type' discriminator in RpcRequestValidationErrorKind")
+            when (typeField) {
+              "METHOD_NOT_FOUND" -> {
+                return decoder.json.decodeFromJsonElement(serializer<RpcRequestValidationErrorKind.MethodNotFound>(), jobj)
+              }
+              "PARSE_ERROR" -> {
+                return decoder.json.decodeFromJsonElement(serializer<RpcRequestValidationErrorKind.ParseError>(), jobj)
+              }
+              else -> throw SerializationException("Unknown type discriminator for RpcRequestValidationErrorKind: " + typeField)
+            }
+          }
+        }
+      }
+    }
+    throw SerializationException("Cannot deserialize RpcRequestValidationErrorKind with non-JSON decoder")
+  }
+}

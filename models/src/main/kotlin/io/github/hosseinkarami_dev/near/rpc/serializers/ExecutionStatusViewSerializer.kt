@@ -1,0 +1,142 @@
+package io.github.hosseinkarami_dev.near.rpc.serializers
+
+import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
+import io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView
+import io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError
+import kotlin.String
+import kotlin.collections.mutableMapOf
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.serializer
+
+public object ExecutionStatusViewSerializer : KSerializer<ExecutionStatusView> {
+  override val descriptor: SerialDescriptor =
+      buildClassSerialDescriptor("io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView")
+
+  override fun serialize(encoder: Encoder, `value`: ExecutionStatusView) {
+    if (encoder is JsonEncoder) {
+      val jsonEncoder = encoder
+      when (value) {
+        ExecutionStatusView.Unknown -> {
+          jsonEncoder.encodeJsonElement(JsonPrimitive("Unknown"))
+        }
+        is ExecutionStatusView.Failure -> {
+          val map = mutableMapOf<String, JsonElement>()
+          map["Failure"] = jsonEncoder.json.encodeToJsonElement(serializer<TxExecutionError>(), value.failure)
+          val payload = JsonObject(map)
+          jsonEncoder.encodeJsonElement(payload)
+        }
+        is ExecutionStatusView.SuccessValue -> {
+          val map = mutableMapOf<String, JsonElement>()
+          map["SuccessValue"] = jsonEncoder.json.encodeToJsonElement(serializer<String>(), value.successValue)
+          val payload = JsonObject(map)
+          jsonEncoder.encodeJsonElement(payload)
+        }
+        is ExecutionStatusView.SuccessReceiptId -> {
+          val map = mutableMapOf<String, JsonElement>()
+          map["SuccessReceiptId"] = jsonEncoder.json.encodeToJsonElement(serializer<CryptoHash>(), value.successReceiptId)
+          val payload = JsonObject(map)
+          jsonEncoder.encodeJsonElement(payload)
+        }
+      }
+      return
+    }
+    val out = encoder.beginStructure(descriptor)
+    when (value) {
+      ExecutionStatusView.Unknown -> out.encodeStringElement(descriptor, 0, "Unknown")
+      is ExecutionStatusView.Failure -> out.encodeSerializableElement(descriptor, 1, serializer<TxExecutionError>(), value.failure)
+      is ExecutionStatusView.SuccessValue -> out.encodeSerializableElement(descriptor, 2, serializer<String>(), value.successValue)
+      is ExecutionStatusView.SuccessReceiptId -> out.encodeSerializableElement(descriptor, 3, serializer<CryptoHash>(), value.successReceiptId)
+    }
+    out.endStructure(descriptor)
+  }
+
+  override fun deserialize(decoder: Decoder): ExecutionStatusView {
+    if (decoder is JsonDecoder) {
+      val element = decoder.decodeJsonElement()
+      when (element) {
+        is JsonPrimitive -> {
+          if (element.isString) {
+            val s = element.content
+            if (s == "Unknown") return ExecutionStatusView.Unknown
+            throw SerializationException("Unknown discriminator string for ExecutionStatusView: " + s)
+          }
+        }
+        is JsonArray -> {
+          throw SerializationException("Unexpected JSON array while deserializing ExecutionStatusView")
+        }
+        is JsonObject -> {
+          val jobj = element
+          // fieldBased union: detect variant by unique field presence
+          if (jobj["Failure"] != null) {
+            val failureVal = decoder.json.decodeFromJsonElement(serializer<TxExecutionError>(), jobj["Failure"] ?: throw SerializationException("Missing field 'Failure' for variant " + "Failure"))
+            return ExecutionStatusView.Failure(failureVal)
+          }
+          if (jobj["SuccessValue"] != null) {
+            val successValueVal = decoder.json.decodeFromJsonElement(serializer<String>(), jobj["SuccessValue"] ?: throw SerializationException("Missing field 'SuccessValue' for variant " + "SuccessValue"))
+            return ExecutionStatusView.SuccessValue(successValueVal)
+          }
+          if (jobj["SuccessReceiptId"] != null) {
+            val successReceiptIdVal = decoder.json.decodeFromJsonElement(serializer<CryptoHash>(), jobj["SuccessReceiptId"] ?: throw SerializationException("Missing field 'SuccessReceiptId' for variant " + "SuccessReceiptId"))
+            return ExecutionStatusView.SuccessReceiptId(successReceiptIdVal)
+          }
+          if (jobj.size == 1) {
+            val entry = jobj.entries.first()
+            val key = entry.key
+            val valueElem = entry.value
+            when (key) {
+              "Failure" -> {
+                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant " + key)
+                val failureVal = decoder.json.decodeFromJsonElement(serializer<TxExecutionError>(), obj["Failure"] ?: throw SerializationException("Missing field 'Failure' for variant " + key))
+                return ExecutionStatusView.Failure(failureVal)
+              }
+              "SuccessValue" -> {
+                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant " + key)
+                val successValueVal = decoder.json.decodeFromJsonElement(serializer<String>(), obj["SuccessValue"] ?: throw SerializationException("Missing field 'SuccessValue' for variant " + key))
+                return ExecutionStatusView.SuccessValue(successValueVal)
+              }
+              "SuccessReceiptId" -> {
+                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant " + key)
+                val successReceiptIdVal = decoder.json.decodeFromJsonElement(serializer<CryptoHash>(), obj["SuccessReceiptId"] ?: throw SerializationException("Missing field 'SuccessReceiptId' for variant " + key))
+                return ExecutionStatusView.SuccessReceiptId(successReceiptIdVal)
+              }
+              "Unknown" -> {
+                return ExecutionStatusView.Unknown
+              }
+              else -> throw SerializationException("Unknown discriminator key for ExecutionStatusView: " + key)
+            }
+          }
+          else {
+            val typeField = jobj["type"]?.jsonPrimitive?.contentOrNull ?: throw SerializationException("Missing 'type' discriminator in ExecutionStatusView")
+            when (typeField) {
+              "Failure" -> {
+                return decoder.json.decodeFromJsonElement(serializer<ExecutionStatusView.Failure>(), jobj)
+              }
+              "SuccessValue" -> {
+                return decoder.json.decodeFromJsonElement(serializer<ExecutionStatusView.SuccessValue>(), jobj)
+              }
+              "SuccessReceiptId" -> {
+                return decoder.json.decodeFromJsonElement(serializer<ExecutionStatusView.SuccessReceiptId>(), jobj)
+              }
+              "Unknown" -> return ExecutionStatusView.Unknown
+              else -> throw SerializationException("Unknown type discriminator for ExecutionStatusView: " + typeField)
+            }
+          }
+        }
+      }
+    }
+    throw SerializationException("Cannot deserialize ExecutionStatusView with non-JSON decoder")
+  }
+}
