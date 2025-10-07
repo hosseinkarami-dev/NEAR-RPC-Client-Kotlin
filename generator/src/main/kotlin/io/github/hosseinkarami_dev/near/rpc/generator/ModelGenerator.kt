@@ -86,8 +86,10 @@ class ModelGenerator(
         onSealedClassCreated(collectedSealedInfos)
     }
 
-    val collectedSealedInfos: MutableList<SealedInfo> = mutableListOf()
+    private val collectedSealedInfos: MutableList<SealedInfo> = mutableListOf()
 
+    //single all-of handler - prevents infinite loop
+    private val buildingTypes = mutableSetOf<String>()
 
     fun buildSchemaRecursive(
         fileBuilder: FileSpec.Builder,
@@ -95,16 +97,27 @@ class ModelGenerator(
         schema: Schema,
         builtTypes: MutableSet<String>
     ) {
+
+        if (schema.enum?.size == 1 && schema.enum.firstOrNull() == null && schema.nullable == true) {
+            val typeAlias = TypeAliasSpec.builder(className, ClassName("kotlinx.serialization.json", "JsonElement").copy(nullable = true))
+                .addModifiers(KModifier.PUBLIC)
+                .build()
+            fileBuilder.addTypeAlias(typeAlias)
+            builtTypes.add(className)
+            return
+        }
+
+        if (buildingTypes.contains(className)) {
+            return
+        }
+        buildingTypes.add(className)
+
         if (builtTypes.contains(className)) return
 
         val topSchema = if (!schema.ref.isNullOrBlank()) {
             val refName = schema.ref.substringAfterLast("/")
             spec.components.schemas[refName] ?: schema
         } else schema
-
-        fun markBuilt(name: String) {
-            builtTypes.add(name)
-        }
 
         //handles RpcHealthResponse - like ones
         if (schema.enum?.all { it == null } == true && schema.nullable == true) {
@@ -124,7 +137,8 @@ class ModelGenerator(
                 val objBuilder = TypeSpec.objectBuilder(className).addAnnotation(Serializable::class)
                 topSchema.generateKdoc()?.let { objBuilder.addKdoc(it) }
                 fileBuilder.addType(objBuilder.build())
-                markBuilt(className)
+                builtTypes.add(className)
+                buildingTypes.remove(className)
                 return
             }
 
@@ -143,7 +157,8 @@ class ModelGenerator(
                 )
             }
             fileBuilder.addType(enumBuilder.build())
-            markBuilt(className)
+            builtTypes.add(className)
+            buildingTypes.remove(className)
             return
         }
 
@@ -157,6 +172,30 @@ class ModelGenerator(
         // 3) allOf
         if (!topSchema.allOf.isNullOrEmpty()) {
             val (mergedProps, mergedRequired) = mergeAllOfInto(topSchema)
+
+            if (mergedProps.isEmpty() && topSchema.allOf.size == 1) {
+                val only = topSchema.allOf.first()
+                if (!only.ref.isNullOrBlank()) {
+                    val refName = only.ref.substringAfterLast("/")
+                    val refClass = toPascalCase(refName)
+                    val refSchema = spec.components.schemas[refName]
+                    if (refSchema != null && !builtTypes.contains(refClass) && refClass != className) {
+                        val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
+                        buildSchemaRecursive(refFileBuilder, refClass, refSchema, builtTypes)
+                        refFileBuilder.build().writeTo(output)
+                    }
+                    // Build TypeAlias (respect nullable on the wrapper schema)
+                    val targetType = ClassName(fileBuilder.build().packageName, refClass)
+                        .copy(nullable = (topSchema.nullable == true))
+                    val typeAliasBuilder = TypeAliasSpec.builder(className, targetType)
+                        .addModifiers(KModifier.PUBLIC)
+                    topSchema.generateKdoc()?.let { typeAliasBuilder.addKdoc(it) }
+                    fileBuilder.addTypeAlias(typeAliasBuilder.build())
+                    builtTypes.add(className)
+                    buildingTypes.remove(className)
+                    return
+                }
+            }
 
             if (mergedProps.isEmpty()) {
                 val primTypeName = topSchema.allOf.asSequence()
@@ -183,9 +222,141 @@ class ModelGenerator(
                     topSchema.generateKdoc()?.let { cbBuilder.addKdoc(it) }
 
                     fileBuilder.addType(cbBuilder.build())
-                    markBuilt(className)
+                    builtTypes.add(className)
+                    buildingTypes.remove(className)
                     return
                 }
+            }
+
+
+            // SPECIAL CASE: allOf items contain oneOf groups -> build sealed type representing combinations
+            if (mergedProps.isEmpty() && topSchema.allOf.any { !it.oneOf.isNullOrEmpty() }) {
+                // groups: list of list-of-variants (if a member has no oneOf, treat it as single-variant list)
+                val groups: List<List<Schema>> = topSchema.allOf.map { it.oneOf ?: listOf(it) }
+
+                // cartesian product of groups -> list of combinations (each combination is List<Schema>)
+                fun <T> cartesianProduct(lists: List<List<T>>): List<List<T>> {
+                    return lists.fold(listOf(listOf<T>())) { acc, list ->
+                        acc.flatMap { a -> list.map { b -> a + b } }
+                    }
+                }
+
+                val combinations = cartesianProduct(groups)
+
+                val sealedBuilder = TypeSpec.classBuilder(className).addModifiers(KModifier.SEALED)
+                fileBuilder.addImport(serializerPackage, "${className}Serializer")
+                val serializerClassName = ClassName(fileBuilder.build().packageName, "${className}Serializer")
+                sealedBuilder.addAnnotation(
+                    AnnotationSpec.builder(Serializable::class)
+                        .addMember("with = %T::class", serializerClassName)
+                        .build()
+                )
+                topSchema.generateKdoc()?.let { sealedBuilder.addKdoc(it) }
+
+                val variantInfos = mutableListOf<VariantInfo>()
+
+                combinations.forEachIndexed { idx, combo ->
+                    // derive a reasonable variant title/name by joining per-variant titles
+                    val partTitles = combo.mapIndexed { i, v ->
+                        val candidate = v.properties?.entries?.find { (_, prop) -> prop.enum?.isNotEmpty() == true }
+                        val typeLiteral = candidate?.value?.enum?.firstOrNull()
+                        v.title ?: typeLiteral ?: when {
+                            !v.ref.isNullOrBlank() -> v.ref.substringAfterLast("/")
+                            v.enum?.isNotEmpty() == true -> v.enum.filterNotNull().first()
+                            v.properties?.isNotEmpty() == true -> v.properties.keys.first()
+                            else -> "Part${i + 1}"
+                        }
+                    }
+                    val combinedTitle = partTitles.joinToString("_")
+                    val subclassName = toPascalCase(combinedTitle.ifBlank { "Variant${idx + 1}" })
+
+                    val subBuilder = TypeSpec.classBuilder(subclassName)
+                        .addModifiers(KModifier.DATA)
+                        .addAnnotation(Serializable::class)
+                        .superclass(ClassName(fileBuilder.build().packageName, className))
+                    // collect kdoc from whole topSchema or leftmost non-null title
+                    combo.firstOrNull()?.generateKdoc()?.let { subBuilder.addKdoc(it) }
+
+                    val subCtor = FunSpec.constructorBuilder()
+                    val nestedTypes = mutableListOf<TypeSpec>()
+                    val propsForVariant = mutableListOf<PropInfo>()
+
+                    // merge properties from each schema in this combination
+                    val mergedForCombo = linkedMapOf<String, Schema>()
+                    val requiredForCombo = mutableListOf<String>()
+                    combo.forEach { part ->
+                        val (mp, mr) = mergeAllOfInto(part)
+                        if (mp.isEmpty()) {
+                            part.properties?.forEach { (k, v) -> mergedForCombo[k] = v }
+                        } else {
+                            mp.forEach { (k, v) -> mergedForCombo[k] = v }
+                        }
+                        mr.forEach { r -> if (!requiredForCombo.contains(r)) requiredForCombo.add(r) }
+                    }
+
+                    // now add props as constructor params/properties (same logic as in buildCombinedSchema lifting)
+                    mergedForCombo.forEach { (pn, ps) ->
+                        val isReq = requiredForCombo.contains(pn)
+                        val t = resolveTypeForSchema(
+                            ps,
+                            subclassName,
+                            nestedTypes,
+                            pn,
+                            isReq,
+                            fileBuilder,
+                            builtTypes
+                        )
+                        val localized = localizeType(t, nestedTypes)
+                        val paramName = toCamelCase(pn)
+
+                        val paramBuilder = ParameterSpec.builder(paramName, localized)
+                        val dv = defaultValueLiteralForSchema(ps, localized)
+                        if (dv != null) {
+                            paramBuilder.defaultValue("%L", dv)
+                        } else if (localized.isNullable) {
+                            paramBuilder.defaultValue("%L", "null")
+                        }
+                        subCtor.addParameter(paramBuilder.build())
+
+                        val pBuilder = PropertySpec.builder(paramName, localized)
+                            .initializer("%N", paramName)
+                            .addAnnotation(
+                                AnnotationSpec.builder(SerialName::class).addMember("%S", pn).build()
+                            )
+                        ps.generateKdoc()?.let { pBuilder.addKdoc(it) }
+                        subBuilder.addProperty(pBuilder.build())
+
+                        propsForVariant += PropInfo(
+                            name = paramName,
+                            serialName = pn,
+                            type = localized.toString(),
+                            nullable = localized.isNullable
+                        )
+                    }
+
+                    nestedTypes.forEach { subBuilder.addType(it) }
+                    subBuilder.primaryConstructor(subCtor.build())
+                    sealedBuilder.addType(subBuilder.build())
+
+                    variantInfos += VariantInfo(
+                        name = subclassName,
+                        kind = VariantInfo.Kind.DATA_CLASS,
+                        serialName = combinedTitle,
+                        props = propsForVariant.toList()
+                    )
+                }
+
+                // finalize sealed type
+                fileBuilder.addType(sealedBuilder.build())
+                builtTypes.add(className)
+
+                val sealedMeta = SealedInfo(
+                    packageName = fileBuilder.build().packageName,
+                    className = className,
+                    variants = variantInfos.toList()
+                )
+                collectedSealedInfos += sealedMeta
+                return
             }
 
             buildObjectFromProps(
@@ -234,7 +405,8 @@ class ModelGenerator(
                 .addProperty(PropertySpec.builder("items", listType).initializer("items").build())
             topSchema.generateKdoc()?.let { classBuilder.addKdoc(it) }
             fileBuilder.addType(classBuilder.build())
-            markBuilt(className)
+            builtTypes.add(className)
+            buildingTypes.remove(className)
             return
         }
 
@@ -250,7 +422,8 @@ class ModelGenerator(
                 .addProperty(PropertySpec.builder("value", prim).initializer("value").build())
             topSchema.generateKdoc()?.let { cbBuilder.addKdoc(it) }
             fileBuilder.addType(cbBuilder.build())
-            markBuilt(className)
+            builtTypes.add(className)
+            buildingTypes.remove(className)
             return
         }
 
@@ -269,7 +442,8 @@ class ModelGenerator(
             )
         topSchema.generateKdoc()?.let { cbBuilder.addKdoc(it) }
         fileBuilder.addType(cbBuilder.build())
-        markBuilt(className)
+        builtTypes.add(className)
+        buildingTypes.remove(className)
     }
 
     fun buildCombinedSchema(

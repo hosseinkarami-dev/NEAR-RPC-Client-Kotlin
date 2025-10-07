@@ -35,8 +35,6 @@ object PathGenerator {
         val uuidClass = ClassName("java.util", "UUID")
 
         val rpcResponseClass = ClassName(clientPackage, "RpcResponse")
-        val rpcErrorClass = ClassName(clientPackage, "RpcError")
-        val jsonRpcEnvelopeClass = ClassName(clientPackage, "JsonRpcEnvelope")
 
         val classBuilder = TypeSpec.classBuilder(clientClassName)
             .addModifiers(KModifier.PUBLIC)
@@ -95,8 +93,6 @@ object PathGenerator {
             val respWrapperClassName = toClassNameOrBestGuess(respWrapperStr)
 
             val resultTypeStr = extractResultInnerTypeForOperation(op, spec, modelsPackage)
-                ?: guessResultTypeFromResponseWrapperName(respWrapperStr, modelsPackage, spec)
-
             val resultTypeName = resultTypeStr?.let { toTypeName(it) } ?: ClassName("kotlinx.serialization.json", "JsonElement")
 
             val paramsTypeStr = resolveParamsTypeFromOperation(op, spec, modelsPackage)
@@ -133,7 +129,7 @@ object PathGenerator {
 
             val seeLine = "path: $path (method: ${if (pathItem.post != null) "post" else "get"}) — operationId: $rawOperationId"
             val paramDesc = when {
-                !hasParams -> "This method does not require params; `params` will be sent as `null` in the JSON-RPC request."
+                !hasParams -> "This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request."
                 paramsNullable -> "Request parameters (optional): `${paramsTypeStr}` — pass `null` or omit to send no params."
                 else -> "Request parameters: `${paramsTypeStr}` (required)."
             }
@@ -183,10 +179,28 @@ object PathGenerator {
             cb.addStatement("  id = nextId(),")
             cb.addStatement("  jsonrpc = %S,", "2.0")
             cb.addStatement("  method = %T.%L,", methodEnumClass, constantName)
+
             if (hasParams) {
                 cb.addStatement("  params = params")
             } else {
-                cb.addStatement("  params = null")
+                // try to find the params schema ref name from the request wrapper; if present, generate a default
+                val paramsRefName = extractParamsSchemaRefName(op, spec)
+                if (paramsRefName != null) {
+                    val pClass = toClassNameOrBestGuess("$modelsPackage.${paramsRefName.pascalCase()}")
+                    val pSchema = spec.components.schemas[paramsRefName]
+                    val isEmptyObject = pSchema?.type == "object" && (pSchema.properties == null || pSchema.properties.isEmpty()) && pSchema.anyOf == null && pSchema.oneOf == null && pSchema.allOf == null
+
+                    if (isEmptyObject) {
+                        // params = RpcStatusRequest(value = JsonObject(emptyMap()))
+                        cb.addStatement("  params = %T(value = %T(emptyMap()))", pClass, ClassName("kotlinx.serialization.json", "JsonObject"))
+                    } else {
+                        // fallback: construct a default instance via zero-arg constructor
+                        cb.addStatement("  params = %T()", pClass)
+                    }
+                } else {
+                    // no params wrapper found: keep legacy behavior
+                    cb.addStatement("  params = null")
+                }
             }
             cb.addStatement(")")
 
@@ -199,8 +213,6 @@ object PathGenerator {
 
             // ------------------ robust decode: prefer using response-wrapper schema ref when present
             if (respWrapperRef != null) {
-                val localErrorClass = ClassName(modelsPackage, "LocalError")
-
                 cb.addStatement("try {")
                 // Use the exact response-wrapper schema referenced by the operation (modelsPackage + wrapper name)
                 cb.addStatement("val decoded = json.decodeFromString(%T.serializer(), respBody)", respWrapperClassName)
@@ -223,6 +235,7 @@ object PathGenerator {
             .addImport("io.ktor.client.statement", "bodyAsText")
             .addImport("io.ktor.http", "ContentType", "contentType")
             .addImport("kotlinx.serialization.json", "Json")
+            .addImport("kotlinx.serialization.json", "JsonObject")
             .addImport("kotlinx.serialization.builtins", "serializer")
             .addImport("kotlinx.serialization.builtins", "ListSerializer")
             .addImport("io.ktor.client.statement", "bodyAsText")
@@ -247,13 +260,13 @@ object PathGenerator {
             return ClassName("kotlin.collections", "List").parameterizedBy(innerType)
         }
 
-        return when {
-            typeString == "Unit" -> UNIT
-            typeString == "String" -> ClassName("kotlin", "String")
-            typeString == "Int" -> ClassName("kotlin", "Int")
-            typeString == "Double" -> ClassName("kotlin", "Double")
-            typeString == "Boolean" -> ClassName("kotlin", "Boolean")
-            typeString == "JsonElement" -> ClassName("kotlinx.serialization.json", "JsonElement")
+        return when (typeString) {
+            "Unit" -> UNIT
+            "String" -> ClassName("kotlin", "String")
+            "Int" -> ClassName("kotlin", "Int")
+            "Double" -> ClassName("kotlin", "Double")
+            "Boolean" -> ClassName("kotlin", "Boolean")
+            "JsonElement" -> ClassName("kotlinx.serialization.json", "JsonElement")
             else -> {
                 val lastDot = typeString.lastIndexOf('.')
                 if (lastDot > 0) {
@@ -341,24 +354,49 @@ object PathGenerator {
         val media = rb.content["application/json"] ?: rb.content.values.firstOrNull() ?: return null
         val schemaEl = media.schema ?: return null
 
+        // wrapper should be a $ref to the JsonRpcRequest wrapper
         val wrapperRef = schemaEl.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull ?: return null
         val wrapperName = wrapperRef.substringAfterLast('/')
         val wrapperSchema = spec.components.schemas[wrapperName] ?: return null
 
         val paramsSchema = wrapperSchema.properties?.get("params") ?: return null
 
+        // Helper to treat an empty object (no props, no anyOf/oneOf/allOf) as Unit
+        fun isEmptyObject(schema: Schema?): Boolean {
+            if (schema == null) return false
+            return schema.type == "object" &&
+                    (schema.properties == null || schema.properties.isEmpty()) &&
+                    schema.anyOf == null && schema.oneOf == null && schema.allOf == null
+        }
+
+        // 1) params is a $ref -> inspect the referenced schema
         paramsSchema.ref?.let { pRef ->
             val pName = pRef.substringAfterLast('/')
             val pSchema = spec.components.schemas[pName]
+
+            // If referenced schema explicitly nullable or enum containing only null -> treat as Unit
             if (pSchema != null) {
-                if ((pSchema.enum != null && pSchema.enum.size == 1 && pSchema.enum[0] == null) || pSchema.nullable == true) {
-                    return "Unit"
-                }
+                if (pSchema.nullable == true) return "Unit"
+                if (pSchema.enum != null && pSchema.enum.size == 1 && pSchema.enum[0] == null) return "Unit"
+                // if referenced schema is an empty object -> treat as Unit
+                if (isEmptyObject(pSchema)) return "Unit"
+                // otherwise return concrete model type
                 return "$modelsPackage.${pName.pascalCase()}"
             }
+
+            // If we couldn't resolve referenced schema in components, fallback to model name (non-Unit)
             return "$modelsPackage.${pName.pascalCase()}"
         }
 
+        // 2) inline enum that is just [null] -> Unit
+        if (paramsSchema.enum != null && paramsSchema.enum.size == 1 && paramsSchema.enum[0] == null) {
+            return "Unit"
+        }
+
+        // 3) inline nullable -> Unit
+        if (paramsSchema.nullable == true) return "Unit"
+
+        // 4) inline array
         if (paramsSchema.type == "array") {
             val item = paramsSchema.items
             if (item?.ref != null) {
@@ -368,19 +406,44 @@ object PathGenerator {
             return "List<JsonElement>"
         }
 
-        when (paramsSchema.type) {
-            "string" -> return "String"
-            "integer" -> return "Int"
-            "number" -> return "Double"
-            "boolean" -> return "Boolean"
-            "object" -> return "JsonElement"
+        // 5) inline object: if empty -> Unit, otherwise generic JsonElement
+        if (paramsSchema.type == "object") {
+            val isEmptyInlineObject = (paramsSchema.properties == null || paramsSchema.properties.isEmpty()) &&
+                    paramsSchema.anyOf == null && paramsSchema.oneOf == null && paramsSchema.allOf == null
+            if (isEmptyInlineObject) return "Unit"
+            return "JsonElement"
         }
 
-        if (paramsSchema.enum != null && paramsSchema.enum.size == 1 && paramsSchema.enum[0] == null) {
-            return "Unit"
+        // primitives
+        return when (paramsSchema.type) {
+            "string" -> "String"
+            "integer" -> "Int"
+            "number" -> "Double"
+            "boolean" -> "Boolean"
+            else -> null
         }
+    }
 
-        return null
+    private fun extractParamsSchemaRefName(op: Operation, spec: OpenApiSpec): String? {
+        val rb = op.requestBody ?: return null
+        val media = rb.content["application/json"] ?: rb.content.values.firstOrNull() ?: return null
+        val schemaEl = media.schema ?: return null
+
+        val wrapperRef = schemaEl.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull ?: return null
+        val wrapperName = wrapperRef.substringAfterLast('/')
+        val wrapperSchema = spec.components.schemas[wrapperName] ?: return null
+        val paramsSchema = wrapperSchema.properties?.get("params") ?: return null
+
+        val ref = paramsSchema.ref ?: return null
+        val pName = ref.substringAfterLast('/')
+        val pSchema = spec.components.schemas[pName] ?: return pName
+
+        // If the referenced schema is explicitly nullable or literally enum: [null],
+        // treat it as "no concrete params to auto-construct" -> return null so caller uses legacy null.
+        if (pSchema.nullable == true) return null
+        if (pSchema.enum != null && pSchema.enum.size == 1 && pSchema.enum[0] == null) return null
+
+        return pName
     }
 
     private fun paramsAreNullableFromOperation(op: Operation, spec: OpenApiSpec): Boolean {
@@ -420,7 +483,7 @@ object PathGenerator {
 
         val wrapperRef = schema.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull ?: return null
         val wrapperName = wrapperRef.substringAfterLast('/')
-        val wrapperSchema = spec.components.schemas[wrapperName] ?: return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage, spec)
+        val wrapperSchema = spec.components.schemas[wrapperName]
 
         fun inspectForResult(schemaObj: Schema?): String? {
             if (schemaObj == null) return null
@@ -471,9 +534,10 @@ object PathGenerator {
             }
         }
 
+        // try to inspect the real schema first
         inspectForResult(wrapperSchema)?.let { return it }
 
-        wrapperSchema.oneOf?.forEach { altNameOrRef ->
+        wrapperSchema?.oneOf?.forEach { altNameOrRef ->
             val altSchema = if (altNameOrRef.ref != null) {
                 val alt = altNameOrRef.ref.substringAfterLast('/')
                 spec.components.schemas[alt]
@@ -483,81 +547,47 @@ object PathGenerator {
             inspectForResult(altSchema)?.let { return it }
         }
 
-        return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage, spec)
+        // fallback: if we couldn't find `result` by schema introspection, try to parse the wrapper name itself
+        return guessResultTypeFromResponseWrapperName(wrapperRef, modelsPackage)
     }
 
     private fun guessResultTypeFromResponseWrapperName(
         respWrapper: String,
-        modelsPackage: String,
-        spec: OpenApiSpec
+        modelsPackage: String
     ): String? {
-        val wrapperName = when {
+        if (respWrapper.isBlank()) return null
+
+        // normalize -> get last part if it's a ref like "#/components/schemas/X" or "pkg.X"
+        var wrapperName = when {
             respWrapper.contains("#/components/schemas/") -> respWrapper.substringAfterLast('/')
             respWrapper.contains('.') -> respWrapper.substringAfterLast('.')
             else -> respWrapper
         }
 
-        val wrapperSchema = spec.components.schemas[wrapperName]
+        // 1) remove common json-rpc wrapper artifacts first
+        wrapperName = wrapperName
+            .removePrefix("JsonRpcResponse_for_")
+            .removePrefix("JsonRpcRequest_for_")
+            .removeSuffix("_and_RpcError")
 
-        fun extractFromSchema(schema: Schema?): String? {
-            if (schema == null) return null
+        // 2) detect & remove nullable variants (case-insensitive)
+        // covers: Nullable_, Nullable-, Nullable, nullable_, nullable-, etc.
+        val nullablePrefixRegex = Regex("(?i)^(nullable[_\\-]?)")
+        val isNullable = nullablePrefixRegex.containsMatchIn(wrapperName)
+        wrapperName = wrapperName.replaceFirst(nullablePrefixRegex, "")
 
-            val resultProp = schema.properties?.get("result")
-            resultProp?.ref?.let { ref ->
-                val inner = ref.substringAfterLast('/')
-                return "$modelsPackage.${inner.pascalCase()}"
+        // 3) convert to PascalCase WITHOUT lowercasing interior characters.
+        // split on '_' or '-' — if no separators, just uppercase first char and keep rest as-is.
+        val parts = wrapperName.split('_', '-').filter { it.isNotBlank() }
+        val resultName = if (parts.isEmpty()) {
+            wrapperName.replaceFirstChar { it.uppercaseChar() }
+        } else {
+            parts.joinToString("") { part ->
+                part.replaceFirstChar { it.uppercaseChar() }
             }
-
-            if (resultProp?.type == "array" && resultProp.items?.ref != null) {
-                val item = resultProp.items.ref.substringAfterLast('/')
-                return "List<$modelsPackage.${item.pascalCase()}>"
-            }
-
-            resultProp?.type?.let { t ->
-                return when (t) {
-                    "string" -> "String"
-                    "integer" -> "Int"
-                    "number" -> "Double"
-                    "boolean" -> "Boolean"
-                    "object" -> "kotlinx.serialization.json.JsonElement"
-                    else -> null
-                }
-            }
-
-            val variants = mutableListOf<Schema?>()
-            schema.oneOf?.let { variants.addAll(it) }
-            schema.anyOf?.let { variants.addAll(it) }
-            schema.allOf?.let { variants.addAll(it) }
-
-            for (variant in variants) {
-                variant?.ref?.let { vref ->
-                    val vname = vref.substringAfterLast('/')
-                    val vschema = spec.components.schemas[vname]
-                    extractFromSchema(vschema)?.let { return it }
-                } ?: run {
-                    extractFromSchema(variant)?.let { return it }
-                }
-            }
-
-            return null
         }
 
-        extractFromSchema(wrapperSchema)?.let { return it }
-
-        val name = wrapperName
-        val prefix = "JsonRpcResponse_for_"
-        val suffix = "_and_RpcError"
-        if (name.startsWith(prefix) && name.endsWith(suffix)) {
-            val inner = name.removePrefix(prefix).removeSuffix(suffix)
-            return "$modelsPackage.${inner.pascalCase()}"
-        }
-
-        val altMatch = Regex("JsonRpcResponseFor(.+)AndRpcError").find(name)
-        if (altMatch != null) {
-            val innerRaw = altMatch.groupValues[1]
-            return "$modelsPackage.${innerRaw.pascalCase()}"
-        }
-
-        return null
+        // 4) build final kotlin type, append '?' if nullable
+        return "$modelsPackage.$resultName" + if (isNullable) "?" else ""
     }
 }

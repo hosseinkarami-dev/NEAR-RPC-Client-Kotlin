@@ -51,7 +51,7 @@ class NearClientTest {
 //            }
 //        }
 
-        val response = nearClient.genesisConfig()
+        val response = nearClient.experimentalGenesisConfig()
 
         when (response) {
             is RpcResponse.Failure -> {

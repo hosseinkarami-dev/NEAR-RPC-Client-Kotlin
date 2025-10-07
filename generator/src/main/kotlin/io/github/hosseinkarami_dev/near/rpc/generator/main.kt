@@ -14,7 +14,8 @@ fun main(args: Array<String>) {
         fullName = "openapi-url",
         description = "URL to the OpenAPI specification"
     )
-        .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/master/chain/jsonrpc/openapi/openapi.json")
+        .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/2.8.0/chain/jsonrpc/openapi/openapi.json")
+       //.default("https://raw.githubusercontent.com/near/nearcore/refs/heads/master/chain/jsonrpc/openapi/openapi.json")
 
     val modelsOut by parser.option(
         ArgType.String,
@@ -36,7 +37,23 @@ fun main(args: Array<String>) {
     val clientPackage = "io.github.hosseinkarami_dev.near.rpc.client"
     val serializerPackage = modelPackage.replace(".models", ".serializers")
 
-    val serializersOut = File("../models/src/main/kotlin")
+    val serializerOutFile = File(modelsOut)
+    val modelOutFile = File(modelsOut)
+    val clientOutFile = File(clientOut)
+
+    val serializerFiles = File(modelsOut + serializerPackage.replace(".", "/"))
+    val modelFiles = File(modelsOut + modelPackage.replace(".", "/"))
+    val nearClientFile = File(clientOut + clientPackage.replace(".", "/"))
+
+    serializerFiles.listFiles().forEach {
+        it.delete()
+    }
+
+    modelFiles.listFiles().forEach {
+        it.delete()
+    }
+
+    nearClientFile.delete()
 
     ModelGenerator.generateAll(
         spec = spec,
@@ -47,7 +64,7 @@ fun main(args: Array<String>) {
             SerializerGenerator.generateFromSealedInfos(
                 sealedInfos = sealedClasses,
                 serializerPackage = serializerPackage,
-                output = serializersOut
+                output = File(modelsOut)
             )
     }
 
