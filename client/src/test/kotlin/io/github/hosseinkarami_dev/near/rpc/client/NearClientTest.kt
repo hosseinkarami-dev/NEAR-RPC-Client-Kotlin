@@ -1,5 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
+import io.github.hosseinkarami_dev.near.rpc.models.Finality
+import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -51,7 +53,9 @@ class NearClientTest {
 //            }
 //        }
 
-        val response = nearClient.experimentalGenesisConfig()
+        val response = nearClient.experimentalProtocolConfig(
+            RpcProtocolConfigRequest.Finality(finality = Finality.FINAL)
+        )
 
         when (response) {
             is RpcResponse.Failure -> {

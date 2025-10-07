@@ -20,9 +20,9 @@ import io.github.hosseinkarami_dev.near.rpc.generator.SchemaHelper.getPrimitiveT
 import io.github.hosseinkarami_dev.near.rpc.generator.SchemaHelper.isPrimitiveType
 import io.github.hosseinkarami_dev.near.rpc.generator.SealedInfo
 import io.github.hosseinkarami_dev.near.rpc.generator.VariantInfo
-import io.github.hosseinkarami_dev.near.rpc.generator.toCamelCase
-import io.github.hosseinkarami_dev.near.rpc.generator.toConstantName
-import io.github.hosseinkarami_dev.near.rpc.generator.toPascalCase
+import io.github.hosseinkarami_dev.near.rpc.generator.camelCase
+import io.github.hosseinkarami_dev.near.rpc.generator.constantName
+import io.github.hosseinkarami_dev.near.rpc.generator.pascalCase
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
@@ -67,7 +67,7 @@ class ModelGenerator(
         val builtTypes = mutableSetOf<String>()
 
         spec.components.schemas.forEach { (name, schema) ->
-            val className = toPascalCase(name)
+            val className = name.pascalCase()
             if (builtTypes.contains(className)) return@forEach
 
             val fileBuilder = FileSpec.builder(modelPackageName, className)
@@ -146,7 +146,7 @@ class ModelGenerator(
             topSchema.generateKdoc()?.let { enumBuilder.addKdoc(it) }
             val used = mutableMapOf<String, Int>()
             topSchema.enum.filterNotNull().forEach { lit ->
-                var constName = toConstantName(lit)
+                var constName = lit.constantName()
                 val c = used.getOrDefault(constName, 0)
                 if (c > 0) constName = "${constName}_$c"
                 used[constName] = c + 1
@@ -177,7 +177,7 @@ class ModelGenerator(
                 val only = topSchema.allOf.first()
                 if (!only.ref.isNullOrBlank()) {
                     val refName = only.ref.substringAfterLast("/")
-                    val refClass = toPascalCase(refName)
+                    val refClass = refName.pascalCase()
                     val refSchema = spec.components.schemas[refName]
                     if (refSchema != null && !builtTypes.contains(refClass) && refClass != className) {
                         val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
@@ -268,7 +268,7 @@ class ModelGenerator(
                         }
                     }
                     val combinedTitle = partTitles.joinToString("_")
-                    val subclassName = toPascalCase(combinedTitle.ifBlank { "Variant${idx + 1}" })
+                    val subclassName = combinedTitle.ifBlank { "Variant${idx + 1}" }.pascalCase()
 
                     val subBuilder = TypeSpec.classBuilder(subclassName)
                         .addModifiers(KModifier.DATA)
@@ -307,7 +307,7 @@ class ModelGenerator(
                             builtTypes
                         )
                         val localized = localizeType(t, nestedTypes)
-                        val paramName = toCamelCase(pn)
+                        val paramName = pn.camelCase()
 
                         val paramBuilder = ParameterSpec.builder(paramName, localized)
                         val dv = defaultValueLiteralForSchema(ps, localized)
@@ -511,7 +511,7 @@ class ModelGenerator(
                 else -> "Variant${idx + 1}"
             }
 
-            val subclassName = toPascalCase(variantTitle)
+            val subclassName = variantTitle.pascalCase()
 
             val subBuilder = TypeSpec.classBuilder(subclassName)
                 .addModifiers(KModifier.DATA)
@@ -559,7 +559,7 @@ class ModelGenerator(
             // If this variant is just a $ref
             if (!v.ref.isNullOrBlank()) {
                 val ref = v.ref.substringAfterLast("/")
-                val refClass = toPascalCase(ref)
+                val refClass = ref.pascalCase()
                 val refSchema = spec.components.schemas[ref]
 
                 if (refSchema != null && !builtTypes.contains(refClass)) {
@@ -592,7 +592,7 @@ class ModelGenerator(
                             builtTypes
                         )
                         val localized = localizeType(t, nestedTypes)
-                        val paramName = toCamelCase(pn)
+                        val paramName = pn.camelCase()
 
                         val paramBuilder = ParameterSpec.builder(paramName, localized)
                         val dv = defaultValueLiteralForSchema(ps, localized)
@@ -638,7 +638,7 @@ class ModelGenerator(
                             builtTypes
                         )
                         val localized = localizeType(t, nestedTypes)
-                        val paramName = toCamelCase(pname)
+                        val paramName = pname.camelCase()
 
                         val paramBuilder = ParameterSpec.builder(paramName, localized)
                         val dv = defaultValueLiteralForSchema(pschemaRaw, localized)
@@ -707,7 +707,7 @@ class ModelGenerator(
                     builtTypes
                 )
                 val innerType = localizeType(innerTypeRaw, nestedTypes)
-                val paramName = toCamelCase(caseKey)
+                val paramName = caseKey.camelCase()
 
                 val paramBuilder = ParameterSpec.builder(paramName, innerType)
                 val dv = defaultValueLiteralForSchema(caseSchema, innerType)
@@ -736,7 +736,7 @@ class ModelGenerator(
                 val nonNullEnum = v.enum.filterNotNull()
                 if (topLevelProps.isEmpty()) {
                     nonNullEnum.forEach { lit ->
-                        val objName = toPascalCase(lit)
+                        val objName = lit.pascalCase()
                         val objBuilder =
                             TypeSpec.objectBuilder(objName).addAnnotation(Serializable::class)
                                 .addAnnotation(
@@ -764,7 +764,7 @@ class ModelGenerator(
             }
             // lift multi-property variant into subclass directly (no Payload nested class)
             else if (effectiveProps.isNotEmpty() && effectiveProps.size > 1) {
-                val variantSimpleName = toPascalCase(variantTitle)
+                val variantSimpleName = variantTitle.pascalCase()
                 val specificSubBuilder = TypeSpec.classBuilder(variantSimpleName)
                     .addModifiers(KModifier.DATA)
                     .addAnnotation(Serializable::class)
@@ -785,7 +785,7 @@ class ModelGenerator(
                         builtTypes
                     )
                     val localized = localizeType(t, nestedTypes)
-                    val paramName = toCamelCase(pn)
+                    val paramName = pn.camelCase()
 
                     val paramBuilder = ParameterSpec.builder(paramName, localized)
                     val dv = defaultValueLiteralForSchema(ps, localized)
@@ -830,7 +830,7 @@ class ModelGenerator(
                         builtTypes
                     )
                     val localized = localizeType(t, nestedTypes)
-                    val paramName = toCamelCase(pname)
+                    val paramName = pname.camelCase()
 
                     val paramBuilder = ParameterSpec.builder(paramName, localized)
                     val dv = defaultValueLiteralForSchema(pschemaRaw, localized)
@@ -874,7 +874,7 @@ class ModelGenerator(
             }
             // general case: build a payload data class from effectiveProps
             else {
-                val payloadName = "${toPascalCase(variantTitle)}Payload"
+                val payloadName = "${variantTitle.pascalCase()}Payload"
                 val payloadCtor = FunSpec.constructorBuilder()
                 val payloadBuilder =
                     TypeSpec.classBuilder(payloadName).addModifiers(KModifier.DATA)
@@ -894,7 +894,7 @@ class ModelGenerator(
                         fileBuilder,
                         builtTypes
                     )
-                    val paramName = toCamelCase(pn)
+                    val paramName = pn.camelCase()
 
                     val paramBuilder = ParameterSpec.builder(paramName, t)
                     val dv = defaultValueLiteralForSchema(ps, t)
@@ -961,7 +961,7 @@ class ModelGenerator(
                     fileBuilder,
                     builtTypes
                 )
-                val paramName = toCamelCase(pname)
+                val paramName = pname.camelCase()
 
                 val paramBuilder = ParameterSpec.builder(paramName, t)
                 val dv = defaultValueLiteralForSchema(pschemaRaw, t)
@@ -1036,7 +1036,7 @@ class ModelGenerator(
             // resolve property-level $ref if present by deref'ing and ensuring top-level file
             if (!pschemaRaw.ref.isNullOrBlank()) {
                 val refName = pschemaRaw.ref.substringAfterLast("/")
-                val refClass = toPascalCase(refName)
+                val refClass = refName.pascalCase()
                 val refSchema = spec.components.schemas[refName]
                 if (refSchema != null && !builtTypes.contains(refClass)) {
                     val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
@@ -1048,7 +1048,7 @@ class ModelGenerator(
                     refClass
                 ).copy(nullable = !requiredSet.contains(pname) || (pschemaRaw.nullable == true))
 
-                val paramName = toCamelCase(pname)
+                val paramName = pname.camelCase()
                 val paramBuilder = ParameterSpec.builder(paramName, propType)
                 val dv = defaultValueLiteralForSchema(pschemaRaw, propType)
                 if (dv != null) {
@@ -1077,7 +1077,7 @@ class ModelGenerator(
                 val refItem = pschemaRaw.allOf.firstOrNull { !it.ref.isNullOrBlank() }
                 if (refItem != null) {
                     val refName = refItem.ref!!.substringAfterLast("/")
-                    val refClass = toPascalCase(refName)
+                    val refClass = refName.pascalCase()
                     val refSchema = spec.components.schemas[refName]
                     if (refSchema != null && !builtTypes.contains(refClass)) {
                         val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
@@ -1089,7 +1089,7 @@ class ModelGenerator(
                         refClass
                     ).copy(nullable = !requiredSet.contains(pname) || (pschemaRaw.nullable == true))
 
-                    val paramName = toCamelCase(pname)
+                    val paramName = pname.camelCase()
                     val paramBuilder = ParameterSpec.builder(paramName, propType)
                     val dv = defaultValueLiteralForSchema(pschemaRaw, propType)
                     if (dv != null) {
@@ -1125,7 +1125,7 @@ class ModelGenerator(
                 fileBuilder,
                 builtTypes
             )
-            val paramName = toCamelCase(pname)
+            val paramName = pname.camelCase()
             val paramBuilder = ParameterSpec.builder(paramName, resolvedType)
             val dv = defaultValueLiteralForSchema(pschemaRaw, resolvedType)
             if (dv != null) {
@@ -1249,7 +1249,7 @@ class ModelGenerator(
             val refItem = ctxSchema.allOf.firstOrNull { !it.ref.isNullOrBlank() }
             if (refItem != null) {
                 val ref = refItem.ref!!.substringAfterLast("/")
-                val refClass = toPascalCase(ref)
+                val refClass = ref.pascalCase()
                 val refSchema = spec.components.schemas[ref]
                 if (refSchema != null && !builtTypes.contains(refClass)) {
                     val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
@@ -1265,7 +1265,7 @@ class ModelGenerator(
 
         if (!ctxSchema.ref.isNullOrBlank()) {
             val ref = ctxSchema.ref.substringAfterLast("/")
-            val refClass = toPascalCase(ref)
+            val refClass = ref.pascalCase()
             val refSchema = spec.components.schemas[ref]
             if (refSchema != null && !builtTypes.contains(refClass)) {
                 val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
@@ -1286,7 +1286,7 @@ class ModelGenerator(
             }
             if (refVariant != null && nullVariant != null) {
                 val ref = refVariant.ref!!.substringAfterLast("/")
-                val refClass = toPascalCase(ref)
+                val refClass = ref.pascalCase()
                 val refSchema = spec.components.schemas[ref]
                 if (refSchema != null && !builtTypes.contains(refClass)) {
                     val refFileBuilder = FileSpec.builder(modelPackageName, refClass)
@@ -1320,12 +1320,12 @@ class ModelGenerator(
 
         val nonNullLits = ctxSchema.enum?.filterNotNull() ?: emptyList()
         if (nonNullLits.isNotEmpty()) {
-            val enumName = toPascalCase(propNameForNested)
+            val enumName = propNameForNested.pascalCase()
             val enumBuilder = TypeSpec.enumBuilder(enumName).addAnnotation(Serializable::class)
             ctxSchema.generateKdoc()?.let { enumBuilder.addKdoc(it) }
             val used = mutableMapOf<String, Int>()
             nonNullLits.forEach { lit ->
-                var constName = toConstantName(lit)
+                var constName = lit.constantName()
                 val c = used.getOrDefault(constName, 0)
                 if (c > 0) constName = "${constName}_$c"
                 used[constName] = c + 1
@@ -1342,7 +1342,7 @@ class ModelGenerator(
         }
 
         // inline object
-        val payloadName = "${toPascalCase(propNameForNested)}Payload"
+        val payloadName = "${propNameForNested.pascalCase()}Payload"
         val payloadCtor = FunSpec.constructorBuilder()
         val payloadBuilder = TypeSpec.classBuilder(payloadName).addModifiers(KModifier.DATA)
             .addAnnotation(Serializable::class)
@@ -1363,7 +1363,7 @@ class ModelGenerator(
                 builtTypes
             )
             // use ParameterSpec so we can attach default if present
-            val paramName = toCamelCase(pn)
+            val paramName = pn.camelCase()
             val paramBuilder = ParameterSpec.builder(paramName, nestedType)
             val dv = defaultValueLiteralForSchema(ps, nestedType)
             if (dv != null) {
@@ -1373,8 +1373,8 @@ class ModelGenerator(
             }
             payloadCtor.addParameter(paramBuilder.build())
 
-            val propBuilder = PropertySpec.builder(toCamelCase(pn), nestedType)
-                .initializer(toCamelCase(pn))
+            val propBuilder = PropertySpec.builder(pn.camelCase(), nestedType)
+                .initializer(pn.camelCase())
                 .addAnnotation(
                     AnnotationSpec.builder(SerialName::class).addMember("%S", pn).build()
                 )
@@ -1540,7 +1540,7 @@ class ModelGenerator(
                             lit
                         }
 
-                        assignments.add("${toCamelCase(propName)} = $finalLit")
+                        assignments.add("${propName.camelCase()} = $finalLit")
                     }
                     if (assignments.isEmpty()) return null
                     return "${typeHint.simpleName}(" + assignments.joinToString(", ") + ")"
@@ -1554,14 +1554,14 @@ class ModelGenerator(
                 if (rawString != null && oneOfList.isNotEmpty()) {
                     val match = oneOfList.firstOrNull { v -> v.enum?.any { it == rawString } == true }
                     if (match != null) {
-                        val objName = toPascalCase(rawString)
+                        val objName = rawString.pascalCase()
                         return "${typeHint.simpleName}.$objName"
                     }
                 }
 
                 val topEnum = refSchema.enum?.filterNotNull()
                 if (!topEnum.isNullOrEmpty() && rawString != null) {
-                    val constName = toConstantName(rawString)
+                    val constName = rawString.constantName()
                     return "${typeHint.simpleName}.$constName"
                 }
 

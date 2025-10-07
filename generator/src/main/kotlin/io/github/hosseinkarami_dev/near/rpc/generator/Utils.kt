@@ -2,17 +2,16 @@ package io.github.hosseinkarami_dev.near.rpc.generator
 
 import java.util.Locale
 
-
-fun toCamelCase(input: String): String {
-    val pascal = toPascalCase(input)
-    return pascal.replaceFirstChar { it.lowercase(Locale.getDefault()) }
-}
-
 fun String.pascalCase() = toPascalCase(this)
 fun String.camelCase() = toCamelCase(this)
 fun String.constantName() = toConstantName(this)
 
-fun toPascalCase(input: String): String {
+private fun toCamelCase(input: String): String {
+    val pascal = toPascalCase(input)
+    return pascal.replaceFirstChar { it.lowercase(Locale.getDefault()) }
+}
+
+private fun toPascalCase(input: String): String {
     // normalize separators: any non-alnum -> underscore
     val cleaned = input.replace(Regex("[^A-Za-z0-9]+"), "_")
     val parts = cleaned.split('_').filter { it.isNotEmpty() }
@@ -46,7 +45,7 @@ fun toPascalCase(input: String): String {
     return transformed.joinToString("")
 }
 
-fun toConstantName(value: String): String {
+private fun toConstantName(value: String): String {
     return when {
         //PascalCase or CamelCase
         value.matches(Regex("^[A-Z][a-zA-Z0-9]*$")) || value.matches(Regex("^[a-z][a-zA-Z0-9]*$")) -> {

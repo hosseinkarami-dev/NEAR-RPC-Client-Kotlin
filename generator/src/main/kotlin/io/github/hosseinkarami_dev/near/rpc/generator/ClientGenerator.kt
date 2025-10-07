@@ -20,7 +20,7 @@ import java.io.File
 import kotlin.collections.iterator
 
 // PathGenerator: generates a NearClient class with typed suspend functions for each operation.
-object PathGenerator {
+object ClientGenerator {
 
     fun generateNearClientFile(
         spec: OpenApiSpec,
@@ -93,7 +93,10 @@ object PathGenerator {
             val respWrapperClassName = toClassNameOrBestGuess(respWrapperStr)
 
             val resultTypeStr = extractResultInnerTypeForOperation(op, spec, modelsPackage)
-            val resultTypeName = resultTypeStr?.let { toTypeName(it) } ?: ClassName("kotlinx.serialization.json", "JsonElement")
+            val resultTypeName = resultTypeStr?.let { toTypeName(it) } ?: ClassName(
+                "kotlinx.serialization.json",
+                "JsonElement"
+            )
 
             val paramsTypeStr = resolveParamsTypeFromOperation(op, spec, modelsPackage)
             val isUnitOnly = paramsTypeStr == "Unit"
@@ -127,7 +130,8 @@ object PathGenerator {
             if (description != null) mainParts.add(description)
             if (mainParts.isEmpty()) mainParts.add("Execute the JSON-RPC operation `$rawOperationId`.")
 
-            val seeLine = "path: $path (method: ${if (pathItem.post != null) "post" else "get"}) — operationId: $rawOperationId"
+            val seeLine =
+                "path: $path (method: ${if (pathItem.post != null) "post" else "get"}) — operationId: $rawOperationId"
             val paramDesc = when {
                 !hasParams -> "This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request."
                 paramsNullable -> "Request parameters (optional): `${paramsTypeStr}` — pass `null` or omit to send no params."
@@ -141,7 +145,8 @@ object PathGenerator {
                 rpcResponseClass.parameterizedBy(resultTypeName)
             )
 
-            val containsDeprecatedTag = (summary?.contains("[Deprecated]") == true) || (description?.contains("[Deprecated]") == true)
+            val containsDeprecatedTag =
+                (summary?.contains("[Deprecated]") == true) || (description?.contains("[Deprecated]") == true)
             val isDeprecated = containsDeprecatedTag
 
             if (isDeprecated) {
@@ -151,18 +156,23 @@ object PathGenerator {
                     append(" — deprecated.")
                 }
 
-                val replacerRegex = Regex("Consider using ([a-zA-Z0-9_]+) instead", RegexOption.IGNORE_CASE)
+                val replacerRegex =
+                    Regex("Consider using ([a-zA-Z0-9_]+) instead", RegexOption.IGNORE_CASE)
                 val replacerSource = (description ?: summary ?: "")
-                val replaceExpr = replacerRegex.find(replacerSource)?.groups?.get(1)?.value?.let { raw ->
-                    val replacementMethod = raw.camelCase()
-                    "${replacementMethod}(params)"
-                }
+                val replaceExpr =
+                    replacerRegex.find(replacerSource)?.groups?.get(1)?.value?.let { raw ->
+                        val replacementMethod = raw.camelCase()
+                        "${replacementMethod}(params)"
+                    }
 
                 val depBuilder = AnnotationSpec.builder(Deprecated::class)
                     .addMember("message = %S", depMessage)
                     .apply {
                         if (replaceExpr != null) {
-                            addMember("replaceWith = %L", CodeBlock.of("ReplaceWith(%S)", replaceExpr))
+                            addMember(
+                                "replaceWith = %L",
+                                CodeBlock.of("ReplaceWith(%S)", replaceExpr)
+                            )
                         }
                     }
                     .addMember("level = %T.%L", ClassName("kotlin", "DeprecationLevel"), "WARNING")
@@ -171,7 +181,8 @@ object PathGenerator {
                 funBuilder.addAnnotation(depBuilder)
             }
 
-            val methodEnumClass = ClassName(reqWrapperClassName.packageName, reqWrapperClassName.simpleName, "Method")
+            val methodEnumClass =
+                ClassName(reqWrapperClassName.packageName, reqWrapperClassName.simpleName, "Method")
             val constantName = rawOperationId.constantName()
 
             val cb = CodeBlock.builder()
@@ -186,13 +197,19 @@ object PathGenerator {
                 // try to find the params schema ref name from the request wrapper; if present, generate a default
                 val paramsRefName = extractParamsSchemaRefName(op, spec)
                 if (paramsRefName != null) {
-                    val pClass = toClassNameOrBestGuess("$modelsPackage.${paramsRefName.pascalCase()}")
+                    val pClass =
+                        toClassNameOrBestGuess("$modelsPackage.${paramsRefName.pascalCase()}")
                     val pSchema = spec.components.schemas[paramsRefName]
-                    val isEmptyObject = pSchema?.type == "object" && (pSchema.properties == null || pSchema.properties.isEmpty()) && pSchema.anyOf == null && pSchema.oneOf == null && pSchema.allOf == null
+                    val isEmptyObject =
+                        pSchema?.type == "object" && (pSchema.properties == null || pSchema.properties.isEmpty()) && pSchema.anyOf == null && pSchema.oneOf == null && pSchema.allOf == null
 
                     if (isEmptyObject) {
                         // params = RpcStatusRequest(value = JsonObject(emptyMap()))
-                        cb.addStatement("  params = %T(value = %T(emptyMap()))", pClass, ClassName("kotlinx.serialization.json", "JsonObject"))
+                        cb.addStatement(
+                            "  params = %T(value = %T(emptyMap()))",
+                            pClass,
+                            ClassName("kotlinx.serialization.json", "JsonObject")
+                        )
                     } else {
                         // fallback: construct a default instance via zero-arg constructor
                         cb.addStatement("  params = %T()", pClass)
@@ -202,29 +219,42 @@ object PathGenerator {
                     cb.addStatement("  params = null")
                 }
             }
-            cb.addStatement(")")
-
-            cb.addStatement("val httpResponse = httpClient.post(baseUrl) {")
-            cb.addStatement("    contentType(%T.Application.Json)", ClassName("io.ktor.http", "ContentType"))
-            cb.addStatement("    setBody(json.encodeToString(%T.serializer(), request))", reqWrapperClassName)
-            cb.addStatement("  }")
+            cb.addStatement(")\n")
+            cb.addStatement("try {")
+            cb.addStatement("   val httpResponse = httpClient.post(baseUrl) {")
+            cb.addStatement(
+                "       contentType(%T.Application.Json)",
+                ClassName("io.ktor.http", "ContentType")
+            )
+            cb.addStatement(
+                "       setBody(json.encodeToString(%T.serializer(), request))",
+                reqWrapperClassName
+            )
+            cb.addStatement("}\n")
 
             cb.addStatement("val respBody = httpResponse.bodyAsText()")
 
-            // ------------------ robust decode: prefer using response-wrapper schema ref when present
-            if (respWrapperRef != null) {
-                cb.addStatement("try {")
-                // Use the exact response-wrapper schema referenced by the operation (modelsPackage + wrapper name)
-                cb.addStatement("val decoded = json.decodeFromString(%T.serializer(), respBody)", respWrapperClassName)
-                // Map sealed variants to RpcResponse
-                cb.addStatement("return when (decoded) {")
-                cb.addStatement("  is %T.Result -> %T.Success(decoded.result)", respWrapperClassName, rpcResponseClass)
-                cb.addStatement("  is %T.Error -> %T.Failure(decoded.error)", respWrapperClassName, rpcResponseClass)
-                cb.addStatement("}")
-                cb.addStatement("} catch(e: Exception) {")
-                cb.addStatement("return RpcResponse.Failure(localToRpcError(e, -1001L))")
-                cb.addStatement("}")
-            }
+            // Use the exact response-wrapper schema referenced by the operation (modelsPackage + wrapper name)
+            cb.addStatement(
+                "val decoded = json.decodeFromString(%T.serializer(), respBody)\n",
+                respWrapperClassName
+            )
+            // Map sealed variants to RpcResponse
+            cb.addStatement("return when (decoded) {")
+            cb.addStatement(
+                "  is %T.Result -> %T.Success(decoded.result)",
+                respWrapperClassName,
+                rpcResponseClass
+            )
+            cb.addStatement(
+                "  is %T.Error -> %T.Failure(decoded.error)",
+                respWrapperClassName,
+                rpcResponseClass
+            )
+            cb.addStatement("}\n")
+            cb.addStatement("} catch(e: Exception) {")
+            cb.addStatement("   return RpcResponse.Failure(localToRpcError(e, -1001L))")
+            cb.addStatement("}")
 
             funBuilder.addCode(cb.build())
             classBuilder.addFunction(funBuilder.build())
@@ -301,7 +331,8 @@ object PathGenerator {
     private fun extractResponseType(op: Operation, modelsPackage: String): String? {
         val candidate = op.responses["200"] ?: op.responses["201"] ?: op.responses["default"]
         ?: op.responses.values.firstOrNull()
-        val media = candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
+        val media =
+            candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
         val schema = media?.schema
         return schemaTypeName(schema, modelsPackage)
     }
@@ -309,7 +340,8 @@ object PathGenerator {
     private fun extractResponseWrapperRef(op: Operation): String? {
         val candidate = op.responses["200"] ?: op.responses["201"] ?: op.responses["default"]
         ?: op.responses.values.firstOrNull()
-        val media = candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
+        val media =
+            candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
         val schema = media?.schema ?: return null
         return schema.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull
     }
@@ -408,8 +440,9 @@ object PathGenerator {
 
         // 5) inline object: if empty -> Unit, otherwise generic JsonElement
         if (paramsSchema.type == "object") {
-            val isEmptyInlineObject = (paramsSchema.properties == null || paramsSchema.properties.isEmpty()) &&
-                    paramsSchema.anyOf == null && paramsSchema.oneOf == null && paramsSchema.allOf == null
+            val isEmptyInlineObject =
+                (paramsSchema.properties == null || paramsSchema.properties.isEmpty()) &&
+                        paramsSchema.anyOf == null && paramsSchema.oneOf == null && paramsSchema.allOf == null
             if (isEmptyInlineObject) return "Unit"
             return "JsonElement"
         }
@@ -478,7 +511,8 @@ object PathGenerator {
     ): String? {
         val candidate = op.responses["200"] ?: op.responses["201"] ?: op.responses["default"]
         ?: op.responses.values.firstOrNull()
-        val media = candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
+        val media =
+            candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
         val schema = media?.schema ?: return null
 
         val wrapperRef = schema.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull ?: return null
@@ -496,7 +530,8 @@ object PathGenerator {
 
             if (resultProp.anyOf != null) {
                 val variants = resultProp.anyOf
-                val refVariant = variants.find { !it.ref.isNullOrBlank() || (it.type == "array" && it.items?.ref != null) }
+                val refVariant =
+                    variants.find { !it.ref.isNullOrBlank() || (it.type == "array" && it.items?.ref != null) }
                 val nullVariant = variants.find { v ->
                     (v.enum?.size == 1 && v.enum[0] == null) || (v.nullable == true) || (v.type == "null")
                 }
