@@ -37,13 +37,12 @@ fun main(args: Array<String>) {
     val clientPackage = "io.github.hosseinkarami_dev.near.rpc.client"
     val serializerPackage = modelPackage.replace(".models", ".serializers")
 
-    val serializerOutFile = File(modelsOut)
-    val modelOutFile = File(modelsOut)
-    val clientOutFile = File(clientOut)
-
     val serializerFiles = File(modelsOut + serializerPackage.replace(".", "/"))
     val modelFiles = File(modelsOut + modelPackage.replace(".", "/"))
     val nearClientFile = File(clientOut + clientPackage.replace(".", "/"))
+
+    serializerFiles.mkdir()
+    modelFiles.mkdir()
 
     serializerFiles.listFiles().forEach {
         it.delete()
