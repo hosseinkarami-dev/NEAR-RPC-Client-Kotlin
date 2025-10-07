@@ -1,4 +1,4 @@
-# 🛰️ NEAR RPC Client (Kotlin)
+# 🛰️ NEAR RPC Client
 
 This module provides a **fully typed Kotlin client** for interacting with the [NEAR JSON-RPC API](https://docs.near.org/api/rpc/introduction).  
 It’s designed to be **auto-generated** from the official OpenAPI specification, ensuring strong type safety, consistency, and automatic synchronization with NEAR core updates.
