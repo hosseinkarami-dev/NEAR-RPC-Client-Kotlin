@@ -11,3 +11,4 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
           release-type: simple
+
