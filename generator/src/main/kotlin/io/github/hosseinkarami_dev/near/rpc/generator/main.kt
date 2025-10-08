@@ -47,9 +47,18 @@ fun main(args: Array<String>) {
     val nearClientFile = File(clientOut + clientPackage.replace(".", "/"))
 
 
+    println("Root dir: $rootDir")
+    println("Serializer folder: ${serializerFiles.absolutePath}")
+    println("Model folder: ${modelFiles.absolutePath}")
+    println("Client folder: ${nearClientFile.absolutePath}")
+
     serializerFiles.mkdirs()
     modelFiles.mkdirs()
     nearClientFile.mkdirs()
+
+    println("Serializer exists? ${serializerFiles.exists()}")
+    println("Model exists? ${modelFiles.exists()}")
+    println("Client exists? ${nearClientFile.exists()}")
 
     serializerFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
     modelFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
