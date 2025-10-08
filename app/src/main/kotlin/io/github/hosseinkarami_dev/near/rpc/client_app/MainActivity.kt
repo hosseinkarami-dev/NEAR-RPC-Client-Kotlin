@@ -9,7 +9,6 @@ import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.BlockId
 import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest
 import io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction
 import io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus
@@ -34,8 +33,11 @@ class MainActivity : ComponentActivity() {
             baseUrl = "https://rpc.mainnet.near.org" // or testnet: https://rpc.testnet.near.org
         )
 
+        lifecycleScope.launch {
             lifecycleScope.launch {
-                val response = nearClient.status()
+                val response = nearClient.block(
+                    RpcBlockRequest.BlockId(BlockId.BlockHeight(167440515.toULong()))
+                )
 
                 when (response) {
                     is RpcResponse.Failure -> {
@@ -43,11 +45,12 @@ class MainActivity : ComponentActivity() {
                     }
 
                     is RpcResponse.Success -> {
-                        val result = response.getResultOrNull<RpcStatusResponse>()
+                        val result = response.getResultOrNull<RpcBlockResponse>()
                         println("Result: $result")
 
                     }
                 }
+            }
 
 //
 //        lifecycleScope.launch {
