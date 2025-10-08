@@ -29,6 +29,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Fix permissions
+        run: |
+          chmod -R 777 models/src/main/kotlin
+          chmod -R 777 client/src/main/kotlin
+
       - name: Run Generator
         run: ./gradlew :generator:run --no-daemon
 
