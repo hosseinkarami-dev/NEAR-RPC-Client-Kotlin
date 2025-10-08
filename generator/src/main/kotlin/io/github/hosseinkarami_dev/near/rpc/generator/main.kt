@@ -8,7 +8,10 @@ import java.io.File
 fun main(args: Array<String>) {
     val parser = ArgParser("generator")
 
-    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: File(System.getProperty("user.dir"), "..").canonicalPath
+    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: error("GITHUB_WORKSPACE not found")
+
+    val modelsOut = "$rootDir/models/src/main/kotlin/"
+    val clientOut = "$rootDir/client/src/main/kotlin/"
 
     val openApiUrl by parser.option(
         ArgType.String,
@@ -19,17 +22,17 @@ fun main(args: Array<String>) {
         //.default("https://raw.githubusercontent.com/near/nearcore/refs/heads/2.8.0/chain/jsonrpc/openapi/openapi.json")
        .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/master/chain/jsonrpc/openapi/openapi.json")
 
-    val modelsOut by parser.option(
-        ArgType.String,
-        fullName = "models-out",
-        description = "Output directory for generated models"
-    ).default("$rootDir/models/src/main/kotlin/")
-
-    val clientOut by parser.option(
-        ArgType.String,
-        fullName = "client-out",
-        description = "Output directory for generated client"
-    ).default("$rootDir/client/src/main/kotlin/")
+//    val modelsOut by parser.option(
+//        ArgType.String,
+//        fullName = "models-out",
+//        description = "Output directory for generated models"
+//    ).default("$rootDir/models/src/main/kotlin/")
+//
+//    val clientOut by parser.option(
+//        ArgType.String,
+//        fullName = "client-out",
+//        description = "Output directory for generated client"
+//    ).default("$rootDir/client/src/main/kotlin/")
 
     parser.parse(args)
 
