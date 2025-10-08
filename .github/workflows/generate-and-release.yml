@@ -30,7 +30,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run Generator
-        run: ./gradlew :generator:run --no-daemon
+        run: ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
 
       - name: Build project
         run: ./gradlew build --stacktrace --no-daemon
