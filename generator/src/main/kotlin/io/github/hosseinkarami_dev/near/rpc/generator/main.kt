@@ -9,6 +9,8 @@ import java.io.File
 fun main(args: Array<String>) {
     val parser = ArgParser("generator")
 
+    val rootDir = File(System.getProperty("user.dir"), "..").canonicalPath
+
     val openApiUrl by parser.option(
         ArgType.String,
         fullName = "openapi-url",
@@ -22,13 +24,13 @@ fun main(args: Array<String>) {
         ArgType.String,
         fullName = "models-out",
         description = "Output directory for generated models"
-    ).default("../models/src/main/kotlin/")
+    ).default("$rootDir/models/src/main/kotlin/")
 
     val clientOut by parser.option(
         ArgType.String,
         fullName = "client-out",
         description = "Output directory for generated client"
-    ).default("../client/src/main/kotlin/")
+    ).default("$rootDir/client/src/main/kotlin/")
 
     parser.parse(args)
 
