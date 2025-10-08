@@ -8,6 +8,15 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 kotlin {
+    sourceSets {
+        val main by getting {
+            kotlin.srcDir("src/main/kotlin") // مسیر generator
+        }
+        val test by getting {
+            kotlin.srcDir("src/test/kotlin")
+        }
+    }
+
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
     }
