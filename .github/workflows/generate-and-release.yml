@@ -35,12 +35,25 @@ jobs:
       - name: Build project
         run: ./gradlew build --stacktrace --no-daemon
 
-      - name: Create ZIP artifact
+      - name: Commit regenerated sources (if any) and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p release
-          zip -r release/near-rpc-client.zip build/libs/*
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      
+          # always push to main branch
+          git checkout main
+      
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: regenerate client from OpenAPI"
+            git push origin main
+          fi
 
-      - name: Get Release ID
+      - name: Get or create Release
         id: get_release
         uses: actions/github-script@v6
         with:
@@ -50,21 +63,38 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo
             });
-            const release = releases.data.find(r => r.tag_name === "v0.1.0");
-            if (release) {
-              return release.id;
-            } else {
-              const newRelease = await github.rest.repos.createRelease({
+            
+            let release = releases.data.find(r => r.tag_name === "v0.1.0");
+            
+            if (!release) {
+              release = await github.rest.repos.createRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag_name: "v0.1.0",
                 name: "NEAR RPC Client v0.1.0",
-                body: "Auto-generated client from the latest OpenAPI spec. Includes updated models and client code."
+                body: "Auto-generated client from the latest OpenAPI spec."
               });
-              return newRelease.data.id;
             }
+            
+            const assets = await github.rest.repos.listReleaseAssets({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id
+            });
+            
+            for (const asset of assets.data) {
+              if (asset.name === "near-rpc-client.zip") {
+                await github.rest.repos.deleteReleaseAsset({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  asset_id: asset.id
+                });
+              }
+            }
+            
+            return release.data.upload_url;
 
-      - name: Upload ZIP to Release
+      - name: Upload new ZIP
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.get_release.outputs.result }}
