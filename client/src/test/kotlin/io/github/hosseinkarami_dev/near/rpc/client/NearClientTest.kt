@@ -1,7 +1,13 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
-import io.github.hosseinkarami_dev.near.rpc.models.Finality
-import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest
+import io.github.hosseinkarami_dev.near.rpc.models.AccountId
+import io.github.hosseinkarami_dev.near.rpc.models.BlockId
+import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
+import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest
+import io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -33,40 +39,43 @@ class NearClientTest {
 //            )
 //        )
 
-//        val response = nearClient.experimentalMaintenanceWindows(
+        val response = nearClient.experimentalTxStatus(
+            RpcTransactionStatusRequest.SignedTxBase64(
+                SignedTransaction("Gz2YwFsq12yZDAVmA8M53DZM4ih56z6Ybhwd9QNa8A94")
+
+            )
 //            RpcMaintenanceWindowsRequest(
 //                AccountId("neardome2340.near")
 //            )
-//        )
-//
-//        println(response)
-//
-//        when (response) {
-//            is RpcResponse.Failure -> {
-//                println(response.error)
-//                println("hiiiiiiiii")
-//            }
-//
-//            is RpcResponse.Success -> {
-////               val accessKeyList = response.getResultOrNull<RpcQueryResponse.AccountView>()
-////               println(accessKeyList)
-//            }
-//        }
-
-        val response = nearClient.experimentalProtocolConfig(
-            RpcProtocolConfigRequest.Finality(finality = Finality.FINAL)
         )
 
         when (response) {
             is RpcResponse.Failure -> {
                 println(response.error)
+                println("hiiiiiiiii")
             }
 
-            is RpcResponse.Success<*> -> {
-                println(response)
-
+            is RpcResponse.Success -> {
+                println(response.result)
+//               val accessKeyList = response.getResultOrNull<RpcQueryResponse.AccountView>()
+//               println(accessKeyList)
             }
         }
+
+//        val response = nearClient.experimentalProtocolConfig(
+//            RpcProtocolConfigRequest.Finality(finality = Finality.FINAL)
+//        )
+
+//        when (response) {
+//            is RpcResponse.Failure -> {
+//                println(response.error)
+//            }
+//
+//            is RpcResponse.Success<*> -> {
+//                println(response)
+//
+//            }
+//        }
 
 
         //val response = nearClient.status()
