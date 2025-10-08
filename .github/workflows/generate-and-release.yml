@@ -31,6 +31,7 @@ jobs:
 
       - name: Run Generator
         run: ./gradlew :generator:run --no-daemon
+        working-directory: ./generator
 
       - name: Build project
         run: ./gradlew build --stacktrace --no-daemon
