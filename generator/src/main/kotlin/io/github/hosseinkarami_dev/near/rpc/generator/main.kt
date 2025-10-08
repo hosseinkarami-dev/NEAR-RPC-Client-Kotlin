@@ -46,42 +46,32 @@ fun main(args: Array<String>) {
     val modelFiles = File(modelsOut + modelPackage.replace(".", "/"))
     val nearClientFile = File(clientOut + clientPackage.replace(".", "/"))
 
-
-    println("Root dir: $rootDir")
-    println("Serializer folder: ${serializerFiles.absolutePath}")
-    println("Model folder: ${modelFiles.absolutePath}")
-    println("Client folder: ${nearClientFile.absolutePath}")
-
     serializerFiles.mkdirs()
     modelFiles.mkdirs()
     nearClientFile.mkdirs()
-
-    println("Serializer exists? ${serializerFiles.exists()}")
-    println("Model exists? ${modelFiles.exists()}")
-    println("Client exists? ${nearClientFile.exists()}")
 
     serializerFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
     modelFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
 
     nearClientFile.delete()
 
-//    ModelGenerator.generateAll(
-//        spec = spec,
-//        output = File(modelsOut),
-//        serializerPackage = serializerPackage,
-//        packageName = modelPackage
-//    ) { sealedClasses ->
-//            SerializerGenerator.generateFromSealedInfos(
-//                sealedInfos = sealedClasses,
-//                serializerPackage = serializerPackage,
-//                output = File(modelsOut)
-//            )
-//    }
-//
-//    ClientGenerator.generateNearClientFile(
-//        spec = spec,
-//        output = File(clientOut),
-//        clientPackage = clientPackage,
-//        modelsPackage = modelPackage
-//    )
+    ModelGenerator.generateAll(
+        spec = spec,
+        output = File(modelsOut),
+        serializerPackage = serializerPackage,
+        packageName = modelPackage
+    ) { sealedClasses ->
+            SerializerGenerator.generateFromSealedInfos(
+                sealedInfos = sealedClasses,
+                serializerPackage = serializerPackage,
+                output = File(modelsOut)
+            )
+    }
+
+    ClientGenerator.generateNearClientFile(
+        spec = spec,
+        output = File(clientOut),
+        clientPackage = clientPackage,
+        modelsPackage = modelPackage
+    )
 }
