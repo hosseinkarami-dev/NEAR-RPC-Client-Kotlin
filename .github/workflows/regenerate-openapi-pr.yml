@@ -76,7 +76,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: regenerate client from OpenAPI"
+          git commit -m "fix: regenerate client from OpenAPI"
           git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
