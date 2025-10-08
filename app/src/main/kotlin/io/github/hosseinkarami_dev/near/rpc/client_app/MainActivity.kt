@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.client_app
 
 import android.os.Bundle
 import androidx.core.app.ComponentActivity
+import io.github.hosseinkarami_dev.near.rpc.client.NearClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -17,10 +18,10 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-//        val nearClient = NearClient(
-//            httpClient = httpClient,
-//            baseUrl = "https://rpc.mainnet.near.org" // or testnet: https://rpc.testnet.near.org
-//        )
+        val nearClient = NearClient(
+            httpClient = httpClient,
+            baseUrl = "https://rpc.mainnet.near.org" // or testnet: https://rpc.testnet.near.org
+        )
 //
 //        lifecycleScope.launch {
 //            val response = nearClient.tx(
