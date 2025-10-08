@@ -53,29 +53,6 @@ jobs:
             git commit -m "chore: regenerate client from OpenAPI"
             git push origin "$BRANCH"
           fi
-          
-      - name: Show generated files
-        run: |
-          echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
-          pwd
-          echo "---- models ----"
-          ls -la models/src/main/kotlin || true
-          echo "---- client ----"
-          ls -la client/src/main/kotlin || true
-
-      - name: Commit regenerated sources (if any)
-        if: success()
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add models/src/main/kotlin client/src/main/kotlin || true
-          git status --porcelain
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-          git commit -m "chore: regenerate client from OpenAPI"
-          git push origin HEAD
-          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
