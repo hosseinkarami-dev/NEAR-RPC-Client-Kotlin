@@ -42,9 +42,6 @@ fun main(args: Array<String>) {
     val modelFiles = File(modelsOut + modelPackage.replace(".", "/"))
     val nearClientFile = File(clientOut + clientPackage.replace(".", "/"))
 
-    serializerFiles.mkdir()
-    modelFiles.mkdir()
-
     serializerFiles.mkdirs()
     modelFiles.mkdirs()
     nearClientFile.mkdirs()
