@@ -141,23 +141,6 @@ lifecycleScope.launch {
     }
   }
 }
-
-// Status Example:
-lifecycleScope.launch {
-    val response = nearClient.status()
-
-    when (response) {
-        is RpcResponse.Failure -> {
-            println("Error: ${response.error}")
-        }
-
-        is RpcResponse.Success -> {
-            val result = response.getResultOrNull<RpcStatusResponse>()
-            println("Result: $result")
-
-        }
-    }
-}
 ```
 
 **Notes**
