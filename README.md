@@ -162,8 +162,7 @@ lifecycleScope.launch {
 
 **Notes**
 - Prefer a single application-wide `HttpClient` (don't recreate per request).  
-- Close the client (`httpClient.close()`) when your app terminates.  
-- Use `Json { ignoreUnknownKeys = true }` — NEAR nodes may return extra fields.
+- Close the client (`httpClient.close()`) when your app terminates.
 
 ---
 
