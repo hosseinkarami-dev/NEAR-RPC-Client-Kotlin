@@ -1,2 +1,2 @@
-models/
-serializers/
+models/*
+serializers/*

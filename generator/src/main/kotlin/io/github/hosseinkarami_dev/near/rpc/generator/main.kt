@@ -45,13 +45,12 @@ fun main(args: Array<String>) {
     serializerFiles.mkdir()
     modelFiles.mkdir()
 
-    serializerFiles.listFiles().forEach {
-        it.delete()
-    }
+    serializerFiles.mkdirs()
+    modelFiles.mkdirs()
+    nearClientFile.mkdirs()
 
-    modelFiles.listFiles().forEach {
-        it.delete()
-    }
+    serializerFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
+    modelFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
 
     nearClientFile.delete()
 
