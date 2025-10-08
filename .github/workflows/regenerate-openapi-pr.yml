@@ -15,80 +15,84 @@ permissions:
 jobs:
   regenerate-and-pr:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Exit if triggered by GitHub Actions bot (avoid loops)
+      # Avoid infinite loop triggered by GitHub Actions
+      - name: Exit if triggered by GitHub Actions bot
         if: github.actor == 'github-actions[bot]'
         run: |
           echo "Triggered by GitHub Actions bot; exiting to avoid loop."
           exit 0
 
+      # Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: true
 
+      # Setup JDK
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
 
+      # Grant execute permission for Gradle
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      # Run Generator (regenerates client + models)
       - name: Run Generator
         run: ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
 
+      # Build and run tests
       - name: Build project (and run tests)
         run: ./gradlew build --stacktrace --no-daemon
 
-      - name: Prepare branch, commit regenerated sources (if any) and push
+      # Prepare branch, commit changes, push
+      - name: Prepare branch, commit regenerated sources
         id: commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
 
-          # configure git author (actions token is present via checkout persist-credentials)
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "automation@github.com"
+          git config --local user.name "GitHub Actions Bot"
 
-          # create a unique branch name
+          # create unique branch
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
 
           git checkout -b "$BRANCH"
 
-          # stage all changes produced by generator
           git add .
 
-          # if there are no staged changes, set output and exit gracefully
+          # check if any changes
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # commit and push branch
           git commit -m "chore: regenerate client from OpenAPI"
-          git push --set-upstream origin "$BRANCH"
+          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
 
-          # export outputs for next steps
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
+      # Create Pull Request if changes exist
       - name: Create Pull Request for regenerated sources
         if: steps.commit.outputs.pr_required == 'true'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
-            const branch = context.payload.inputs?.branch || '${{ steps.commit.outputs.branch }}';
+            const branch = '${{ steps.commit.outputs.branch }}';
             const title = `chore: regenerate client from OpenAPI (${branch})`;
             const body = `This PR regenerates the NEAR RPC client and models from the latest OpenAPI spec.\n\nPlease review the generated code and run CI checks.`;
 
-            // create PR targeting main
             const pr = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -98,11 +102,9 @@ jobs:
               body
             });
 
-            // optionally add a label to PR (uncomment if you have label created)
-            // await github.rest.issues.addLabels({ owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.data.number, labels: ["autogen"] });
-
             return { pr_number: pr.data.number, pr_url: pr.data.html_url };
 
+      # Output when no changes
       - name: Output when no changes
         if: steps.commit.outputs.pr_required != 'true'
         run: echo "No regenerated changes — nothing to create a PR for."
