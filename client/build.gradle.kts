@@ -10,7 +10,7 @@ java {
 kotlin {
     sourceSets {
         val main by getting {
-            kotlin.srcDir("src/main/kotlin") // مسیر generator
+            kotlin.srcDir("src/main/kotlin")
         }
         val test by getting {
             kotlin.srcDir("src/test/kotlin")
