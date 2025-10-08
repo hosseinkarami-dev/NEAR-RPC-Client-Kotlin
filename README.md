@@ -123,18 +123,38 @@ val nearClient = NearClient(
     baseUrl = "https://rpc.mainnet.near.org" // or "https://rpc.testnet.near.org"
 )
 
-// Example inside an Activity/Fragment:
+// Block Details Example:
 lifecycleScope.launch {
-    val response = nearClient.gasPrice(RpcGasPriceRequest(blockId = null))
+  val response = nearClient.block(
+    RpcBlockRequest.BlockId(BlockId.BlockHeight(167440515.toULong()))
+  )
+
+  when (response) {
+    is RpcResponse.Failure -> {
+      println("Error: ${response.error}")
+    }
+
+    is RpcResponse.Success -> {
+      val result = response.getResultOrNull<RpcBlockResponse>()
+      println("Result: $result")
+
+    }
+  }
+}
+
+// Status Example
+lifecycleScope.launch {
+    val response = nearClient.status()
 
     when (response) {
         is RpcResponse.Failure -> {
-            // handle RPC error
-            println("Error: ${response.error.code} ${response.error.message}")
+            println("Error: ${response.error}")
         }
+
         is RpcResponse.Success -> {
-            val result = response.result
-            println("Gas price: ${result.gasPrice}")
+            val result = response.getResultOrNull<RpcStatusResponse>()
+            println("Result: $result")
+
         }
     }
 }
