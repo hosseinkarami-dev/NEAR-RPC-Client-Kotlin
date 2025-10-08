@@ -142,7 +142,7 @@ lifecycleScope.launch {
   }
 }
 
-// Status Example
+// Status Example:
 lifecycleScope.launch {
     val response = nearClient.status()
 
