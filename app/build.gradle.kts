@@ -1,3 +1,5 @@
+group = "androidx.activity"
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -67,3 +69,4 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     testImplementation(kotlin("test"))
 }
+

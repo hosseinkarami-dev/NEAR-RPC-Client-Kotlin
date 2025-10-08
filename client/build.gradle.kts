@@ -1,8 +1,6 @@
 plugins {
-    application
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-    `maven-publish`
 }
 
 java {
@@ -12,18 +10,6 @@ java {
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-    }
-}
-
-group = "io.github.hosseinkarami_dev"
-version = "0.1.0"
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = "near-rpc-client"
-            from(components["java"])
-        }
     }
 }
 

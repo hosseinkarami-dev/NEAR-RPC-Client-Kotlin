@@ -1,8 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.client_app
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
+import androidx.core.app.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import io.github.hosseinkarami_dev.near.rpc.client.NearClient
 import io.github.hosseinkarami_dev.near.rpc.client.RpcResponse
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         val httpClient = HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -42,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
             when (response) {
                 is RpcResponse.Failure -> {
-                    println("Error: ${response.error.code} ${response.error.message}")
+                    println("Error: ${response.error}")
                 }
 
                 is RpcResponse.Success -> {
