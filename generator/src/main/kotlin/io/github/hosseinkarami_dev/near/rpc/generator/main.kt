@@ -9,7 +9,7 @@ import java.io.File
 fun main(args: Array<String>) {
     val parser = ArgParser("generator")
 
-    val rootDir = File(System.getProperty("user.dir"), "..").canonicalPath
+    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: File(System.getProperty("user.dir"), "..").canonicalPath
 
     val openApiUrl by parser.option(
         ArgType.String,
