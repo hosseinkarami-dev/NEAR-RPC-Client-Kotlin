@@ -9,18 +9,18 @@ import kotlin.test.assertEquals
 
 class NearClientGenerationTest {
 
-//    @Test
-//    fun `client file should be generated`() {
-//        val clientFile = File(NEAR_CLIENT_LOCATION)
-//        assertTrue(clientFile.exists(), "NearClient.kt should be generated")
-//    }
-//
-//    @Test
-//    fun `generated client should contain correct class name`() {
-//        val clientFile = File(NEAR_CLIENT_LOCATION)
-//        val content = clientFile.readText()
-//        assertTrue("class NearClient" in content, "Generated client should contain NearClient class")
-//    }
+    @Test
+    fun `client file should be generated`() {
+        val clientFile = File(NEAR_CLIENT_LOCATION)
+        assertTrue(clientFile.exists(), "NearClient.kt should be generated")
+    }
+
+    @Test
+    fun `generated client should contain correct class name`() {
+        val clientFile = File(NEAR_CLIENT_LOCATION)
+        val content = clientFile.readText()
+        assertTrue("class NearClient" in content, "Generated client should contain NearClient class")
+    }
 
 //    @Test
 //    fun `generated client should compile without errors`() {
