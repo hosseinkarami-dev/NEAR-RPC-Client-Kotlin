@@ -183,7 +183,7 @@ The `generator` module is a CLI that parses NEAR's OpenAPI spec and writes gener
 
 Run the generator against NEAR's OpenAPI:
 ```bash
-./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated
+./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated"
 ```
 
 ---
