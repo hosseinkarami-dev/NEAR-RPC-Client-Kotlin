@@ -35,29 +35,39 @@ jobs:
       - name: Build project
         run: ./gradlew build --stacktrace --no-daemon
 
-      - name: Commit regenerated sources (if any) and push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create ZIP artifact
         run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-      
-          # always push to main branch
-          git checkout main
-      
-          git add .
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: regenerate client from OpenAPI"
-            git push origin main
-          fi
+          mkdir -p release
+          zip -r release/near-rpc-client.zip build/libs/*
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Get Release ID
+        id: get_release
+        uses: actions/github-script@v6
         with:
-          tag_name: v0.1.0
-          name: "NEAR RPC Client v0.1.0"
-          body: "Auto-generated client from the latest OpenAPI spec. Includes updated models and client code."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const release = releases.data.find(r => r.tag_name === "v0.1.0");
+            if (release) {
+              return release.id;
+            } else {
+              const newRelease = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: "v0.1.0",
+                name: "NEAR RPC Client v0.1.0",
+                body: "Auto-generated client from the latest OpenAPI spec. Includes updated models and client code."
+              });
+              return newRelease.data.id;
+            }
+
+      - name: Upload ZIP to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.get_release.outputs.result }}
+          asset_path: release/near-rpc-client.zip
+          asset_name: near-rpc-client.zip
+          asset_content_type: application/zip
