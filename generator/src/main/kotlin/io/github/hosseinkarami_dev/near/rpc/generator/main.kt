@@ -1,6 +1,5 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
 
-import ModelGenerator
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
