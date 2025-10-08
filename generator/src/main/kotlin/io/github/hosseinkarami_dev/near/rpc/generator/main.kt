@@ -8,7 +8,7 @@ import java.io.File
 fun main(args: Array<String>) {
     val parser = ArgParser("generator")
 
-    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: error("GITHUB_WORKSPACE not found")
+    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: File(System.getProperty("user.dir"), "..").canonicalPath
 
     val modelsOut = "$rootDir/models/src/main/kotlin/"
     val clientOut = "$rootDir/client/src/main/kotlin/"
