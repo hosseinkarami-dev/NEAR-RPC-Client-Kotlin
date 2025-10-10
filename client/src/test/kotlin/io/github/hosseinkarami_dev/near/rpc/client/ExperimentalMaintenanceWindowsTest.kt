@@ -1,8 +1,9 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
-import io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig
-import io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse
+import io.github.hosseinkarami_dev.near.rpc.models.AccountId
+import io.github.hosseinkarami_dev.near.rpc.models.RangeOfUint64
+import io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -13,7 +14,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 
-class ExperimentalGenesisConfig {
+class ExperimentalMaintenanceWindowsTest {
 
     private lateinit var httpClient: HttpClient
     private lateinit var nearClient: NearClient
@@ -39,9 +40,9 @@ class ExperimentalGenesisConfig {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.experimentalGenesisConfig()
-        val result = response.getResultOrNull<GenesisConfig>()
-        println("Experimental Genesis Config Response: $result")
+        val response = nearClient.experimentalMaintenanceWindows(RpcMaintenanceWindowsRequest(accountId = AccountId("neardome2340.near")))
+        val result = response.getResultOrNull<List<RangeOfUint64>>()
+        println("Experimental Maintenance Windows Response: $result")
         assertTrue { response is RpcResponse.Success }
     }
 }

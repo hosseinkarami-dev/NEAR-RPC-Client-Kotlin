@@ -1,9 +1,14 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
+import io.github.hosseinkarami_dev.near.rpc.models.AccountId
 import io.github.hosseinkarami_dev.near.rpc.models.Finality
-import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse
+import io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig
+import io.github.hosseinkarami_dev.near.rpc.models.RangeOfUint64
+import io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -14,7 +19,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 
-class ExperimentalProtocolConfig {
+class ExperimentalGenesisConfig3 {
 
     private lateinit var httpClient: HttpClient
     private lateinit var nearClient: NearClient
@@ -40,9 +45,10 @@ class ExperimentalProtocolConfig {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.experimentalProtocolConfig(RpcProtocolConfigRequest.Finality(Finality.FINAL))
-        val result = response.getResultOrNull<RpcProtocolConfigResponse>()
-        println("Experimental Protocol Config Response: $result")
-        assertTrue { response is RpcResponse.Failure }
+        val response = nearClient.experimentalChangesInBlock(RpcStateChangesInBlockRequest.Finality(
+            Finality.FINAL))
+        val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
+        println("Experimental Changes In Block Response: $result")
+        assertTrue { response is RpcResponse.Success }
     }
 }
