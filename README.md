@@ -91,12 +91,6 @@ implementation("io.ktor:ktor-serialization-kotlinx-json:<ktor_version>")
 
 [//]: # (```)
 
-For local testing:
-```bash
-./gradlew :models:publishToMavenLocal
-./gradlew :client:publishToMavenLocal
-```
-
 ---
 
 ## Quickstart — Android example
