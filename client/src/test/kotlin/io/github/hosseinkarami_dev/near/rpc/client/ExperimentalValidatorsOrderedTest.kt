@@ -4,6 +4,7 @@ import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.BlockId
 import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest
+import io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeView
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -42,7 +43,7 @@ class ExperimentalValidatorsOrderedTest {
     fun testStatus() = runTest {
         val response = nearClient.experimentalValidatorsOrdered(RpcValidatorsOrderedRequest(
             BlockId.BlockHeight(167697415U)))
-        val result = response.getResultOrNull<RpcProtocolConfigResponse>()
+        val result = response.getResultOrNull<List<ValidatorStakeView>>()
         println("experimentalValidatorsOrdered Response: $result")
         assertTrue { true }
     }
