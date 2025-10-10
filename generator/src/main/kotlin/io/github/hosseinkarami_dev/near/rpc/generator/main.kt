@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
         description = "URL to the OpenAPI specification"
     )
         //.default("https://raw.githubusercontent.com/near/nearcore/refs/heads/2.7.0/chain/jsonrpc/openapi/openapi.json")
-        //.default("https://raw.githubusercontent.com/near/nearcore/refs/heads/2.8.0/chain/jsonrpc/openapi/openapi.json")
+      //  .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/2.8.0/chain/jsonrpc/openapi/openapi.json")
        .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/master/chain/jsonrpc/openapi/openapi.json")
 
     val modelsOut by parser.option(

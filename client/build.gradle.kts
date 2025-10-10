@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    id("org.jetbrains.kotlinx.kover") version "0.9.2"
 }
 
 java {
@@ -19,6 +20,18 @@ kotlin {
 
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    }
+}
+
+kover {
+    reports {
+        verify {
+            rule {
+                bound {
+                    minValue.set(80)
+                }
+            }
+        }
     }
 }
 

@@ -1,7 +1,10 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse
+import io.github.hosseinkarami_dev.near.rpc.models.BlockId
+import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
+import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -12,7 +15,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertNotNull
 
-class NearClientTest {
+class BlockEffectsTest {
 
     private lateinit var httpClient: HttpClient
     private lateinit var nearClient: NearClient
@@ -27,7 +30,7 @@ class NearClientTest {
 
         nearClient = NearClient(
             httpClient = httpClient,
-            baseUrl = "https://rpc.testnet.near.org"
+            baseUrl = "https://rpc.mainnet.near.org"
         )
     }
 
@@ -38,9 +41,10 @@ class NearClientTest {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.status()
-        val result = response.getResultOrNull<RpcStatusResponse>()
-        assertNotNull(result)
-        println("Status response: $result")
+        val response = nearClient.blockEffects(RpcStateChangesInBlockRequest.BlockId(BlockId.CryptoHash(
+            CryptoHash("4GoYYrySh93RJZmTnKo7mFnXi2PMPXUJ6GW2sU4xt4MB"))))
+        val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
+        println("BlockEffects Response: $result")
+        assertNotNull(response is RpcResponse.Success)
     }
 }
