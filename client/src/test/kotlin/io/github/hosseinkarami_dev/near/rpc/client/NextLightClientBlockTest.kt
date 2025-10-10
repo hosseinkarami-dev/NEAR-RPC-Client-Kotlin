@@ -1,14 +1,9 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
-import io.github.hosseinkarami_dev.near.rpc.models.AccountId
-import io.github.hosseinkarami_dev.near.rpc.models.Finality
-import io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig
-import io.github.hosseinkarami_dev.near.rpc.models.RangeOfUint64
-import io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest
+import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
+import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -19,7 +14,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 
-class ExperimentalGenesisConfig3 {
+class NextLightClientBlockTest {
 
     private lateinit var httpClient: HttpClient
     private lateinit var nearClient: NearClient
@@ -45,10 +40,11 @@ class ExperimentalGenesisConfig3 {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.experimentalChangesInBlock(RpcStateChangesInBlockRequest.Finality(
-            Finality.FINAL))
-        val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
-        println("Experimental Changes In Block Response: $result")
+        val response = nearClient.nextLightClientBlock(RpcLightClientNextBlockRequest(
+            lastBlockHash = CryptoHash("4GoYYrySh93RJZmTnKo7mFnXi2PMPXUJ6GW2sU4xt4MB")
+        ))
+        val result = response.getResultOrNull<RpcLightClientNextBlockResponse>()
+        println("RPC Receipt Response: $result")
         assertTrue { response is RpcResponse.Success }
     }
 }
