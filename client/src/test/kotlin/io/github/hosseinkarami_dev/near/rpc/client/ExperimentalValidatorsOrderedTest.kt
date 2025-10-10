@@ -45,6 +45,7 @@ class ExperimentalValidatorsOrderedTest {
             BlockId.BlockHeight(167697415U)))
         val result = response.getResultOrNull<List<ValidatorStakeView>>()
         println("experimentalValidatorsOrdered Response: $result")
-        assertTrue { true }
+        assertTrue { response is RpcResponse.Success }
     }
 }
+
