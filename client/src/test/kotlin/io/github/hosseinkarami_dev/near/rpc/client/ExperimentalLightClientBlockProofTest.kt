@@ -3,6 +3,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
 import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -46,8 +47,8 @@ class ExperimentalLightClientBlockProofTest {
                 lightClientHead = CryptoHash("")
             )
         )
-        val result = response.getResultOrNull<RpcLightClientNextBlockResponse>()
-        println("experimentalLightClientBlockProof Response: $response")
-        assertTrue { true }
+        val result = response.getResultOrNull<RpcLightClientBlockProofResponse>()
+        println("experimentalLightClientBlockProof Response: $result")
+        assertTrue { response is RpcResponse.Failure }
     }
 }
