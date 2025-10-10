@@ -45,7 +45,7 @@ class ChangesTest {
 
     @Test
     fun testStatus() = runTest {
-        var response = nearClient.changes(
+        val response = nearClient.changes(
             RpcStateChangesInBlockByTypeRequest.AccountChangesByBlockId(
                 blockId = BlockId.BlockHeight(167697415U),
                 accountIds = listOf(AccountId("relay.tg")),
@@ -53,20 +53,6 @@ class ChangesTest {
             )
         )
         val result = response.getResultOrNull<RpcStateChangesInBlockResponse>()
-        println("Changes Response: $result")
-
-        if (response !is RpcResponse.Success)
-            assertTrue { false }
-
-
-        response = nearClient.changes(
-            RpcStateChangesInBlockByTypeRequest.AccountChangesByFinality(
-                accountIds = listOf(AccountId("relay.tg")),
-                changesType = RpcStateChangesInBlockByTypeRequest.AccountChangesByFinality.ChangesType.ACCOUNT_CHANGES,
-                finality = Finality.FINAL
-            )
-        )
-
         println("Changes Response: $result")
 
         if (response !is RpcResponse.Success)

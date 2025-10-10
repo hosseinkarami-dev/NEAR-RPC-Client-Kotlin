@@ -42,8 +42,9 @@ class ExperimentalChangesInBlockTest {
     fun testStatus() = runTest {
         val response = nearClient.experimentalChangesInBlock(RpcStateChangesInBlockRequest.Finality(
             Finality.FINAL))
+
         val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
-        println("Experimental Changes In Block Response: $result")
+        println("Experimental Changes In Block Response: $response")
         assertTrue { response is RpcResponse.Success }
     }
 }
