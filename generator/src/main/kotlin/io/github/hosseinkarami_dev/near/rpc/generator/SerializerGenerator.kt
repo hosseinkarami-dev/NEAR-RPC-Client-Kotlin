@@ -39,22 +39,37 @@ object SerializerGenerator {
         val clsName = info.className
         val serializerName = "${clsName}Serializer"
 
-        // derive discriminator candidate field names from the sealed-info itself
+        // --- smarter discriminator candidate selection ---
+        // 1) If *every* variant contains a serialized property named "name" -> prioritize it
+        // 2) Otherwise collect candidates among properties that are string-like, enum-like (Name / *Name) or simple token types
+        //    exclude obvious message field unless it's name-like
         val discCandidates: List<String> = run {
-            val freq = mutableMapOf<String, Int>()
             val nVariants = info.variants.size
+
+            val hasNameFieldInAll = info.variants.all { v -> v.props.any { it.serialName == "name" } }
+            if (hasNameFieldInAll) return@run listOf("name")
+
+            val freq = mutableMapOf<String, Int>()
+            val stringTypes = setOf("String", "kotlin.String")
+
             for (v in info.variants) {
                 for (p in v.props) {
-                    val t = sanitizeType(p.type)
-                    // consider only string-like properties as possible discriminators
-                    if (t.equals("String", ignoreCase = true) || t.equals("kotlin.String", ignoreCase = true)) {
+                    val raw = sanitizeType(p.type)
+
+                    val isString = stringTypes.any { it.equals(raw, ignoreCase = true) }
+                    val isNameLike = raw.equals("Name", ignoreCase = true) || raw.endsWith("Name")
+                    val isSimpleToken = raw.matches(Regex("^[A-Za-z_][A-Za-z0-9_]*$")) && !raw.contains('.') && !raw.contains('<') && raw.length <= 60
+
+                    if (isString || isNameLike || isSimpleToken) {
+                        // avoid picking generic "message" text as discriminator unless it actually looks name-like
+                        if (p.serialName.equals("message", ignoreCase = true) && !isNameLike) continue
                         freq[p.serialName] = (freq[p.serialName] ?: 0) + 1
                     }
                 }
             }
+
             if (freq.isEmpty()) emptyList()
             else {
-                // threshold: appear in at least half of variants
                 val threshold = (nVariants + 1) / 2
                 freq.filter { it.value >= threshold }.keys.toList()
             }

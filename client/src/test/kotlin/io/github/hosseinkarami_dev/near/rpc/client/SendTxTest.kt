@@ -46,6 +46,6 @@ class SendTxTest {
         ))
         val result = response.getResultOrNull<RpcTransactionResponse>()
         println("send Tx Response: $response")
-        assertTrue { true }
+        assertTrue { response is RpcResponse.Failure }
     }
 }

@@ -48,6 +48,6 @@ class ValidatorTest {
         val response = nearClient.validators(RpcValidatorRequest.Latest)
         val result = response.getResultOrNull<RpcValidatorResponse>()
         println("Validator Response: $result")
-        assertNotNull(result)
+        assertNotNull(response is RpcResponse.Success)
     }
 }

@@ -47,7 +47,7 @@ class TxStatusTest {
             txHash = CryptoHash("5FfisT8c27W2vg3AqFTX5EVKve2xV5ZUHuzr2vxYM6c2"),
         ))
         val result = response.getResultOrNull<RpcTransactionResponse>()
-        println("Experimental Tx Status Response: $response")
+        println("Experimental Tx Status Response: $result")
         assertTrue { response is RpcResponse.Success }
     }
 }

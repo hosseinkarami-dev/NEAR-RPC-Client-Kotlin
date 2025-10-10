@@ -55,9 +55,6 @@ class ChangesTest {
         val result = response.getResultOrNull<RpcStateChangesInBlockResponse>()
         println("Changes Response: $result")
 
-        if (response !is RpcResponse.Success)
-            assertTrue { false }
-
-        assertTrue { true }
+        assertTrue { response is RpcResponse.Success }
     }
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class StatusTest {
 
@@ -40,7 +41,7 @@ class StatusTest {
     fun testStatus() = runTest {
         val response = nearClient.status()
         val result = response.getResultOrNull<RpcStatusResponse>()
-        assertNotNull(result)
         println("Status response: $result")
+        assertTrue { response is RpcResponse.Success }
     }
 }
