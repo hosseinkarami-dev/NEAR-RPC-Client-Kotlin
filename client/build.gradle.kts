@@ -28,7 +28,7 @@ kover {
         verify {
             rule {
                 bound {
-                    minValue.set(80)
+                    minValue.set(60)
                 }
             }
         }

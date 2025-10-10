@@ -1,0 +1,20 @@
+name: Run Tests with Coverage
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Run tests with Kover
+        run: ./gradlew koverHtmlReport koverVerify
