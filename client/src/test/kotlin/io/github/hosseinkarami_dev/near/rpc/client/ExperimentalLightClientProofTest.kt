@@ -1,12 +1,10 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
-import io.github.hosseinkarami_dev.near.rpc.models.BlockId
+import io.github.hosseinkarami_dev.near.rpc.models.AccountId
 import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
-import io.github.hosseinkarami_dev.near.rpc.models.Finality
-import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest
-import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse
-import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest
+import io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -15,10 +13,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class BlockTest {
+class ExperimentalLightClientProofTest {
 
     private lateinit var httpClient: HttpClient
     private lateinit var nearClient: NearClient
@@ -44,9 +41,16 @@ class BlockTest {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.block(RpcBlockRequest.Finality(Finality.FINAL))
-        val result = response.getResultOrNull<RpcBlockResponse>()
-        println("Block Response: $result")
-        assertTrue { response is RpcResponse.Success }
+        val response = nearClient.experimentalLightClientProof(
+            RpcLightClientExecutionProofRequest.Transaction(
+                senderId = AccountId(""),
+                transactionHash = CryptoHash(""),
+                type = RpcLightClientExecutionProofRequest.Transaction.Type.TRANSACTION,
+                lightClientHead = CryptoHash("")
+            )
+        )
+        val result = response.getResultOrNull<RpcLightClientNextBlockResponse>()
+        println("experimentalLightClientProof Response: $result")
+        assertTrue { response is RpcResponse.Failure }
     }
 }

@@ -40,11 +40,13 @@ class NextLightClientBlockTest {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.nextLightClientBlock(RpcLightClientNextBlockRequest(
-            lastBlockHash = CryptoHash("4GoYYrySh93RJZmTnKo7mFnXi2PMPXUJ6GW2sU4xt4MB")
-        ))
+        val response = nearClient.nextLightClientBlock(
+            RpcLightClientNextBlockRequest(
+                lastBlockHash = CryptoHash("4GoYYrySh93RJZmTnKo7mFnXi2PMPXUJ6GW2sU4xt4MB")
+            )
+        )
         val result = response.getResultOrNull<RpcLightClientNextBlockResponse>()
-        println("RPC Receipt Response: $result")
+        println("nextLightClientBlock Response: $result")
         assertTrue { response is RpcResponse.Success }
     }
 }

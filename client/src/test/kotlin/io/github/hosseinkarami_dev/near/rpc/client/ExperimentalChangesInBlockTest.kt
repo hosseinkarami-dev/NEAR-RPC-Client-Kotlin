@@ -44,7 +44,7 @@ class ExperimentalChangesInBlockTest {
             Finality.FINAL))
 
         val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
-        println("Experimental Changes In Block Response: $response")
+        println("Experimental Changes In Block Response: $result")
         assertTrue { response is RpcResponse.Success }
     }
 }

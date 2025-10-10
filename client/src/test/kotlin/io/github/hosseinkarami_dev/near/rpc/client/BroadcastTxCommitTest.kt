@@ -48,6 +48,6 @@ class BroadcastTxCommitTest {
         )
         val result = response.getResultOrNull<RpcTransactionResponse>()
         println("broadcastTxCommit Response: $result")
-        assertNotNull(response !is RpcResponse.Failure)
+        assertNotNull(response is RpcResponse.Success)
     }
 }

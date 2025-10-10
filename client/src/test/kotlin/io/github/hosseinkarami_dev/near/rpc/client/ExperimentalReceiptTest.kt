@@ -44,7 +44,7 @@ class ExperimentalReceiptTest {
             receiptId = CryptoHash("3YbVEYmAkXyKZUk7iyKs4mVzvQ43azZnGjGj2hZua7VC")
         ))
         val result = response.getResultOrNull<RpcReceiptResponse>()
-        println("RPC Receipt Response: $response")
-        assertTrue { true }
+        println("RPC Receipt Response: $result")
+        assertTrue { response is RpcResponse.Failure }
     }
 }

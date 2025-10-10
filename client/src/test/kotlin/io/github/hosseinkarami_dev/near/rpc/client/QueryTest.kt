@@ -51,6 +51,6 @@ class QueryTest {
         val result = response.getResultOrNull<RpcQueryResponse>()
         println("ViewAccountByFinality Response: $result")
 
-        assertNotNull(response !is RpcResponse.Failure)
+        assertNotNull(response is RpcResponse.Success)
     }
 }

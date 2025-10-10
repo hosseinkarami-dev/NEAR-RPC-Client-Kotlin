@@ -48,6 +48,6 @@ class HealthTest {
         val response = nearClient.health()
         val result = response.getResultOrNull<RpcValidatorResponse>()
         println("Health Response: $result")
-        assertNotNull(response !is RpcResponse.Failure)
+        assertNotNull(response is RpcResponse.Success)
     }
 }
