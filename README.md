@@ -193,7 +193,6 @@ Contributions welcome!
 4. Run:
 ```bash
 ./gradlew build
-./gradlew :models:test
 ./gradlew :client:test
 ```
 5. Open a PR with clear description.
