@@ -44,6 +44,6 @@ class ExperimentalCongestionLevelTest {
             CryptoHash("J2VFLWXq9TbzgWKitwT99pZtqxQ1E6hdXLezUyAPrJFn")))
         val result = response.getResultOrNull<RpcCongestionLevelResponse>()
         println("Experimental Congestion Response: $result")
-        assertTrue { true }
+        assertTrue { response is RpcResponse.Success }
     }
 }
