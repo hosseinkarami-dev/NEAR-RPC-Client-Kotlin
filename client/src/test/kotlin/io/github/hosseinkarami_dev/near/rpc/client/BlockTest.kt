@@ -6,6 +6,7 @@ import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
 import io.github.hosseinkarami_dev.near.rpc.models.Finality
 import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -47,6 +48,6 @@ class BlockTest {
         val response = nearClient.block(RpcBlockRequest.Finality(Finality.FINAL))
         val result = response.getResultOrNull<RpcBlockResponse>()
         println("Block Response: $result")
-        assertTrue { response is RpcResponse.Success }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

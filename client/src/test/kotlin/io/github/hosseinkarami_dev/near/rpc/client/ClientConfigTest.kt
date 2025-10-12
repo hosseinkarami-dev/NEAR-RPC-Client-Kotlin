@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigResponse
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -41,6 +42,6 @@ class ClientConfigTest {
         val response = nearClient.clientConfig()
         val result = response.getResultOrNull<RpcClientConfigResponse>()
         println("Client Config Response: $result")
-        assertTrue { response is RpcResponse.Failure }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

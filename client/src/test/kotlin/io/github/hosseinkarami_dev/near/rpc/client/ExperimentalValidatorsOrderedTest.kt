@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.BlockId
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest
 import io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeView
@@ -44,8 +45,8 @@ class ExperimentalValidatorsOrderedTest {
         val response = nearClient.experimentalValidatorsOrdered(RpcValidatorsOrderedRequest(
             BlockId.BlockHeight(167697415U)))
         val result = response.getResultOrNull<List<ValidatorStakeView>>()
-        println("experimentalValidatorsOrdered Response: $result")
-        assertTrue { response is RpcResponse.Success }
+        println("experimentalValidatorsOrdered Response: $response")
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }
 

@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.Finality
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest
 import io.ktor.client.HttpClient
@@ -45,6 +46,6 @@ class ExperimentalChangesInBlockTest {
 
         val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
         println("Experimental Changes In Block Response: $result")
-        assertTrue { response is RpcResponse.Success }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

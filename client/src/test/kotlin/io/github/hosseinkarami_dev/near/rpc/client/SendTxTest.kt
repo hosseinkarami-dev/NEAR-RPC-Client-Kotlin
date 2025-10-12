@@ -1,6 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse
 import io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction
@@ -45,7 +46,7 @@ class SendTxTest {
 
         ))
         val result = response.getResultOrNull<RpcTransactionResponse>()
-        println("send Tx Response: $response")
-        assertTrue { response is RpcResponse.Failure }
+        println("send Tx Response: $result")
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

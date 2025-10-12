@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.Finality
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse
 import io.ktor.client.HttpClient
@@ -43,6 +44,6 @@ class ExperimentalProtocolConfigTest {
         val response = nearClient.experimentalProtocolConfig(RpcProtocolConfigRequest.Finality(Finality.FINAL))
         val result = response.getResultOrNull<RpcProtocolConfigResponse>()
         println("Experimental Protocol Config Response: $result")
-        assertTrue { response is RpcResponse.Failure }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

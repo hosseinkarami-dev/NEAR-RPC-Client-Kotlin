@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptResponse
 import io.ktor.client.HttpClient
@@ -45,6 +46,7 @@ class ExperimentalReceiptTest {
         ))
         val result = response.getResultOrNull<RpcReceiptResponse>()
         println("RPC Receipt Response: $result")
-        assertTrue { response is RpcResponse.Failure }
+
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

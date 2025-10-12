@@ -3,6 +3,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.AccountId
 import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest
 import io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus
@@ -48,6 +49,6 @@ class TxStatusTest {
         ))
         val result = response.getResultOrNull<RpcTransactionResponse>()
         println("Experimental Tx Status Response: $result")
-        assertTrue { true }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }

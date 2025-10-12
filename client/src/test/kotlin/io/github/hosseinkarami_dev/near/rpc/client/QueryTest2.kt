@@ -3,6 +3,7 @@ package io.github.hosseinkarami_dev.near.rpc.client
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.AccountId
 import io.github.hosseinkarami_dev.near.rpc.models.BlockId
+import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest
 import io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse
 import io.ktor.client.HttpClient
@@ -51,6 +52,6 @@ class QueryTest2 {
 
         val result = response.getResultOrNull<RpcQueryResponse>()
         println("ViewAccountByBlockId Response: $result")
-        assertTrue { true }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
     }
 }
