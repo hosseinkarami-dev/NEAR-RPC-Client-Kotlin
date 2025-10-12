@@ -43,6 +43,6 @@ class StatusTest {
         val response = nearClient.status()
         val result = response.getResultOrNull<RpcStatusResponse>()
         println("Status response: $result")
-        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }
 }

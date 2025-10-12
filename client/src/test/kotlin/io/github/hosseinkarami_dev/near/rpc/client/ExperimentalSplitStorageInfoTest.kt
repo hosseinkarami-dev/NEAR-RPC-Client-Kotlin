@@ -42,6 +42,6 @@ class ExperimentalSplitStorageInfoTest {
         val response = nearClient.experimentalSplitStorageInfo()
         val result = response.getResultOrNull<RpcSplitStorageInfoResponse>()
         println("Experimental SplitStorage Info Response: $result")
-        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }
 }

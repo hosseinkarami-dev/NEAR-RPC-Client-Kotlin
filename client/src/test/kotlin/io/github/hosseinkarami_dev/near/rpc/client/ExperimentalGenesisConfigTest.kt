@@ -42,6 +42,6 @@ class ExperimentalGenesisConfigTest {
         val response = nearClient.experimentalGenesisConfig()
         val result = response.getResultOrNull<GenesisConfig>()
         println("Experimental Genesis Config Response: $result")
-        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }
 }

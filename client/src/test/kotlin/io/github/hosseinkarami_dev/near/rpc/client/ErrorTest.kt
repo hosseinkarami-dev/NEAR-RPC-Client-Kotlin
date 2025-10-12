@@ -56,6 +56,6 @@ class ErrorTest {
 
         //just to have an error to be checked by kaver
         assertTrue { true }
-        //assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
+        //  assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }
 }

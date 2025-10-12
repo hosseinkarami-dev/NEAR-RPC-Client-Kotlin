@@ -46,6 +46,6 @@ class ExperimentalChangesInBlockTest {
 
         val result = response.getResultOrNull<RpcStateChangesInBlockByTypeResponse>()
         println("Experimental Changes In Block Response: $result")
-        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }
 }

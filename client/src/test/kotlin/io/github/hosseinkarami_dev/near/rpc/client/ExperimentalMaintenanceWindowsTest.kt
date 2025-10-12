@@ -44,6 +44,6 @@ class ExperimentalMaintenanceWindowsTest {
         val response = nearClient.experimentalMaintenanceWindows(RpcMaintenanceWindowsRequest(accountId = AccountId("neardome2340.near")))
         val result = response.getResultOrNull<List<RangeOfUint64>>()
         println("Experimental Maintenance Windows Response: $result")
-        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.name == RpcError.InternalError.Name.INTERNAL_ERROR) }
+        assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }
 }
