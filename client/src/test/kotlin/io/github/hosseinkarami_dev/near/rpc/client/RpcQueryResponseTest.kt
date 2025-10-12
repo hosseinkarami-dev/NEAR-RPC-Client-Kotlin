@@ -89,7 +89,7 @@ class RpcQueryResponseTest {
 
     @Test
     fun `test AccessKeyView serialization and deserialization`() {
-        val permission = AccessKeyPermissionView.FullAccess("FullAccess")
+        val permission = AccessKeyPermissionView.FullAccess()
 
         val model = RpcQueryResponse.AccessKeyView(
             nonce = 1234uL,
@@ -110,7 +110,7 @@ class RpcQueryResponseTest {
             publicKey = PublicKey("ed25519:abc"),
             accessKey = AccessKeyView(
                 nonce = 10uL,
-                permission = AccessKeyPermissionView.FullAccess("FullAccess")
+                permission = AccessKeyPermissionView.FullAccess()
             )
         )
 
