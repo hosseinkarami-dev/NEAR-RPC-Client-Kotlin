@@ -5,4 +5,4 @@ before_install:
   - java -version
   - ./gradlew :generator:run
 install:
-  - ./gradlew clean build -x test
+  - ./gradlew clean build -x test -x koverVerify
