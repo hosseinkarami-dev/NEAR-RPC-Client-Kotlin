@@ -18,9 +18,8 @@ A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This reposit
 
 - [Why this project](#why-this-project)  
 - [Status & Goals](#status--goals)  
-- [Requirements](#requirements)  
-
-[//]: # (- [Installation]&#40;#installation&#41;  )
+- [Requirements](#requirements)
+- [Installation](#installation)  
 - [Quickstart — Android example](#quickstart--android-example)  
 - [API design & examples](#api-design--examples)  
 - [Generator — reproduce models & client](#generator--reproduce-models--client)
@@ -60,36 +59,36 @@ implementation("io.ktor:ktor-client-content-negotiation:<ktor_version>")
 implementation("io.ktor:ktor-serialization-kotlinx-json:<ktor_version>")
 ```
 
-[//]: # (---)
+---
 
-[//]: # ()
-[//]: # (## Installation)
 
-[//]: # ()
-[//]: # (Add the repository where you publish your artifacts &#40;Maven Central, GitHub Packages, or local&#41; and the dependency.)
+## Installation
 
-[//]: # ()
-[//]: # (`build.gradle.kts`:)
 
-[//]: # ()
-[//]: # (```kotlin)
+You can easily add **NEAR-RPC-Client-Kotlin** to your project using JitPack.
 
-[//]: # (repositories {)
+### Step 1: Add the JitPack repository
 
-[//]: # (    mavenCentral&#40;&#41;)
+In your **project-level** `build.gradle.kts`:
 
-[//]: # (})
+```kotlin
 
-[//]: # ()
-[//]: # (dependencies {)
+repositories { 
+    maven { url = uri("https://jitpack.io") }
+}
 
-[//]: # (  implementation&#40;"io.github.hosseinkarami_dev:near-rpc-client:0.1.0"&#41;)
+```
 
-[//]: # (  implementation&#40;"io.github.hosseinkarami_dev:near-rpc-models:0.1.0"&#41;)
+### Step 2: Add the dependency
+In your **module-level** `build.gradle.kts`:
 
-[//]: # (})
+```kotlin
 
-[//]: # (```)
+dependencies {
+  implementation("com.github.hosseinkarami-dev:NEAR-RPC-Client-Kotlin:<Version>")
+}
+
+```
 
 ---
 
