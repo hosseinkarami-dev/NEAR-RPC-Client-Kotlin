@@ -1,19 +1,17 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     id("maven-publish")
-    id("signing")
 }
 
-group = findProperty("GROUP") as String
-version = findProperty("VERSION_NAME") as String
+group = "com.github.hosseinkarami-dev"
+version = "1.0.0"
 
 subprojects {
     apply(plugin = "maven-publish")
-    apply(plugin = "signing")
 
     if (project.name in listOf("app", "generator")) {
         println("⏩ Skipping publication setup for module ${project.name}")
@@ -25,7 +23,7 @@ subprojects {
             publications {
                 create<MavenPublication>("release") {
                     from(components.findByName("release") ?: components.findByName("kotlin"))
-                    groupId = "io.github.hosseinkarami-dev"
+                    groupId = rootProject.group.toString()
                     artifactId = project.name
                     version = rootProject.version.toString()
 
@@ -48,27 +46,12 @@ subprojects {
                         }
                         scm {
                             connection.set("scm:git:https://github.com/hosseinkarami-dev/NEAR-RPC-Client-Kotlin.git")
-                            developerConnection.set("scm:git:ssh://hosseinkarami-dev/NEAR-RPC-Client-Kotlin.git")
+                            developerConnection.set("scm:git:ssh://git@github.com/hosseinkarami-dev/NEAR-RPC-Client-Kotlin.git")
                             url.set("https://github.com/hosseinkarami-dev/NEAR-RPC-Client-Kotlin")
                         }
                     }
                 }
             }
-
-            repositories {
-                maven {
-                    name = "MavenCentral"
-                    url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                    credentials {
-                        username = findProperty("mavenCentralUsername") as String?
-                        password = findProperty("mavenCentralPassword") as String?
-                    }
-                }
-            }
-        }
-
-        extensions.configure<SigningExtension>("signing") {
-            sign(extensions.getByType<PublishingExtension>().publications)
         }
     }
 }
