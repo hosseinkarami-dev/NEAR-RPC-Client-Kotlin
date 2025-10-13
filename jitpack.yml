@@ -1,5 +1,8 @@
 jdk:
   - openjdk17
 
+before_install:
+  - ./gradlew :generator:run
+
 install:
   - ./gradlew clean build
