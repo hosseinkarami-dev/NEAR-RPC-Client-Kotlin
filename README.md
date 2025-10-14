@@ -85,7 +85,10 @@ In your **module-level** `build.gradle.kts`:
 ```kotlin
 
 dependencies {
-  implementation("com.github.hosseinkarami-dev:NEAR-RPC-Client-Kotlin:<Version>")
+  dependencies {
+    implementation("com.github.hosseinkarami-dev.NEAR-RPC-Client-Kotlin:nearopenapiclient-client:<Version>")
+    implementation("com.github.hosseinkarami-dev.NEAR-RPC-Client-Kotlin:nearopenapiclient-models:<Version>")
+  }
 }
 
 ```
