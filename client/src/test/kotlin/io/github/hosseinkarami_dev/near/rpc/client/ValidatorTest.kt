@@ -45,7 +45,7 @@ class ValidatorTest {
 
     @Test
     fun testStatus() = runTest {
-        val response = nearClient.validators(RpcValidatorRequest.Latest())
+        val response = nearClient.validators(RpcValidatorRequest.Latest)
         val result = response.getResultOrNull<RpcValidatorResponse>()
         println("Validator Response: $result")
         assertNotNull(response is RpcResponse.Success)

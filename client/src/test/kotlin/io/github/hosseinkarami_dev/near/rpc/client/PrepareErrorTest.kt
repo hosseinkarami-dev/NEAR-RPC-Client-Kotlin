@@ -13,7 +13,7 @@ class PrepareErrorTest {
 
     @Test
     fun `test Serialization PrepareError`() {
-        val error: PrepareError = PrepareError.Serialization()
+        val error: PrepareError = PrepareError.Serialization
         val serialized = json.encodeToString(error)
         println("Serialized: $serialized")
 
@@ -23,7 +23,7 @@ class PrepareErrorTest {
 
     @Test
     fun `test Deserialization PrepareError`() {
-        val error: PrepareError = PrepareError.Deserialization()
+        val error: PrepareError = PrepareError.Deserialization
         val serialized = json.encodeToString(error)
         println("Serialized: $serialized")
 
@@ -33,7 +33,7 @@ class PrepareErrorTest {
 
     @Test
     fun `test InternalMemoryDeclared PrepareError`() {
-        val error: PrepareError = PrepareError.InternalMemoryDeclared()
+        val error: PrepareError = PrepareError.InternalMemoryDeclared
         val serialized = json.encodeToString(error)
         println("Serialized: $serialized")
 

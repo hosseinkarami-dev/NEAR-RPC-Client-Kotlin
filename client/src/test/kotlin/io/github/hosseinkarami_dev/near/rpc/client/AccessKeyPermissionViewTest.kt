@@ -17,7 +17,7 @@ class AccessKeyPermissionViewTest {
 
     @Test
     fun `FullAccess serialization and deserialization`() {
-        val original: AccessKeyPermissionView = AccessKeyPermissionView.FullAccess()
+        val original: AccessKeyPermissionView = AccessKeyPermissionView.FullAccess
 
         // Serialize
         val serialized = json.encodeToString(AccessKeyPermissionViewSerializer, original)

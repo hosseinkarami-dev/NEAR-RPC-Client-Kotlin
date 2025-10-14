@@ -279,11 +279,11 @@ object SerializerGenerator {
         dcb.addStatement("val s = element.content")
         for (v in objectSingleValueVariants) {
             val variantClass = ClassName(modelsPkg, clsName, v.name)
-            dcb.addStatement("if (s == %S) return %T()", v.serialName, variantClass)
+            dcb.addStatement("if (s == %S) return %T", v.serialName, variantClass)
         }
         // pure object singletons (no props) -> return the singleton object
         for (v in pureObjectSingletons) {
-            dcb.addStatement("if (s == %S) return %T()", v.serialName, ClassName(modelsPkg, clsName, v.name))
+            dcb.addStatement("if (s == %S) return %T", v.serialName, ClassName(modelsPkg, clsName, v.name))
         }
         dcb.endControlFlow()
 
@@ -382,7 +382,7 @@ object SerializerGenerator {
         // pure object singletons (no props)
         for (v in pureObjectSingletons) {
             dcb.beginControlFlow("%S ->", v.serialName)
-            dcb.addStatement("return %T()", ClassName(modelsPkg, clsName, v.name))
+            dcb.addStatement("return %T", ClassName(modelsPkg, clsName, v.name))
             dcb.endControlFlow()
         }
         dcb.addStatement("else -> throw %T(%S + key)", SerializationException::class, "Unknown discriminator key for $clsName: ")
@@ -435,7 +435,7 @@ object SerializerGenerator {
             dcb.endControlFlow()
         }
         for (v in pureObjectSingletons) {
-            dcb.addStatement("%S -> return %T()", v.serialName, ClassName(modelsPkg, clsName, v.name))
+            dcb.addStatement("%S -> return %T", v.serialName, ClassName(modelsPkg, clsName, v.name))
         }
         dcb.addStatement("else -> throw %T(%S + tf)", SerializationException::class, "Unknown type discriminator for $clsName: ")
         dcb.endControlFlow() // end when(tf)

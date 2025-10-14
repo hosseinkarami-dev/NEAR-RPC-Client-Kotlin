@@ -737,38 +737,21 @@ class ModelGenerator(
                 if (topLevelProps.isEmpty()) {
                     nonNullEnum.forEach { lit ->
                         val objName = lit.pascalCase()
-                        val classBuilder = TypeSpec.classBuilder(objName)
-                            .addModifiers(KModifier.DATA)
-                            .addAnnotation(Serializable::class)
-                            .addAnnotation(
-                                AnnotationSpec.builder(SerialName::class)
-                                    .addMember("%S", lit)
-                                    .build()
-                            )
-                            .superclass(
-                                ClassName(
-                                    fileBuilder.build().packageName,
-                                    className
+                        val objBuilder =
+                            TypeSpec.objectBuilder(objName).addAnnotation(Serializable::class)
+                                .addModifiers(KModifier.DATA)
+                                .addAnnotation(
+                                    AnnotationSpec.builder(SerialName::class)
+                                        .addMember("%S", lit).build()
+                                ).superclass(
+                                    ClassName(
+                                        fileBuilder.build().packageName,
+                                        className
+                                    )
                                 )
-                            )
 
-                        classBuilder.primaryConstructor(
-                            FunSpec.constructorBuilder()
-                                .addParameter(
-                                    ParameterSpec.builder("value", STRING)
-                                        .defaultValue("%S", lit)
-                                        .build()
-                                )
-                                .build()
-                        )
-                        classBuilder.addProperty(
-                            PropertySpec.builder("value", STRING)
-                                .initializer("value")
-                                .build()
-                        )
-
-                        v.generateKdoc()?.let { classBuilder.addKdoc(it) }
-                        sealedBuilder.addType(classBuilder.build())
+                        v.generateKdoc()?.let { objBuilder.addKdoc(it) }
+                        sealedBuilder.addType(objBuilder.build())
 
                         // object variant has no properties
                         variantInfos += VariantInfo(
@@ -1574,7 +1557,7 @@ class ModelGenerator(
                     val match = oneOfList.firstOrNull { v -> v.enum?.any { it == rawString } == true }
                     if (match != null) {
                         val objName = rawString.pascalCase()
-                        return "${typeHint.simpleName}.$objName()"
+                        return "${typeHint.simpleName}.$objName"
                     }
                 }
 

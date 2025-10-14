@@ -3,10 +3,8 @@ package io.github.hosseinkarami_dev.near.rpc.client
 import io.github.hosseinkarami_dev.near.rpc.client.Utils.getResultOrNull
 import io.github.hosseinkarami_dev.near.rpc.models.AccountId
 import io.github.hosseinkarami_dev.near.rpc.models.CryptoHash
-import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse
 import io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest
-import io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

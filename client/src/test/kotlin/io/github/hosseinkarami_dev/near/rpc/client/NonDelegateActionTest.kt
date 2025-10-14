@@ -102,7 +102,7 @@ class NonDelegateActionTest {
             addKey = AddKeyAction(
                 accessKey = AccessKey(
                     nonce = 0UL,
-                    permission = AccessKeyPermission.FullAccess()
+                    permission = AccessKeyPermission.FullAccess
                 ),
                 publicKey = PublicKey("ed25519:samplekey")
             )
@@ -142,7 +142,7 @@ class NonDelegateActionTest {
         val action = NonDelegateAction.DeployGlobalContract(
             deployGlobalContract = DeployGlobalContractAction(
                 code = "AGFzbQE=",
-                deployMode = GlobalContractDeployMode.CodeHash()
+                deployMode = GlobalContractDeployMode.CodeHash
             )
         )
 
