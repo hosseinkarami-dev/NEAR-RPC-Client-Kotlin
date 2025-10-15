@@ -1,4 +1,4 @@
-# Workflows — Quick Developer Summary
+# Workflows
 
 ## Covered workflows
 - **release.yaml** — release publishing (verify tags, sign/publish steps).
@@ -6,7 +6,7 @@
 - **create-tag-and-release-on-merge.yml** — automatic tagging and GitHub Release on merge.
 - **regenerate-openapi-pr.yml** — regenerates NEAR RPC client from OpenAPI and opens a PR if changes occur.
 
-## How `regenerate-openapi-pr.yml` works (short)
+## How `regenerate-openapi-pr.yml` works
 - Runs daily, on push to `main`, and manually.
 - Executes a Gradle generator to regenerate client code from the NEAR OpenAPI spec.
 - Builds/tests the project; if changes exist, creates a branch and opens a PR.
