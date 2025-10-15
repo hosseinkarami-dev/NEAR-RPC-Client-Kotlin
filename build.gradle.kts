@@ -24,7 +24,7 @@ subprojects {
                 create<MavenPublication>("release") {
                     from(components.findByName("release") ?: components.findByName("kotlin"))
                     groupId = rootProject.group.toString()
-                    artifactId = project.name
+                    artifactId = project.name.lowercase()
                     version = rootProject.version.toString()
 
                     pom {
