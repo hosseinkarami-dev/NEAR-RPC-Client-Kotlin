@@ -27,7 +27,7 @@ Each workflow section below includes:
 
 **First `name:` line:** `name: release-please`
 
-### Key behaviours (high level)
+### Key behaviours
 Detected triggers (raw `on:` block):
 ```yaml
 on:
@@ -45,30 +45,13 @@ _No explicit `permissions:` block detected._
 - Confirm `actions/checkout` version and `fetch-depth: 0` is used only when needed (it enables full git history).
 - Check for any `if:` guard conditions to avoid self-trigger loops when workflows push to default branches.
 
-### Raw file (for reference)
-```yaml
-name: release-please
-on:
-  push:
-    branches: [ main ]
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/release-please-action@v3
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          release-type: simple
-```
-
 ---
 
 ## `test.yaml`
 
 **First `name:` line:** `name: Run Tests with Coverage`
 
-### Key behaviours (high level)
+### Key behaviours
 Detected triggers (raw `on:` block):
 ```yaml
 on:
@@ -87,37 +70,13 @@ _No repository secrets referenced by pattern `${{ secrets.X }}` found in the fil
 - Confirm `actions/checkout` version and `fetch-depth: 0` is used only when needed (it enables full git history).
 - Check for any `if:` guard conditions to avoid self-trigger loops when workflows push to default branches.
 
-### Raw file (for reference)
-```yaml
-name: Run Tests with Coverage
-
-on:
-  workflow_run:
-    workflows: ["Regenerate NEAR RPC Client (create PR)"]
-    types:
-      - completed
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-      - name: Run tests with Kover
-        run: ./gradlew koverHtmlReport koverVerify
-```
-
 ---
 
 ## `create-tag-and-release-on-merge.yml`
 
 **First `name:` line:** `name: Create Tag & Release on merge to main`
 
-### Key behaviours (high level)
+### Key behaviours
 Detected triggers (raw `on:` block):
 ```yaml
 on:
@@ -140,108 +99,6 @@ permissions:
 - Review the secrets referenced above and ensure least-privilege scopes (for PATs prefer `repo` with minimal scopes or use `GITHUB_TOKEN` when possible).
 - Confirm `actions/checkout` version and `fetch-depth: 0` is used only when needed (it enables full git history).
 - Check for any `if:` guard conditions to avoid self-trigger loops when workflows push to default branches.
-
-### Raw file (for reference)
-```yaml
-name: Create Tag & Release on merge to main
-
-on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  tag-and-release:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository (full history and tags)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Get latest commit info
-        id: commit_info
-        run: |
-          # latest commit subject and author email
-          LAST_SUBJECT=$(git log -1 --pretty=format:%s)
-          LAST_EMAIL=$(git log -1 --pretty=format:%ae)
-          echo "last_subject=${LAST_SUBJECT}" >> $GITHUB_OUTPUT
-          echo "last_email=${LAST_EMAIL}" >> $GITHUB_OUTPUT
-          echo "Subject: $LAST_SUBJECT"
-          echo "Author email: $LAST_EMAIL"
-
-      - name: Check if this is a regenerated commit
-        id: should_run
-        run: |
-          SUBJECT="${{ steps.commit_info.outputs.last_subject }}"
-          EMAIL="${{ steps.commit_info.outputs.last_email }}"
-
-          echo "Checking if commit indicates regeneration..."
-
-          if [[ "$EMAIL" == "automation@github.com" ]]; then
-            echo "Detected automation author email."
-            echo "run_release=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if echo "$SUBJECT" | grep -qi "regenerate client\|regenerate openapi\|regenerate"; then
-            echo "Detected regenerate in commit message."
-            echo "run_release=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          echo "No regenerate indicator found. Skipping tag/release."
-          echo "run_release=false" >> $GITHUB_OUTPUT
-
-      - name: Stop if not a regenerate commit
-        if: ${{ steps.should_run.outputs.run_release == 'false' }}
-        run: |
-          echo "This push doesn't look like a regenerated commit. Exiting."
-          exit 0
-
-      - name: Determine new tag version
-        id: tag
-        run: |
-          # Get last tag, default to v0.0.0
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "Last tag: $LAST_TAG"
-
-          # increment patch version by 1
-          IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
-          # ensure numeric fallback
-          MAJOR=${MAJOR:-0}
-          MINOR=${MINOR:-0}
-          PATCH=${PATCH:-0}
-          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
-
-          echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
-          echo "New tag determined: ${NEW_TAG}"
-
-      - name: Create and push tag
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          NEW_TAG="${{ steps.tag.outputs.new_tag }}"
-          echo "Creating tag ${NEW_TAG} and pushing..."
-          git tag "${NEW_TAG}"
-          git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.tag.outputs.new_tag }}
-          name: "Release ${{ steps.tag.outputs.new_tag }}"
-          body: |
-            🚀 Automated release generated by workflow.
-            This release was created automatically after merging the regenerated client into main.
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-```
 
 ---
 
@@ -272,120 +129,6 @@ jobs:
 - Add linting/formatting steps to keep generated code consistent automatically.
 - Add labels or reviewers automatically in the PR creation step (via `actions/github-script` or `peter-evans/create-pull-request`).
 - Consider gating daily runs behind a check to avoid frequent churn (only regenerate on spec changes or weekly).
-
-### Full workflow content (as provided):
-```yaml
-name: Regenerate NEAR RPC Client (create PR)
-
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: "0 0 * * *" # daily run (every day at midnight)
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  regenerate-and-pr:
-    runs-on: ubuntu-latest
-
-    steps:
-      # Avoid infinite loop triggered by GitHub Actions
-      - name: Exit if triggered by GitHub Actions bot
-        if: github.actor == 'github-actions[bot]'
-        run: |
-          echo "Triggered by GitHub Actions bot; exiting to avoid loop."
-          exit 0
-
-      # Checkout repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      # Setup JDK
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 21
-
-      # Grant execute permission for Gradle
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      # Run Generator (regenerates client + models)
-      - name: Run Generator
-        run: ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
-
-      # Build and run tests
-      - name: Build project (and run tests)
-        run: ./gradlew build --stacktrace --no-daemon
-
-      # Prepare branch, commit changes, push
-      - name: Prepare branch, commit regenerated sources
-        id: commit
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          git config --local user.email "automation@github.com"
-          git config --local user.name "GitHub Actions Bot"
-
-          # create unique branch
-          SHORT_SHA=${GITHUB_SHA:0:8}
-          BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
-
-          git checkout -b "$BRANCH"
-
-          git add .
-
-          # check if any changes
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-            echo "pr_required=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          git commit -m "fix: regenerate client from OpenAPI"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
-
-          echo "pr_required=true" >> "$GITHUB_OUTPUT"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-
-      # Create Pull Request if changes exist
-      - name: Create Pull Request for regenerated sources
-        if: steps.commit.outputs.pr_required == 'true'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          script: |
-            const branch = '${{ steps.commit.outputs.branch }}';
-            const title = `chore: regenerate client from OpenAPI (${branch})`;
-            const body = `This PR regenerates the NEAR RPC client and models from the latest OpenAPI spec.\n\nPlease review the generated code and run CI checks.`;
-
-            const pr = await github.rest.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title,
-              head: branch,
-              base: "main",
-              body
-            });
-
-            return { pr_number: pr.data.number, pr_url: pr.data.html_url };
-
-      # Output when no changes
-      - name: Output when no changes
-        if: steps.commit.outputs.pr_required != 'true'
-        run: echo "No regenerated changes — nothing to create a PR for."
-```
 
 ---
 
