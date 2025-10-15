@@ -24,7 +24,7 @@
    ```
 2. If changes, create a branch and push; open a PR via GitHub UI.
 
-## Troubleshooting (fast)
+## Troubleshooting
 - **No PR created**: logs show `No changes to commit` — generator produced no diffs.
 - **Push fails**: check `PAT_TOKEN` validity and scopes.
 - **Workflow retriggers**: verify the actor guard and consider `paths-ignore` for generated dirs.
