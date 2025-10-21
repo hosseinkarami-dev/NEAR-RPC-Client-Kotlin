@@ -22,7 +22,6 @@ jobs:
       - name: Get latest commit info
         id: commit_info
         run: |
-          # latest commit subject and author email
           LAST_SUBJECT=$(git log -1 --pretty=format:%s)
           LAST_EMAIL=$(git log -1 --pretty=format:%ae)
           echo "last_subject=${LAST_SUBJECT}" >> $GITHUB_OUTPUT
@@ -62,16 +61,18 @@ jobs:
       - name: Determine new tag version
         id: tag
         run: |
-          # Get last tag, default to v0.0.0
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "Last tag: $LAST_TAG"
+          # Get highest existing tag (numerically sorted), or fallback to v0.0.0
+          LAST_TAG=$(git tag | sort -V | tail -n 1)
+          LAST_TAG=${LAST_TAG:-v0.0.0}
+          echo "Last tag found: $LAST_TAG"
 
-          # increment patch version by 1
+          # Parse version
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
-          # ensure numeric fallback
           MAJOR=${MAJOR:-0}
           MINOR=${MINOR:-0}
           PATCH=${PATCH:-0}
+
+          # Increment patch version by 1
           NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
 
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
