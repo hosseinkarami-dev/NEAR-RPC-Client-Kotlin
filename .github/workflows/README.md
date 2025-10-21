@@ -1,10 +1,8 @@
 # Workflows
 
 ## Covered workflows
-- **release.yaml** — release publishing (verify tags, sign/publish steps).
 - **test.yaml** — CI and test matrix.
-- **create-tag-and-release-on-merge.yml** — automatic tagging and GitHub Release on merge.
-- **regenerate-openapi-pr.yml** — regenerates NEAR RPC client from OpenAPI and opens a PR if changes occur.
+- **regenerate-openapi-pr.yml** — regenerates NEAR RPC client from OpenAPI and opens a PR if changes occur and release publishing.
 
 ## How `regenerate-openapi-pr.yml` works
 - Runs daily, on push to `main`, and manually.
