@@ -89,11 +89,6 @@ public data class RpcClientConfigResponse(
   @SerialName("client_background_migration_threads")
   public val clientBackgroundMigrationThreads: UInt,
   /**
-   *  * Configuration for a cloud-based archival reader.
-   */
-  @SerialName("cloud_archival_reader")
-  public val cloudArchivalReader: CloudArchivalReaderConfig? = null,
-  /**
    *  * Configuration for a cloud-based archival writer. If this config is present, the writer is enabled and
    * writes chunk-related data based on the tracked shards.
    */
