@@ -11,6 +11,20 @@ A **type-safe**, generated Kotlin client for the NEAR JSON-RPC API. This reposit
 
 > **Current status:** This library is published for **Android / JVM**. The base code is written entirely in Kotlinx Serialization and Ktor, so it can be easily ported to Kotlin MultiPlatform (with some minor changes, of course). If the NEAR team or the community requests an official multi-platform release, migration to KMP for iOS will be considered.
 
+---
+
+## Schema Version
+
+This generator is built using the OpenAPI schema referenced in the official NEAR DevHub bounty:
+
+[`nearcore/chain/jsonrpc/openapi/openapi.json`](https://github.com/near/nearcore/blob/master/chain/jsonrpc/openapi/openapi.json)
+
+> **Note:**  
+> Newer NEAR releases (for example, [`v2.8.0`](https://github.com/near/nearcore/tree/2.8.0)) introduce minor differences in their OpenAPI definitions — such as changes in the `required` fields for some models.
+
+Since the bounty explicitly specifies the `master` branch schema, **this implementation strictly follows that version** to maintain full compliance with the bounty requirements.
+
+Developers who wish to generate clients for a specific NEAR node release (e.g., `2.8.x`) can simply update the OpenAPI source URL in the generator configuration.
 
 ---
 
