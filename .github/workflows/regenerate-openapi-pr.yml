@@ -2,11 +2,10 @@ name: Regenerate NEAR RPC Client (auto PR, merge & release)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
   schedule:
     - cron: "0 0 * * *" # daily run (every day at midnight)
+
+# Note: removed `push: branches: [ main ]` trigger to avoid self-triggering
 
 permissions:
   contents: write
@@ -24,7 +23,7 @@ jobs:
           echo "Triggered by GitHub Actions bot; exiting to avoid loop."
           exit 0
 
-      # Checkout repository
+      # Checkout repository (full history and tags)
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -111,10 +110,23 @@ jobs:
         if: steps.commit.outputs.pr_required != 'true'
         run: echo "No regenerated changes — nothing to create a PR for."
 
-      # Create Tag & Release on main after merge
+      # Make sure local main is up-to-date with remote before tagging
+      - name: Prepare local main for tagging
+        if: steps.commit.outputs.pr_required == 'true'
+        run: |
+          set -euo pipefail
+          # fetch latest main and tags
+          git fetch origin main --tags
+          # ensure we are on main and match remote
+          git checkout main
+          git reset --hard origin/main
+
+      # Determine new tag version (only if we actually created a PR & merged)
       - name: Determine new tag version
+        if: steps.commit.outputs.pr_required == 'true'
         id: tag
         run: |
+          set -euo pipefail
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
           MAJOR=${MAJOR:-0}
@@ -124,15 +136,42 @@ jobs:
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "New tag determined: ${NEW_TAG}"
 
+      # Create and push tag, but first check whether HEAD already has a tag
       - name: Create and push tag
+        id: create_tag
+        if: steps.commit.outputs.pr_required == 'true'
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
-          git tag "${NEW_TAG}"
+
+          # Ensure tags are fetched
+          git fetch --tags
+
+          # If HEAD already has any tag, skip creating a new tag
+          if git tag --points-at HEAD | grep -q .; then
+            echo "Tag already exists that points at HEAD. Skipping tag creation."
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+            echo "existing_tag=$(git tag --points-at HEAD | head -n1)" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # If the computed NEW_TAG already exists (race or pre-existing), avoid duplicate
+          if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
+            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Create annotated tag and push
+          git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
+          echo "tag_created=true" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
+        if: steps.create_tag.outputs.tag_created == 'true'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag.outputs.new_tag }}
