@@ -20,7 +20,7 @@ This generator is built using the OpenAPI schema referenced in the official NEAR
 [`nearcore/chain/jsonrpc/openapi/openapi.json`](https://github.com/near/nearcore/blob/master/chain/jsonrpc/openapi/openapi.json)
 
 > **Note:**  
-> Newer NEAR releases (for example, [`v2.8.0`](https://github.com/near/nearcore/tree/2.8.0)) introduce minor differences in their OpenAPI definitions — such as changes in the `required` fields for some models.
+> Newer NEAR releases (for example, [`v2.8.0`](https://github.com/near/nearcore/tree/2.8.0)) introduce minor differences in their OpenAPI definitions - such as changes in the `required` fields for some models.
 
 Since the bounty explicitly specifies the `master` branch schema, **this implementation strictly follows that version** to maintain full compliance with the bounty requirements.
 
