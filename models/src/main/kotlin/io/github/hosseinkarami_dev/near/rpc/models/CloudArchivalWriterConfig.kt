@@ -17,11 +17,6 @@ public data class CloudArchivalWriterConfig(
   @SerialName("archive_block_data")
   public val archiveBlockData: Boolean? = false,
   /**
-   *  * Configures the external storage used by the archival node.
-   */
-  @SerialName("cloud_storage")
-  public val cloudStorage: CloudStorageConfig,
-  /**
    *  * Interval at which the system checks for new blocks or chunks to archive.
    */
   @SerialName("polling_interval")
