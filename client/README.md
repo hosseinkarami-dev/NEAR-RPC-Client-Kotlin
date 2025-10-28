@@ -18,5 +18,3 @@ The client automatically handles:
 - ✅ Error handling and RPC status responses
 
 ---
-
-## 🧩 Module Structure

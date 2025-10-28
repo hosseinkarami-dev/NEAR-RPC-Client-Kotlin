@@ -7,7 +7,7 @@
 ## How `regenerate-openapi-pr.yml` works
 - Runs daily, on push to `main`, and manually.
 - Executes a Gradle generator to regenerate client code from the NEAR OpenAPI spec.
-- Builds/tests the project; if changes exist, creates a branch and opens a PR.
+- Builds/tests the project; if changes exist, opens a PR and updates the main branch.
 - Guard: exits early if `github.actor == 'github-actions[bot]'` to prevent loops.
 
 ## Required secrets & permissions
