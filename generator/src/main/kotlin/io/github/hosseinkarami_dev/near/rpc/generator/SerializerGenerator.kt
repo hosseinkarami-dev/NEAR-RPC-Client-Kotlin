@@ -3,13 +3,6 @@ package io.github.hosseinkarami_dev.near.rpc.generator
 import java.io.File
 import java.lang.StringBuilder
 
-/**
- * SerializerGenerator — generate custom Kotlinx serializer files for sealed types.
- *
- * Revised: do NOT throw early when no discriminator candidate is found.
- * Instead fall back to wrapper-style, required-field matching, grouped heuristics,
- * scoring by matched fields and try-decode fallback.
- */
 object SerializerGenerator {
     @JvmStatic
     fun generateFromSealedInfos(
@@ -17,14 +10,18 @@ object SerializerGenerator {
         serializerPackage: String,
         output: File
     ) {
-        if (!output.exists()) output.mkdirs()
         if (sealedInfos.isEmpty()) return
 
         for (info in sealedInfos) {
             try {
                 val (fileName, content) = generateSealedClassSerializerContent(info, serializerPackage)
-                val outFile = File(output, fileName)
+                val packagePath = serializerPackage.replace('.', File.separatorChar)
+                val dir = File(output, packagePath)
+                if (!dir.exists()) dir.mkdirs()
+
+                val outFile = File(dir, fileName)
                 outFile.writeText(content)
+
             } catch (ex: Exception) {
                 System.err.println("Failed generating serializer for ${info.className}: ${ex.message}")
                 throw RuntimeException("Generation failed for ${info.className}", ex)
