@@ -3,6 +3,13 @@ package io.github.hosseinkarami_dev.near.rpc.generator
 import java.io.File
 import java.lang.StringBuilder
 
+/**
+ * SerializerGenerator — generate custom Kotlinx serializer files for sealed types.
+ *
+ * Revised: do NOT throw early when no discriminator candidate is found.
+ * Instead fall back to wrapper-style, required-field matching, grouped heuristics,
+ * scoring by matched fields and try-decode fallback.
+ */
 object SerializerGenerator {
     @JvmStatic
     fun generateFromSealedInfos(
@@ -31,25 +38,26 @@ object SerializerGenerator {
         val serializerName = "${clsName}Serializer"
         val fileName = "$serializerName.kt"
 
-        val imports = mutableSetOf<String>()
-        imports.add("kotlinx.serialization.KSerializer")
-        imports.add("kotlinx.serialization.encoding.Decoder")
-        imports.add("kotlinx.serialization.encoding.Encoder")
-        imports.add("kotlinx.serialization.descriptors.SerialDescriptor")
-        imports.add("kotlinx.serialization.descriptors.buildClassSerialDescriptor")
-        imports.add("kotlinx.serialization.json.JsonDecoder")
-        imports.add("kotlinx.serialization.json.JsonEncoder")
-        imports.add("kotlinx.serialization.json.JsonElement")
-        imports.add("kotlinx.serialization.json.JsonObject")
-        imports.add("kotlinx.serialization.json.JsonPrimitive")
-        imports.add("kotlinx.serialization.json.JsonArray")
-        imports.add("kotlinx.serialization.json.jsonPrimitive")
-        imports.add("kotlinx.serialization.json.contentOrNull")
-        imports.add("kotlinx.serialization.json.jsonArray")
-        imports.add("kotlinx.serialization.serializer")
-        imports.add("kotlinx.serialization.builtins.ListSerializer")
-        imports.add("kotlinx.serialization.builtins.MapSerializer")
-        imports.add("kotlinx.serialization.SerializationException")
+        val imports = mutableSetOf<String>().apply {
+            add("kotlinx.serialization.KSerializer")
+            add("kotlinx.serialization.encoding.Decoder")
+            add("kotlinx.serialization.encoding.Encoder")
+            add("kotlinx.serialization.descriptors.SerialDescriptor")
+            add("kotlinx.serialization.descriptors.buildClassSerialDescriptor")
+            add("kotlinx.serialization.json.JsonDecoder")
+            add("kotlinx.serialization.json.JsonEncoder")
+            add("kotlinx.serialization.json.JsonElement")
+            add("kotlinx.serialization.json.JsonObject")
+            add("kotlinx.serialization.json.JsonPrimitive")
+            add("kotlinx.serialization.json.JsonArray")
+            add("kotlinx.serialization.json.jsonPrimitive")
+            add("kotlinx.serialization.json.contentOrNull")
+            add("kotlinx.serialization.json.jsonArray")
+            add("kotlinx.serialization.serializer")
+            add("kotlinx.serialization.builtins.ListSerializer")
+            add("kotlinx.serialization.builtins.MapSerializer")
+            add("kotlinx.serialization.SerializationException")
+        }
 
         val sb = StringBuilder()
         sb.appendLine("package $serializerPackage")
@@ -61,11 +69,17 @@ object SerializerGenerator {
 
         sb.appendLine("object $serializerName : KSerializer<$clsName> {")
         sb.appendLine()
+        // descriptor
         sb.appendLine("    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(\"$modelsPkg.$clsName\") {")
         for (v in info.variants) {
             sb.appendLine("        element(\"${v.serialName}\", serializer<JsonElement>().descriptor)")
         }
         sb.appendLine("    }")
+        sb.appendLine()
+
+        // helpers in generated file (small functions)
+        sb.appendLine("    // --- helper functions ---")
+        sb.appendLine("    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)")
         sb.appendLine()
 
         // serialize
@@ -77,6 +91,7 @@ object SerializerGenerator {
             val variantClass = "$modelsPkg.$clsName.${v.name}"
             sb.appendLine("                is $variantClass -> {")
             if (v.kind == VariantInfo.Kind.OBJECT && v.props.isEmpty()) {
+                // pure singleton -> primitive string
                 sb.appendLine("                    jsonEncoder.encodeJsonElement(JsonPrimitive(\"${v.serialName}\"))")
             } else if (v.props.size == 1 && v.props[0].name == "value") {
                 val p = v.props[0]
@@ -147,15 +162,17 @@ object SerializerGenerator {
         }
         sb.appendLine("                    throw SerializationException(\"Unknown discriminator (primitive) for $clsName\")")
         sb.appendLine("                }")
-
+        sb.appendLine()
+        // array
         sb.appendLine("                is JsonArray -> throw SerializationException(\"Unexpected JSON array while deserializing $clsName\")")
-
+        sb.appendLine()
+        // object
         sb.appendLine("                is JsonObject -> {")
         sb.appendLine("                    val jobj = element")
-
-        // field-based unique-key detection for data variants
+        // unique-key detection for data-class variants
         val dataVariants = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS }
         if (dataVariants.isNotEmpty()) {
+            // compute unique keys at generation time
             val keyToVariants = mutableMapOf<String, MutableList<Int>>()
             val dvList = dataVariants
             dvList.forEachIndexed { i, v -> v.props.forEach { p -> keyToVariants.computeIfAbsent(p.serialName) { mutableListOf() }.add(i) } }
@@ -164,7 +181,6 @@ object SerializerGenerator {
                 val unique = v.props.firstOrNull { p -> keyToVariants[p.serialName]?.size == 1 }?.serialName
                 uniqueKeyByVariantName[v.name] = unique
             }
-
             for ((idxV, v) in dvList.withIndex()) {
                 val unique = uniqueKeyByVariantName[v.name]
                 if (!unique.isNullOrBlank()) {
@@ -222,16 +238,22 @@ object SerializerGenerator {
         sb.appendLine("                        }")
         sb.appendLine("                    }") // end wrapper-style
 
-        // --- NEW: robust flat-style handling using base-token grouping and distinguishing keys ---
+        // --- dynamic discriminator detection (no hardcode) ---
+        val discCandidates = findDiscCandidates(info) // list of candidate field names inferred
+        val discListLiteral = if (discCandidates.isEmpty()) "" else discCandidates.joinToString(", ") { "\"$it\"" }
         sb.appendLine("                    var typeField: String? = null")
-        sb.appendLine("                    val discriminatorCandidates = listOf(\"changes_type\")")
-        sb.appendLine("                    for (cand in discriminatorCandidates) {")
-        sb.appendLine("                        val candElem = jobj[cand]")
-        sb.appendLine("                        if (candElem is JsonPrimitive) {")
-        sb.appendLine("                            typeField = candElem.contentOrNull")
-        sb.appendLine("                            if (typeField != null) break")
-        sb.appendLine("                        }")
-        sb.appendLine("                    }")
+        if (discCandidates.isNotEmpty()) {
+            sb.appendLine("                    val discriminatorCandidates = listOf($discListLiteral)")
+            sb.appendLine("                    for (cand in discriminatorCandidates) {")
+            sb.appendLine("                        val candElem = jobj[cand]")
+            sb.appendLine("                        if (candElem is JsonPrimitive) {")
+            sb.appendLine("                            typeField = candElem.contentOrNull")
+            sb.appendLine("                            if (typeField != null) break")
+            sb.appendLine("                        }")
+            sb.appendLine("                    }")
+        } else {
+            sb.appendLine("                    val discriminatorCandidates = emptyList<String>()")
+        }
         sb.appendLine("                    if (typeField == null) {")
         sb.appendLine("                        val knownVariantNames = setOf(${info.variants.joinToString(", ") { "\"${it.serialName}\"" }})")
         sb.appendLine("                        for ((k, v) in jobj.entries) {")
@@ -241,78 +263,102 @@ object SerializerGenerator {
         sb.appendLine("                            }")
         sb.appendLine("                        }")
         sb.appendLine("                    }")
-        sb.appendLine("                    if (typeField == null) throw SerializationException(\"Missing discriminator (one of changes_type) or recognizable variant in $clsName\")")
-        sb.appendLine("                    val tf = typeField.trim()")
+        // IMPORTANT CHANGE: Do NOT throw here. proceed to other heuristics even if typeField == null
         sb.appendLine()
-        // Build grouping at generation time and emit group-based mapping
+
+        // try exact match first (only if we have typeField)
+        sb.appendLine("                    if (typeField != null) {")
+        sb.appendLine("                        val tf = typeField.trim()")
+        sb.appendLine("                        // try exact match of full variant name first")
+        sb.appendLine("                        when (tf) {")
+        for (v in info.variants) {
+            sb.appendLine("                            \"${v.serialName}\" -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        }
+        sb.appendLine("                            else -> { /* fallthrough to grouped handling */ }")
+        sb.appendLine("                        }")
+        sb.appendLine("                        // grouped handling by tf content (if any)")
+        sb.appendLine("                        val tfLower = tf.lowercase()")
+        sb.appendLine("                        var chosenGroupKey: String? = null")
         val grouped = info.variants.groupBy { v ->
             val s = v.serialName
             if (s.contains("_by_")) s.substringBefore("_by_") else s
         }
-
-        // Emit code: try exact match first
-        sb.appendLine("                    // try exact match of full variant name first")
-        sb.appendLine("                    val tfFull = tf")
-        sb.appendLine("                    when (tfFull) {")
-        for (v in info.variants) {
-            sb.appendLine("                        \"${v.serialName}\" -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        for (k in grouped.keys) {
+            sb.appendLine("                        if (chosenGroupKey == null && (${escapeForStringLiteral(k)}.lowercase() == tfLower || tfLower.contains(${escapeForStringLiteral(k)}.lowercase()) || ${escapeForStringLiteral(k)}.lowercase().contains(tfLower))) { chosenGroupKey = ${escapeForStringLiteral(k)} }")
         }
-        sb.appendLine("                        else -> { /* fallthrough to grouped handling */ }")
-        sb.appendLine("                    }")
-        sb.appendLine()
-
-        // Now grouped handling: for each base token group emit logic
-        sb.appendLine("                    // grouped handling by base token (e.g. account_changes -> ...by_block_id / ...by_finality / ...by_sync_checkpoint)")
-        sb.appendLine("                    val tfLower = tf.lowercase()")
-        sb.appendLine("                    // select candidate group based on contains/equals heuristics")
-        sb.appendLine("                    var chosenGroupKey: String? = null")
-
-        val groupKeys = grouped.keys.toList()
-        // emit checks to pick group key
-        for (k in groupKeys) {
-            sb.appendLine("                    if (chosenGroupKey == null && (${escapeForContainsCheck(k)}.lowercase() == tfLower || tfLower.contains(${escapeForStringLiteral(k)}.lowercase()) || ${escapeForStringLiteral(k)}.lowercase().contains(tfLower))) { chosenGroupKey = ${escapeForStringLiteral(k)} }")
-        }
-
-        sb.appendLine("                    if (chosenGroupKey != null) {")
-        sb.appendLine("                        when (chosenGroupKey) {")
-
+        sb.appendLine("                        if (chosenGroupKey != null) {")
+        sb.appendLine("                            when (chosenGroupKey) {")
         for ((groupKey, variantsInGroup) in grouped) {
-            sb.appendLine("                            ${escapeForStringLiteral(groupKey)} -> {")
-            // within group prioritize detection by distinguishing suffix
-            // possible suffixes: by_block_id -> requires block_id, by_finality -> finality, by_sync_checkpoint -> sync_checkpoint
-            // we will generate checks in preferred order: block_id, finality, sync_checkpoint, else fallback to decoding by serialName presence or try decode
-            // build lists for each suffix
+            sb.appendLine("                                ${escapeForStringLiteral(groupKey)} -> {")
             val byBlock = variantsInGroup.filter { it.serialName.endsWith("_by_block_id") }
             val byFinality = variantsInGroup.filter { it.serialName.endsWith("_by_finality") }
             val bySync = variantsInGroup.filter { it.serialName.endsWith("_by_sync_checkpoint") }
             if (byBlock.isNotEmpty()) {
+                sb.appendLine("                                    if (jobj[\"block_id\"] != null) {")
                 for (v in byBlock) {
-                    sb.appendLine("                                if (jobj[\"block_id\"] != null) return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+                    sb.appendLine("                                        try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
                 }
+                sb.appendLine("                                    }")
             }
             if (byFinality.isNotEmpty()) {
+                sb.appendLine("                                    if (jobj[\"finality\"] != null) {")
                 for (v in byFinality) {
-                    sb.appendLine("                                if (jobj[\"finality\"] != null) return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+                    sb.appendLine("                                        try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
                 }
+                sb.appendLine("                                    }")
             }
             if (bySync.isNotEmpty()) {
+                sb.appendLine("                                    if (jobj[\"sync_checkpoint\"] != null) {")
                 for (v in bySync) {
-                    sb.appendLine("                                if (jobj[\"sync_checkpoint\"] != null) return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+                    sb.appendLine("                                        try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
                 }
+                sb.appendLine("                                    }")
             }
-            // fallback: try decoding each variant in this group
             for (v in variantsInGroup) {
-                sb.appendLine("                                try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
+                sb.appendLine("                                    try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
             }
-            sb.appendLine("                                throw SerializationException(\"Cannot disambiguate variant for base token '${groupKey}' and tf='\$tf'\")")
-            sb.appendLine("                            }")
+            sb.appendLine("                                    throw SerializationException(\"Cannot disambiguate variant for base token '${groupKey}' and tf='\$tf'\")")
+            sb.appendLine("                                }")
         }
-        sb.appendLine("                            else -> { /* no group matched */ }")
+        sb.appendLine("                                else -> { /* no group matched */ }")
+        sb.appendLine("                            }")
         sb.appendLine("                        }")
-        sb.appendLine("                    }")
+        sb.appendLine("                    }") // end if typeField != null
+
+        // If we reached here (either no typeField or typeField handling didn't return), continue with heuristics:
+
+        // Grouped handling by presence of distinguishing keys (even without tf)
+        sb.appendLine("                    // grouped handling by presence of distinguishing keys (no discriminator value available)")
+        for ((groupKey, variantsInGroup) in grouped) {
+            sb.appendLine("                    // group: ${groupKey}")
+            val byBlock = variantsInGroup.filter { it.serialName.endsWith("_by_block_id") }
+            val byFinality = variantsInGroup.filter { it.serialName.endsWith("_by_finality") }
+            val bySync = variantsInGroup.filter { it.serialName.endsWith("_by_sync_checkpoint") }
+            if (byBlock.isNotEmpty()) {
+                sb.appendLine("                    if (jobj[\"block_id\"] != null) {")
+                for (v in byBlock) {
+                    sb.appendLine("                        try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
+                }
+                sb.appendLine("                    }")
+            }
+            if (byFinality.isNotEmpty()) {
+                sb.appendLine("                    if (jobj[\"finality\"] != null) {")
+                for (v in byFinality) {
+                    sb.appendLine("                        try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
+                }
+                sb.appendLine("                    }")
+            }
+            if (bySync.isNotEmpty()) {
+                sb.appendLine("                    if (jobj[\"sync_checkpoint\"] != null) {")
+                for (v in bySync) {
+                    sb.appendLine("                        try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
+                }
+                sb.appendLine("                    }")
+            }
+        }
         sb.appendLine()
-        // if still not returned, fall back to previous scoring/try-decode approach (keeps original behaviour)
-        sb.appendLine("                    // fallback: try required-field matching and scoring heuristics")
+
+        // fallback: required-field matching
         sb.appendLine("                    val requiredMatches = mutableListOf<Int>()")
         for ((idxV, v) in info.variants.withIndex()) {
             val requiredProps = v.props.filter { !it.type.trim().endsWith("?") }.map { it.serialName }
@@ -323,12 +369,14 @@ object SerializerGenerator {
         }
         sb.appendLine("                    if (requiredMatches.size == 1) {")
         sb.appendLine("                        when (requiredMatches[0]) {")
-        for ((idxV, v) in info.variants.withIndex()) {
-            sb.appendLine("                            $idxV -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        for ((idxV, _) in info.variants.withIndex()) {
+            sb.appendLine("                            $idxV -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${info.variants[idxV].name}>(), jobj)")
         }
         sb.appendLine("                            else -> throw SerializationException(\"Internal required-match dispatch error\")")
         sb.appendLine("                        }")
         sb.appendLine("                    }")
+
+        // scoring by matched properties
         sb.appendLine("                    var bestIdx: Int? = null")
         sb.appendLine("                    var bestScore = -1.0")
         for ((idxV, v) in info.variants.withIndex()) {
@@ -348,17 +396,19 @@ object SerializerGenerator {
         }
         sb.appendLine("                    if (bestIdx != null && bestScore > 0.0) {")
         sb.appendLine("                        when (bestIdx) {")
-        for ((idxV, v) in info.variants.withIndex()) {
-            sb.appendLine("                            $idxV -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        for ((idxV, _) in info.variants.withIndex()) {
+            sb.appendLine("                            $idxV -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${info.variants[idxV].name}>(), jobj)")
         }
         sb.appendLine("                            else -> throw SerializationException(\"Internal scoring dispatch error\")")
         sb.appendLine("                        }")
         sb.appendLine("                    }")
-        sb.appendLine("                    // last resort: try decoding each data-class variant")
+
+        // try decode each candidate variant as last resort
         val dataVariantsList = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS || (it.props.size == 1 && it.props[0].name == "value") }
         for (v in dataVariantsList) {
             sb.appendLine("                    try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
         }
+
         sb.appendLine("                    throw SerializationException(\"Missing discriminator or recognizable variant in $clsName\")")
 
         sb.appendLine("                }") // end JsonObject
@@ -372,26 +422,38 @@ object SerializerGenerator {
         return Pair(fileName, content)
     }
 
+    // infer discriminator candidates from the variants' properties
     private fun findDiscCandidates(info: SealedInfo): List<String> {
         val n = info.variants.size
+        if (n == 0) return emptyList()
+
         val freq = mutableMapOf<String, Int>()
         val stringLike = setOf("String", "kotlin.String")
         for (v in info.variants) {
             for (p in v.props) {
                 val raw = sanitizeType(p.type)
                 val isString = stringLike.any { it.equals(raw, ignoreCase = true) }
-                val isEnumLike = raw.endsWith("Enum") || raw.contains("Enum")
-                val isSimpleToken = raw.matches(Regex("^[A-Za-z_][A-Za-z0-9_]*$"))
+                val isEnumLike = raw.endsWith("Enum") || raw.contains("Enum") || raw.matches(Regex("^[A-Z][A-Za-z0-9_]*\$"))
+                val isSimpleToken = raw.matches(Regex("^[A-Za-z_][A-Za-z0-9_]*\$"))
+                // prefer explicit names that look like discriminators
                 if (isString || isEnumLike || isSimpleToken) {
+                    // ignore common noise names that are often not discriminators
+                    if (p.serialName.equals("message", ignoreCase = true) || p.serialName.equals("error", ignoreCase = true)) continue
                     freq[p.serialName] = (freq[p.serialName] ?: 0) + 1
                 }
             }
         }
         if (freq.isEmpty()) return emptyList()
+        // threshold: at least half of variants (rounded up)
         val threshold = (n + 1) / 2
-        return freq.filter { it.value >= threshold }.keys.toList()
+        val candidates = freq.filter { it.value >= threshold }.keys.toList()
+        // if none reached threshold, still return top-1 candidate (best-effort)
+        return if (candidates.isEmpty()) {
+            freq.entries.sortedByDescending { it.value }.take(1).map { it.key }
+        } else candidates
     }
 
+    // produce serializer expression string for embedding in generated code
     private fun serializerExpr(typeStr: String?, modelsPkg: String, clsName: String, ownerVariant: String?): String {
         val raw = sanitizeType(typeStr)
         val isNullable = (typeStr ?: "").trim().endsWith("?")
@@ -469,11 +531,7 @@ object SerializerGenerator {
         return s.trim()
     }
 
-    // helpers to produce safe string literals in generated code
     private fun escapeForStringLiteral(s: String): String {
         return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
-    }
-    private fun escapeForContainsCheck(s: String): String {
-        return escapeForStringLiteral(s)
     }
 }
