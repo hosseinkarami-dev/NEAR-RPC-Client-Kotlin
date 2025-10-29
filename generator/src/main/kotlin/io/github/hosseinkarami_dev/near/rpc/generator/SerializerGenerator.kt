@@ -1,17 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeSpec
-import kotlinx.serialization.SerializationException
 import java.io.File
+import java.lang.StringBuilder
 
 object SerializerGenerator {
     @JvmStatic
@@ -25,8 +15,9 @@ object SerializerGenerator {
 
         for (info in sealedInfos) {
             try {
-                val fileSpec = generateSealedClassSerializer(info, serializerPackage)
-                fileSpec.writeTo(output)
+                val (fileName, content) = generateSealedClassSerializerContent(info, serializerPackage)
+                val outFile = File(output, fileName)
+                outFile.writeText(content)
             } catch (ex: Exception) {
                 System.err.println("Failed generating serializer for ${info.className}: ${ex.message}")
                 throw RuntimeException("Generation failed for ${info.className}", ex)
@@ -34,284 +25,136 @@ object SerializerGenerator {
         }
     }
 
-    fun generateSealedClassSerializer(info: SealedInfo, serializerPackage: String): FileSpec {
+    private fun generateSealedClassSerializerContent(info: SealedInfo, serializerPackage: String): Pair<String, String> {
         val modelsPkg = info.packageName
         val clsName = info.className
         val serializerName = "${clsName}Serializer"
+        val fileName = "$serializerName.kt"
 
-        // discriminator candidate heuristics (unchanged)
-        val discCandidates: List<String> = run {
-            val nVariants = info.variants.size
-            val hasNameFieldInAll = info.variants.all { v -> v.props.any { it.serialName == "name" } }
-            if (hasNameFieldInAll) return@run listOf("name")
+        val imports = mutableSetOf<String>()
+        imports.add("kotlinx.serialization.KSerializer")
+        imports.add("kotlinx.serialization.encoding.Decoder")
+        imports.add("kotlinx.serialization.encoding.Encoder")
+        imports.add("kotlinx.serialization.descriptors.SerialDescriptor")
+        imports.add("kotlinx.serialization.descriptors.buildClassSerialDescriptor")
+        imports.add("kotlinx.serialization.json.JsonDecoder")
+        imports.add("kotlinx.serialization.json.JsonEncoder")
+        imports.add("kotlinx.serialization.json.JsonElement")
+        imports.add("kotlinx.serialization.json.JsonObject")
+        imports.add("kotlinx.serialization.json.JsonPrimitive")
+        imports.add("kotlinx.serialization.json.JsonArray")
+        imports.add("kotlinx.serialization.json.jsonPrimitive")
+        imports.add("kotlinx.serialization.json.contentOrNull")
+        imports.add("kotlinx.serialization.json.jsonArray")
+        imports.add("kotlinx.serialization.serializer")
+        imports.add("kotlinx.serialization.builtins.ListSerializer")
+        imports.add("kotlinx.serialization.builtins.MapSerializer")
+        imports.add("kotlinx.serialization.SerializationException")
 
-            val freq = mutableMapOf<String, Int>()
-            val stringTypes = setOf("String", "kotlin.String")
-            for (v in info.variants) {
-                for (p in v.props) {
-                    val raw = sanitizeType(p.type)
-                    val isString = stringTypes.any { it.equals(raw, ignoreCase = true) }
-                    val isNameLike = raw.equals("Name", ignoreCase = true) || raw.endsWith("Name")
-                    val isSimpleToken = raw.matches(Regex("^[A-Za-z_][A-Za-z0-9_]*$")) && !raw.contains('.') && !raw.contains('<') && raw.length <= 60
-                    if (isString || isNameLike || isSimpleToken) {
-                        if (p.serialName.equals("message", ignoreCase = true) && !isNameLike) continue
-                        freq[p.serialName] = (freq[p.serialName] ?: 0) + 1
-                    }
-                }
-            }
-            if (freq.isEmpty()) emptyList()
-            else {
-                val threshold = (nVariants + 1) / 2
-                freq.filter { it.value >= threshold }.keys.toList()
-            }
-        }
+        val sb = StringBuilder()
+        sb.appendLine("package $serializerPackage")
+        sb.appendLine()
+        imports.sorted().forEach { sb.appendLine("import $it") }
+        sb.appendLine("import $modelsPkg.$clsName")
+        sb.appendLine("import kotlinx.serialization.json.*")
+        sb.appendLine()
 
-        val modelClass = ClassName(modelsPkg, clsName)
-        val kSerializerOfModel = ClassName("kotlinx.serialization", "KSerializer").parameterizedBy(modelClass)
-        val serialDescriptor = ClassName("kotlinx.serialization.descriptors", "SerialDescriptor")
-
-        // helpers
-        fun typeNameFor(typeStr: String?, ownerVariant: String? = null): TypeName {
-            val raw = sanitizeType(typeStr)
-            val kotlinPrimitives = mapOf(
-                "String" to ClassName("kotlin", "String"),
-                "Int" to ClassName("kotlin", "Int"),
-                "Long" to ClassName("kotlin", "Long"),
-                "Double" to ClassName("kotlin", "Double"),
-                "Float" to ClassName("kotlin", "Float"),
-                "Boolean" to ClassName("kotlin", "Boolean"),
-                "Byte" to ClassName("kotlin", "Byte"),
-                "Short" to ClassName("kotlin", "Short"),
-                "Char" to ClassName("kotlin", "Char"),
-                "Any" to ClassName("kotlin", "Any")
-            )
-
-            val listRegex = Regex("^(?:[\\w\\.]+\\.)?(?:List|MutableList|ArrayList)\\s*<\\s*(.+)\\s*>")
-            val mapRegex = Regex("^(?:[\\w\\.]+\\.)?(?:Map|MutableMap)\\s*<\\s*([^,]+)\\s*,\\s*(.+)\\s*>")
-
-            listRegex.matchEntire(raw)?.let { m ->
-                val inner = typeNameFor(m.groups[1]!!.value, ownerVariant)
-                return ClassName("kotlin.collections", "List").parameterizedBy(inner)
-            }
-            mapRegex.matchEntire(raw)?.let { m ->
-                val k = typeNameFor(m.groups[1]!!.value, ownerVariant)
-                val v = typeNameFor(m.groups[2]!!.value, ownerVariant)
-                return ClassName("kotlin.collections", "Map").parameterizedBy(k, v)
-            }
-
-            kotlinPrimitives[raw]?.let { return it }
-            if (raw.contains('.')) return ClassName.bestGuess(raw)
-            if (!ownerVariant.isNullOrBlank()) {
-                try { return ClassName(modelsPkg, clsName, ownerVariant, raw) } catch (_: IllegalArgumentException) {}
-            }
-            return try { ClassName(modelsPkg, raw) } catch (_: IllegalArgumentException) { ClassName.bestGuess(raw) }
-        }
-
-        fun serializerExpressionFor(typeStr: String?, ownerVariant: String? = null): CodeBlock {
-            val raw = sanitizeType(typeStr)
-            val nullable = (typeStr ?: "").trim().endsWith("?")
-
-            val listRegex = Regex("^(?:[\\w\\.]+\\.)?(?:List|MutableList|ArrayList)\\s*<\\s*(.+)\\s*>")
-            val mapRegex = Regex("^(?:[\\w\\.]+\\.)?(?:Map|MutableMap)\\s*<\\s*([^,]+)\\s*,\\s*(.+)\\s*>")
-
-            listRegex.matchEntire(raw)?.let { m ->
-                val inner = m.groups[1]!!.value
-                val innerSer = serializerExpressionFor(inner, ownerVariant)
-                val innerType = typeNameFor(inner, ownerVariant)
-                return if (nullable) CodeBlock.of("serializer<%T?>()", ClassName("kotlin.collections", "List").parameterizedBy(innerType))
-                else CodeBlock.of("%T(%L)", ClassName("kotlinx.serialization.builtins", "ListSerializer"), innerSer)
-            }
-            mapRegex.matchEntire(raw)?.let { m ->
-                val k = m.groups[1]!!.value
-                val v = m.groups[2]!!.value
-                val ks = serializerExpressionFor(k, ownerVariant)
-                val vs = serializerExpressionFor(v, ownerVariant)
-                val kType = typeNameFor(k, ownerVariant)
-                val vType = typeNameFor(v, ownerVariant)
-                return if (nullable) CodeBlock.of("serializer<%T?>()", ClassName("kotlin.collections", "Map").parameterizedBy(kType, vType))
-                else CodeBlock.of("%T(%L, %L)", ClassName("kotlinx.serialization.builtins", "MapSerializer"), ks, vs)
-            }
-
-            val primitives = setOf("String","Int","Long","Double","Float","Boolean","Byte","Short","Char","Any")
-            if (primitives.contains(raw)) return CodeBlock.of("serializer<%T${if (nullable) "?" else ""}>()", ClassName("kotlin", raw))
-            if (raw.contains('.')) {
-                val cn = ClassName.bestGuess(raw)
-                return CodeBlock.of("serializer<%T${if (nullable) "?" else ""}>()", cn)
-            }
-            if (!ownerVariant.isNullOrBlank()) {
-                try {
-                    val nested = ClassName(modelsPkg, clsName, ownerVariant, raw)
-                    return CodeBlock.of("serializer<%T${if (nullable) "?" else ""}>()", nested)
-                } catch (_: IllegalArgumentException) {}
-            }
-            val cn = ClassName(modelsPkg, raw)
-            return CodeBlock.of("serializer<%T${if (nullable) "?" else ""}>()", cn)
-        }
-
-        // --- THE KEY: single-value variants are ANY variant (object or data class) with exactly one prop named "value" ---
-        val objectSingleValueVariants = info.variants.filter {
-            it.kind == VariantInfo.Kind.OBJECT && it.props.size == 1 && it.props[0].name == "value"
-        }
-        val dataSingleValueVariants = info.variants.filter {
-            it.kind == VariantInfo.Kind.DATA_CLASS && it.props.size == 1 && it.props[0].name == "value"
-        }
-        val singleValueVariants = info.variants.filter { it.props.size == 1 && it.props[0].name == "value" }
-
-        val pureObjectSingletons = info.variants.filter { it.kind == VariantInfo.Kind.OBJECT && it.props.isEmpty() }
-        val dataVariants = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS }
-
-        val objBuilder = TypeSpec.objectBuilder(serializerName)
-            .addSuperinterface(kSerializerOfModel)
-
-        // descriptor
-        val descriptorInitializer = CodeBlock.builder()
-        descriptorInitializer.add("%M(%S) {\n", MemberName("kotlinx.serialization.descriptors", "buildClassSerialDescriptor"), "$modelsPkg.$clsName")
+        sb.appendLine("object $serializerName : KSerializer<$clsName> {")
+        sb.appendLine()
+        sb.appendLine("    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(\"$modelsPkg.$clsName\") {")
         for (v in info.variants) {
-            descriptorInitializer.add("  element(%S, %L)\n", v.serialName, CodeBlock.of("serializer<%T>().descriptor", ClassName("kotlinx.serialization.json","JsonElement")))
+            sb.appendLine("        element(\"${v.serialName}\", serializer<JsonElement>().descriptor)")
         }
-        descriptorInitializer.add("}")
-        val descriptorProp = PropertySpec.builder("descriptor", serialDescriptor)
-            .addModifiers(KModifier.OVERRIDE)
-            .initializer(descriptorInitializer.build())
-            .build()
-        objBuilder.addProperty(descriptorProp)
+        sb.appendLine("    }")
+        sb.appendLine()
 
-        // serialize helper: handles three cases:
-        // - pure object singleton (no props) -> emit JsonPrimitive(serialName)
-        // - single-value (any variant with exactly one prop named "value") -> emit inner value
-        // - data-class -> emit JsonObject with fields
-        fun buildSerializeCase(v: VariantInfo): CodeBlock {
-            val cb = CodeBlock.builder()
-            val variantClass = ClassName(modelsPkg, clsName, v.name)
-            cb.beginControlFlow("is %T ->", variantClass)
-
+        // serialize
+        sb.appendLine("    override fun serialize(encoder: Encoder, value: $clsName) {")
+        sb.appendLine("        if (encoder is JsonEncoder) {")
+        sb.appendLine("            val jsonEncoder = encoder")
+        sb.appendLine("            when (value) {")
+        for (v in info.variants) {
+            val variantClass = "$modelsPkg.$clsName.${v.name}"
+            sb.appendLine("                is $variantClass -> {")
             if (v.kind == VariantInfo.Kind.OBJECT && v.props.isEmpty()) {
-                // pure singleton object -> emit the discriminator string
-                cb.addStatement("jsonEncoder.encodeJsonElement(%T(%S))", ClassName("kotlinx.serialization.json", "JsonPrimitive"), v.serialName)
-                cb.endControlFlow()
-                return cb.build()
-            }
-
-            // single-value variant (object or data-class) -> emit the inner value only
-            if (v.props.size == 1 && v.props[0].name == "value") {
+                sb.appendLine("                    jsonEncoder.encodeJsonElement(JsonPrimitive(\"${v.serialName}\"))")
+            } else if (v.props.size == 1 && v.props[0].name == "value") {
                 val p = v.props[0]
-                val ser = serializerExpressionFor(p.type, v.name)
-                cb.addStatement("val innerElem = jsonEncoder.json.encodeToJsonElement(%L, value.%L)", ser, p.name)
-                cb.addStatement("jsonEncoder.encodeJsonElement(innerElem)")
-                cb.endControlFlow()
-                return cb.build()
-            }
-
-            if (v.kind == VariantInfo.Kind.DATA_CLASS) {
-                cb.add("val map = %T<String, %T>()\n", ClassName("kotlin.collections", "mutableMapOf"), ClassName("kotlinx.serialization.json", "JsonElement"))
-                v.props.forEach { p ->
-                    val ser = serializerExpressionFor(p.type, v.name)
+                val serExpr = serializerExpr(p.type, modelsPkg, clsName, v.name)
+                sb.appendLine("                    val innerElem = jsonEncoder.json.encodeToJsonElement($serExpr, value.${p.name})")
+                sb.appendLine("                    jsonEncoder.encodeJsonElement(innerElem)")
+            } else if (v.kind == VariantInfo.Kind.DATA_CLASS) {
+                sb.appendLine("                    val map = mutableMapOf<String, JsonElement>()")
+                for (p in v.props) {
+                    val serExpr = serializerExpr(p.type, modelsPkg, clsName, v.name)
                     val nullable = p.type.trim().endsWith("?")
                     if (nullable) {
-                        cb.beginControlFlow("if (value.%L != null)", p.name)
-                        cb.addStatement("map[%S] = jsonEncoder.json.encodeToJsonElement(%L, value.%L)", p.serialName, ser, p.name)
-                        cb.endControlFlow()
+                        sb.appendLine("                    if (value.${p.name} != null) {")
+                        sb.appendLine("                        map[\"${p.serialName}\"] = jsonEncoder.json.encodeToJsonElement($serExpr, value.${p.name})")
+                        sb.appendLine("                    }")
                     } else {
-                        cb.addStatement("map[%S] = jsonEncoder.json.encodeToJsonElement(%L, value.%L)", p.serialName, ser, p.name)
+                        sb.appendLine("                    map[\"${p.serialName}\"] = jsonEncoder.json.encodeToJsonElement($serExpr, value.${p.name})")
                     }
                 }
-                cb.addStatement("val payload = %T(map)", ClassName("kotlinx.serialization.json", "JsonObject"))
-                cb.addStatement("jsonEncoder.encodeJsonElement(payload)")
-                cb.endControlFlow()
-                return cb.build()
+                sb.appendLine("                    val payload = JsonObject(map)")
+                sb.appendLine("                    jsonEncoder.encodeJsonElement(payload)")
+            } else {
+                sb.appendLine("                    jsonEncoder.encodeJsonElement(JsonObject(mapOf()))")
             }
-
-            // fallback: encode empty object (should be rare)
-            cb.addStatement("jsonEncoder.encodeJsonElement(%T(mapOf()))", ClassName("kotlinx.serialization.json", "JsonObject"))
-            cb.endControlFlow()
-            return cb.build()
+            sb.appendLine("                }")
         }
-
-        // ---------- serialize ----------
-        val serializeFun = FunSpec.builder("serialize")
-            .addModifiers(KModifier.OVERRIDE)
-            .addParameter("encoder", ClassName("kotlinx.serialization.encoding", "Encoder"))
-            .addParameter("value", modelClass)
-            .returns(Unit::class)
-
-        val scb = CodeBlock.builder()
-        scb.beginControlFlow("if (encoder is %T)", ClassName("kotlinx.serialization.json", "JsonEncoder"))
-        scb.addStatement("val jsonEncoder = encoder")
-        scb.beginControlFlow("when (value)")
-        info.variants.forEach { v ->
-            scb.add(buildSerializeCase(v))
-        }
-        scb.endControlFlow()
-        scb.addStatement("return")
-        scb.endControlFlow()
-
-        // fallback to structure encoding for non-json encoders
-        scb.addStatement("val out = encoder.beginStructure(descriptor)")
-        scb.beginControlFlow("when (value)")
+        sb.appendLine("            }")
+        sb.appendLine("            return")
+        sb.appendLine("        }")
+        sb.appendLine("        val out = encoder.beginStructure(descriptor)")
+        sb.appendLine("        when (value) {")
         var idx = 0
         for (v in info.variants) {
-            val variantClass = ClassName(modelsPkg, clsName, v.name)
-            val varSer = CodeBlock.of("serializer<%T>()", variantClass)
-            scb.addStatement("is %T -> out.encodeSerializableElement(descriptor, %L, %L, value)", variantClass, idx, varSer)
+            val variantClass = "$modelsPkg.$clsName.${v.name}"
+            sb.appendLine("            is $variantClass -> out.encodeSerializableElement(descriptor, $idx, serializer<$variantClass>(), value)")
             idx++
         }
-        scb.endControlFlow()
-        scb.addStatement("out.endStructure(descriptor)")
+        sb.appendLine("        }")
+        sb.appendLine("        out.endStructure(descriptor)")
+        sb.appendLine("    }")
+        sb.appendLine()
 
-        serializeFun.addCode(scb.build())
-        objBuilder.addFunction(serializeFun.build())
-
-        // ---------- deserialize ----------
-        val deserializeFun = FunSpec.builder("deserialize")
-            .addModifiers(KModifier.OVERRIDE)
-            .addParameter("decoder", ClassName("kotlinx.serialization.encoding", "Decoder"))
-            .returns(modelClass)
-
-        val dcb = CodeBlock.builder()
-        dcb.beginControlFlow("if (decoder is %T)", ClassName("kotlinx.serialization.json", "JsonDecoder"))
-        dcb.addStatement("val element = decoder.decodeJsonElement()")
-        dcb.beginControlFlow("when (element)")
-
-        // JsonPrimitive branch
-        dcb.beginControlFlow("is %T ->", ClassName("kotlinx.serialization.json", "JsonPrimitive"))
-        // if string and equals any objectSingleValue's serialName -> construct instance with no-arg (for pure single-object semantics)
-        dcb.beginControlFlow("if (element.isString)")
-        dcb.addStatement("val s = element.content")
+        // deserialize
+        sb.appendLine("    override fun deserialize(decoder: Decoder): $clsName {")
+        sb.appendLine("        if (decoder is JsonDecoder) {")
+        sb.appendLine("            val element = decoder.decodeJsonElement()")
+        sb.appendLine("            when (element) {")
+        // primitive
+        sb.appendLine("                is JsonPrimitive -> {")
+        sb.appendLine("                    if (element.isString) {")
+        sb.appendLine("                        val s = element.content")
+        val objectSingleValueVariants = info.variants.filter { it.kind == VariantInfo.Kind.OBJECT && it.props.size == 1 && it.props[0].name == "value" }
         for (v in objectSingleValueVariants) {
-            val variantClass = ClassName(modelsPkg, clsName, v.name)
-            dcb.addStatement("if (s == %S) return %T", v.serialName, variantClass)
+            sb.appendLine("                        if (s == \"${v.serialName}\") return $modelsPkg.$clsName.${v.name}")
         }
-        // pure object singletons (no props) -> return the singleton object
+        val pureObjectSingletons = info.variants.filter { it.kind == VariantInfo.Kind.OBJECT && it.props.isEmpty() }
         for (v in pureObjectSingletons) {
-            dcb.addStatement("if (s == %S) return %T", v.serialName, ClassName(modelsPkg, clsName, v.name))
+            sb.appendLine("                        if (s == \"${v.serialName}\") return $modelsPkg.$clsName.${v.name}")
         }
-        dcb.endControlFlow()
-
-        // try decoding primitive into any single-value variant's payload (data-class or object single-value)
+        sb.appendLine("                    }")
+        val singleValueVariants = info.variants.filter { it.props.size == 1 && it.props[0].name == "value" }
         for (v in singleValueVariants) {
-            val variantClass = ClassName(modelsPkg, clsName, v.name)
-            val ser = serializerExpressionFor(v.props[0].type, v.name)
-            dcb.beginControlFlow("try")
-            dcb.addStatement("val payload = decoder.json.decodeFromJsonElement(%L, element)", ser)
-            dcb.addStatement("return %T(payload)", variantClass)
-            dcb.nextControlFlow("catch (_: %T)", Exception::class)
-            dcb.addStatement("// not this variant — try next")
-            dcb.endControlFlow()
+            val serExpr = serializerExpr(v.props[0].type, modelsPkg, clsName, v.name)
+            sb.appendLine("                    try {")
+            sb.appendLine("                        val payload = decoder.json.decodeFromJsonElement($serExpr, element)")
+            sb.appendLine("                        return $modelsPkg.$clsName.${v.name}(payload)")
+            sb.appendLine("                    } catch (_: Exception) { }")
         }
+        sb.appendLine("                    throw SerializationException(\"Unknown discriminator (primitive) for $clsName\")")
+        sb.appendLine("                }")
 
-        dcb.addStatement("throw %T(%S)", SerializationException::class, "Unknown discriminator (primitive) for $clsName")
-        dcb.endControlFlow() // end primitive
+        sb.appendLine("                is JsonArray -> throw SerializationException(\"Unexpected JSON array while deserializing $clsName\")")
 
-        // JsonArray branch
-        dcb.beginControlFlow("is %T ->", ClassName("kotlinx.serialization.json", "JsonArray"))
-        dcb.addStatement("throw %T(%S)", SerializationException::class, "Unexpected JSON array while deserializing $clsName")
-        dcb.endControlFlow()
+        sb.appendLine("                is JsonObject -> {")
+        sb.appendLine("                    val jobj = element")
 
-        // JsonObject branch
-        dcb.beginControlFlow("is %T ->", ClassName("kotlinx.serialization.json", "JsonObject"))
-        dcb.addStatement("val jobj = element")
-
-        // field-based detection for dataVariants (unchanged)
+        // field-based unique-key detection for data variants
+        val dataVariants = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS }
         if (dataVariants.isNotEmpty()) {
             val keyToVariants = mutableMapOf<String, MutableList<Int>>()
             val dvList = dataVariants
@@ -322,140 +165,297 @@ object SerializerGenerator {
                 uniqueKeyByVariantName[v.name] = unique
             }
 
-            for (v in dvList) {
+            for ((idxV, v) in dvList.withIndex()) {
                 val unique = uniqueKeyByVariantName[v.name]
                 if (!unique.isNullOrBlank()) {
-                    dcb.beginControlFlow("if (jobj[%S] != null)", unique)
+                    sb.appendLine("                    if (jobj[\"$unique\"] != null) {")
                     if (v.props.size == 1) {
-                        val ser = serializerExpressionFor(v.props[0].type, v.name)
-                        dcb.addStatement("return %T(decoder.json.decodeFromJsonElement(%L, jobj[%S]!!))", ClassName(modelsPkg, clsName, v.name), ser, unique)
+                        val ser = serializerExpr(v.props[0].type, modelsPkg, clsName, v.name)
+                        sb.appendLine("                        return $modelsPkg.$clsName.${v.name}(decoder.json.decodeFromJsonElement($ser, jobj[\"$unique\"]!!))")
                     } else {
-                        val decodeNames = mutableListOf<String>()
-                        v.props.forEach { p ->
-                            val ser = serializerExpressionFor(p.type, v.name)
-                            val varName = p.name + "Val"
-                            val nullable = p.type.trim().endsWith("?")
-                            if (nullable) {
-                                dcb.addStatement("val %L = jobj[%S]?.let { decoder.json.decodeFromJsonElement(%L, it) }", varName, p.serialName, ser)
+                        val ctorArgs = mutableListOf<String>()
+                        for (p in v.props) {
+                            val ser = serializerExpr(p.type, modelsPkg, clsName, v.name)
+                            val varName = "${p.name}Val"
+                            if (p.type.trim().endsWith("?")) {
+                                sb.appendLine("                        val $varName = jobj[\"${p.serialName}\"]?.let { decoder.json.decodeFromJsonElement($ser, it) }")
                             } else {
-                                dcb.addStatement("val %L = decoder.json.decodeFromJsonElement(%L, jobj[%S] ?: throw %T(%S + %S))", varName, ser, p.serialName, SerializationException::class, "Missing field '${p.serialName}' for variant ", v.name)
+                                sb.appendLine("                        val $varName = decoder.json.decodeFromJsonElement($ser, jobj[\"${p.serialName}\"] ?: throw SerializationException(\"Missing field '${p.serialName}' for variant ${v.name}\"))")
                             }
-                            decodeNames += varName
+                            ctorArgs.add(varName)
                         }
-                        dcb.addStatement("return %T(${decodeNames.joinToString(", ")})", ClassName(modelsPkg, clsName, v.name))
+                        sb.appendLine("                        return $modelsPkg.$clsName.${v.name}(${ctorArgs.joinToString(", ")})")
                     }
-                    dcb.endControlFlow()
+                    sb.appendLine("                    }")
                 }
             }
         }
 
         // wrapper-style { "VariantName": payload }
-        dcb.beginControlFlow("if (jobj.size == 1)")
-        dcb.addStatement("val entry = jobj.entries.first()")
-        dcb.addStatement("val key = entry.key")
-        dcb.addStatement("val valueElem = entry.value")
-        dcb.beginControlFlow("when (key)")
-        // handle variants that are data-class or single-value
+        sb.appendLine("                    if (jobj.size == 1) {")
+        sb.appendLine("                        val entry = jobj.entries.first()")
+        sb.appendLine("                        val key = entry.key")
+        sb.appendLine("                        val valueElem = entry.value")
+        sb.appendLine("                        when (key) {")
         val dataOrSingle = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS || (it.props.size == 1 && it.props[0].name == "value") }
         for (v in dataOrSingle) {
-            val variantClass = ClassName(modelsPkg, clsName, v.name)
-            dcb.beginControlFlow("%S ->", v.serialName)
-
+            sb.appendLine("                            \"${v.serialName}\" -> {")
             if (v.props.size == 1 && v.props[0].name == "value") {
-                // IMPORTANT: only attempt the string-equals -> no-arg construction for OBJECT variants.
-                // For DATA_CLASS single-value variants we MUST decode the payload and pass it to the constructor.
                 if (v.kind == VariantInfo.Kind.OBJECT) {
-                    dcb.beginControlFlow("if (valueElem is %T && valueElem.isString)", ClassName("kotlinx.serialization.json", "JsonPrimitive"))
-                    dcb.addStatement("if ((valueElem as %T).content == %S) return %T()", ClassName("kotlinx.serialization.json", "JsonPrimitive"), v.serialName, variantClass)
-                    dcb.endControlFlow()
+                    sb.appendLine("                                if (valueElem is JsonPrimitive && valueElem.isString) {")
+                    sb.appendLine("                                    if ((valueElem as JsonPrimitive).content == \"${v.serialName}\") return $modelsPkg.$clsName.${v.name}()")
+                    sb.appendLine("                                }")
                 }
-                val ser = serializerExpressionFor(v.props[0].type, v.name)
-                dcb.addStatement("return %T(decoder.json.decodeFromJsonElement(%L, valueElem))", variantClass, ser)
+                val ser = serializerExpr(v.props[0].type, modelsPkg, clsName, v.name)
+                sb.appendLine("                                return $modelsPkg.$clsName.${v.name}(decoder.json.decodeFromJsonElement($ser, valueElem))")
             } else {
-                dcb.addStatement("val obj = valueElem as? %T ?: throw %T(%S + key)", ClassName("kotlinx.serialization.json", "JsonObject"), SerializationException::class, "Expected object payload for variant ")
-                val variantSerializerCb = CodeBlock.of("serializer<%T>()", ClassName(modelsPkg, clsName, v.name))
-                dcb.addStatement("return decoder.json.decodeFromJsonElement(%L, obj)", variantSerializerCb)
+                sb.appendLine("                                val obj = valueElem as? JsonObject ?: throw SerializationException(\"Expected object payload for variant ${v.serialName}: \" + key)")
+                val variantSer = "serializer<${modelsPkg}.${clsName}.${v.name}>()"
+                sb.appendLine("                                return decoder.json.decodeFromJsonElement($variantSer, obj)")
             }
-
-            dcb.endControlFlow()
-        }
-        // pure object singletons (no props)
-        for (v in pureObjectSingletons) {
-            dcb.beginControlFlow("%S ->", v.serialName)
-            dcb.addStatement("return %T", ClassName(modelsPkg, clsName, v.name))
-            dcb.endControlFlow()
-        }
-        dcb.addStatement("else -> throw %T(%S + key)", SerializationException::class, "Unknown discriminator key for $clsName: ")
-        dcb.endControlFlow() // end when(key)
-        dcb.endControlFlow() // end if (jobj.size == 1)
-
-        // flat-style heuristics (unchanged except using singleValueVariants where relevant)
-        dcb.beginControlFlow("else")
-        dcb.addStatement("var typeField: String? = null")
-        if (discCandidates.isNotEmpty()) {
-            val discListLiteral = discCandidates.joinToString(", ") { "\"$it\"" }
-            dcb.addStatement("val discriminatorCandidates = listOf($discListLiteral)")
-            dcb.beginControlFlow("for (cand in discriminatorCandidates)")
-            dcb.addStatement("val candElem = jobj[cand]")
-            dcb.beginControlFlow("if (candElem is %T)", ClassName("kotlinx.serialization.json", "JsonPrimitive"))
-            dcb.addStatement("typeField = candElem.contentOrNull")
-            dcb.addStatement("if (typeField != null) break")
-            dcb.endControlFlow()
-            dcb.endControlFlow()
-        }
-
-        val variantNamesList = info.variants.joinToString(", ") { "\"${it.serialName}\"" }
-        dcb.addStatement("if (typeField == null) {")
-        dcb.addStatement("  val knownVariantNames = setOf($variantNamesList)")
-        dcb.addStatement("  for ((k, v) in jobj.entries) {")
-        dcb.beginControlFlow("    if (v is %T && v.isString)", ClassName("kotlinx.serialization.json", "JsonPrimitive"))
-        dcb.addStatement("      val s = v.content")
-        dcb.addStatement("      if (knownVariantNames.any { it.equals(s, ignoreCase = true) }) { typeField = s; break }")
-        dcb.endControlFlow()
-        dcb.addStatement("  }")
-        dcb.addStatement("}")
-
-        val discMsg = if (discCandidates.isNotEmpty()) "Missing discriminator (one of ${discCandidates.joinToString("/")}) or recognizable variant in $clsName" else "Missing discriminator or recognizable variant in $clsName"
-        dcb.addStatement("if (typeField == null) throw %T(%S)", SerializationException::class, discMsg)
-        dcb.addStatement("val tf = typeField.trim()")
-
-        dcb.beginControlFlow("when (tf)")
-        // handle data-class variants and single-value variants
-        val flatHandled = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS || (it.props.size == 1 && it.props[0].name == "value") }
-        for (v in flatHandled) {
-            dcb.beginControlFlow("%S ->", v.serialName)
-            if (v.props.size == 1 && v.props[0].name == "value") {
-                val ser = serializerExpressionFor(v.props[0].type, v.name)
-                dcb.addStatement("val payloadElem = jobj[%S] ?: throw %T(%S + tf)", "value", SerializationException::class, "Missing field 'value' for variant ")
-                dcb.addStatement("return %T(decoder.json.decodeFromJsonElement(%L, payloadElem))", ClassName(modelsPkg, clsName, v.name), ser)
-            } else {
-                val variantSerializerCb = CodeBlock.of("serializer<%T>()", ClassName(modelsPkg, clsName, v.name))
-                dcb.addStatement("return decoder.json.decodeFromJsonElement(%L, jobj)", variantSerializerCb)
-            }
-            dcb.endControlFlow()
+            sb.appendLine("                            }")
         }
         for (v in pureObjectSingletons) {
-            dcb.addStatement("%S -> return %T", v.serialName, ClassName(modelsPkg, clsName, v.name))
+            sb.appendLine("                            \"${v.serialName}\" -> return $modelsPkg.$clsName.${v.name}")
         }
-        dcb.addStatement("else -> throw %T(%S + tf)", SerializationException::class, "Unknown type discriminator for $clsName: ")
-        dcb.endControlFlow() // end when(tf)
+        sb.appendLine("                            else -> throw SerializationException(\"Unknown discriminator key for $clsName: \" + key)")
+        sb.appendLine("                        }")
+        sb.appendLine("                    }") // end wrapper-style
 
-        dcb.endControlFlow() // end else(flat)
-        dcb.endControlFlow() // end is JsonObject
-        dcb.endControlFlow() // end when(element)
-        dcb.endControlFlow() // end if (decoder is JsonDecoder)
+        // --- NEW: robust flat-style handling using base-token grouping and distinguishing keys ---
+        sb.appendLine("                    var typeField: String? = null")
+        sb.appendLine("                    val discriminatorCandidates = listOf(\"changes_type\")")
+        sb.appendLine("                    for (cand in discriminatorCandidates) {")
+        sb.appendLine("                        val candElem = jobj[cand]")
+        sb.appendLine("                        if (candElem is JsonPrimitive) {")
+        sb.appendLine("                            typeField = candElem.contentOrNull")
+        sb.appendLine("                            if (typeField != null) break")
+        sb.appendLine("                        }")
+        sb.appendLine("                    }")
+        sb.appendLine("                    if (typeField == null) {")
+        sb.appendLine("                        val knownVariantNames = setOf(${info.variants.joinToString(", ") { "\"${it.serialName}\"" }})")
+        sb.appendLine("                        for ((k, v) in jobj.entries) {")
+        sb.appendLine("                            if (v is JsonPrimitive && v.isString) {")
+        sb.appendLine("                                val s = v.content")
+        sb.appendLine("                                if (knownVariantNames.any { it.equals(s, ignoreCase = true) }) { typeField = s; break }")
+        sb.appendLine("                            }")
+        sb.appendLine("                        }")
+        sb.appendLine("                    }")
+        sb.appendLine("                    if (typeField == null) throw SerializationException(\"Missing discriminator (one of changes_type) or recognizable variant in $clsName\")")
+        sb.appendLine("                    val tf = typeField.trim()")
+        sb.appendLine()
+        // Build grouping at generation time and emit group-based mapping
+        val grouped = info.variants.groupBy { v ->
+            val s = v.serialName
+            if (s.contains("_by_")) s.substringBefore("_by_") else s
+        }
 
-        dcb.addStatement("throw %T(%S)", SerializationException::class, "Cannot deserialize $clsName with non-JSON decoder")
+        // Emit code: try exact match first
+        sb.appendLine("                    // try exact match of full variant name first")
+        sb.appendLine("                    val tfFull = tf")
+        sb.appendLine("                    when (tfFull) {")
+        for (v in info.variants) {
+            sb.appendLine("                        \"${v.serialName}\" -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        }
+        sb.appendLine("                        else -> { /* fallthrough to grouped handling */ }")
+        sb.appendLine("                    }")
+        sb.appendLine()
 
-        deserializeFun.addCode(dcb.build())
-        objBuilder.addFunction(deserializeFun.build())
+        // Now grouped handling: for each base token group emit logic
+        sb.appendLine("                    // grouped handling by base token (e.g. account_changes -> ...by_block_id / ...by_finality / ...by_sync_checkpoint)")
+        sb.appendLine("                    val tfLower = tf.lowercase()")
+        sb.appendLine("                    // select candidate group based on contains/equals heuristics")
+        sb.appendLine("                    var chosenGroupKey: String? = null")
 
-        val fileSpecBuilder = FileSpec.builder(serializerPackage, serializerName)
-            .addType(objBuilder.build())
-        fileSpecBuilder.addImport("kotlinx.serialization", "serializer")
-        fileSpecBuilder.addImport("kotlinx.serialization.json", "jsonPrimitive")
-        fileSpecBuilder.addImport("kotlinx.serialization.json", "contentOrNull")
-        return fileSpecBuilder.build()
+        val groupKeys = grouped.keys.toList()
+        // emit checks to pick group key
+        for (k in groupKeys) {
+            sb.appendLine("                    if (chosenGroupKey == null && (${escapeForContainsCheck(k)}.lowercase() == tfLower || tfLower.contains(${escapeForStringLiteral(k)}.lowercase()) || ${escapeForStringLiteral(k)}.lowercase().contains(tfLower))) { chosenGroupKey = ${escapeForStringLiteral(k)} }")
+        }
+
+        sb.appendLine("                    if (chosenGroupKey != null) {")
+        sb.appendLine("                        when (chosenGroupKey) {")
+
+        for ((groupKey, variantsInGroup) in grouped) {
+            sb.appendLine("                            ${escapeForStringLiteral(groupKey)} -> {")
+            // within group prioritize detection by distinguishing suffix
+            // possible suffixes: by_block_id -> requires block_id, by_finality -> finality, by_sync_checkpoint -> sync_checkpoint
+            // we will generate checks in preferred order: block_id, finality, sync_checkpoint, else fallback to decoding by serialName presence or try decode
+            // build lists for each suffix
+            val byBlock = variantsInGroup.filter { it.serialName.endsWith("_by_block_id") }
+            val byFinality = variantsInGroup.filter { it.serialName.endsWith("_by_finality") }
+            val bySync = variantsInGroup.filter { it.serialName.endsWith("_by_sync_checkpoint") }
+            if (byBlock.isNotEmpty()) {
+                for (v in byBlock) {
+                    sb.appendLine("                                if (jobj[\"block_id\"] != null) return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+                }
+            }
+            if (byFinality.isNotEmpty()) {
+                for (v in byFinality) {
+                    sb.appendLine("                                if (jobj[\"finality\"] != null) return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+                }
+            }
+            if (bySync.isNotEmpty()) {
+                for (v in bySync) {
+                    sb.appendLine("                                if (jobj[\"sync_checkpoint\"] != null) return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+                }
+            }
+            // fallback: try decoding each variant in this group
+            for (v in variantsInGroup) {
+                sb.appendLine("                                try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
+            }
+            sb.appendLine("                                throw SerializationException(\"Cannot disambiguate variant for base token '${groupKey}' and tf='\$tf'\")")
+            sb.appendLine("                            }")
+        }
+        sb.appendLine("                            else -> { /* no group matched */ }")
+        sb.appendLine("                        }")
+        sb.appendLine("                    }")
+        sb.appendLine()
+        // if still not returned, fall back to previous scoring/try-decode approach (keeps original behaviour)
+        sb.appendLine("                    // fallback: try required-field matching and scoring heuristics")
+        sb.appendLine("                    val requiredMatches = mutableListOf<Int>()")
+        for ((idxV, v) in info.variants.withIndex()) {
+            val requiredProps = v.props.filter { !it.type.trim().endsWith("?") }.map { it.serialName }
+            if (requiredProps.isNotEmpty()) {
+                val cond = requiredProps.joinToString(" && ") { "jobj.containsKey(\"$it\")" }
+                sb.appendLine("                    if ($cond) requiredMatches.add($idxV)")
+            }
+        }
+        sb.appendLine("                    if (requiredMatches.size == 1) {")
+        sb.appendLine("                        when (requiredMatches[0]) {")
+        for ((idxV, v) in info.variants.withIndex()) {
+            sb.appendLine("                            $idxV -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        }
+        sb.appendLine("                            else -> throw SerializationException(\"Internal required-match dispatch error\")")
+        sb.appendLine("                        }")
+        sb.appendLine("                    }")
+        sb.appendLine("                    var bestIdx: Int? = null")
+        sb.appendLine("                    var bestScore = -1.0")
+        for ((idxV, v) in info.variants.withIndex()) {
+            val propsCount = v.props.size
+            if (propsCount == 0) {
+                sb.appendLine("                    if (bestScore < 0.0) { bestScore = 0.0; bestIdx = $idxV }")
+            } else {
+                sb.appendLine("                    run {")
+                sb.appendLine("                        var matchCount = 0")
+                for (p in v.props) {
+                    sb.appendLine("                        if (jobj[\"${p.serialName}\"] != null) matchCount++")
+                }
+                sb.appendLine("                        val score = matchCount.toDouble() / $propsCount.toDouble()")
+                sb.appendLine("                        if (score > bestScore) { bestScore = score; bestIdx = $idxV } else if (score == bestScore) { bestIdx = null }")
+                sb.appendLine("                    }")
+            }
+        }
+        sb.appendLine("                    if (bestIdx != null && bestScore > 0.0) {")
+        sb.appendLine("                        when (bestIdx) {")
+        for ((idxV, v) in info.variants.withIndex()) {
+            sb.appendLine("                            $idxV -> return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj)")
+        }
+        sb.appendLine("                            else -> throw SerializationException(\"Internal scoring dispatch error\")")
+        sb.appendLine("                        }")
+        sb.appendLine("                    }")
+        sb.appendLine("                    // last resort: try decoding each data-class variant")
+        val dataVariantsList = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS || (it.props.size == 1 && it.props[0].name == "value") }
+        for (v in dataVariantsList) {
+            sb.appendLine("                    try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
+        }
+        sb.appendLine("                    throw SerializationException(\"Missing discriminator or recognizable variant in $clsName\")")
+
+        sb.appendLine("                }") // end JsonObject
+        sb.appendLine("            }") // end when (element)
+        sb.appendLine("        }") // end if decoder is JsonDecoder
+        sb.appendLine("        throw SerializationException(\"Cannot deserialize $clsName with non-JSON decoder\")")
+        sb.appendLine("    }")
+        sb.appendLine("}") // end object
+
+        val content = sb.toString()
+        return Pair(fileName, content)
+    }
+
+    private fun findDiscCandidates(info: SealedInfo): List<String> {
+        val n = info.variants.size
+        val freq = mutableMapOf<String, Int>()
+        val stringLike = setOf("String", "kotlin.String")
+        for (v in info.variants) {
+            for (p in v.props) {
+                val raw = sanitizeType(p.type)
+                val isString = stringLike.any { it.equals(raw, ignoreCase = true) }
+                val isEnumLike = raw.endsWith("Enum") || raw.contains("Enum")
+                val isSimpleToken = raw.matches(Regex("^[A-Za-z_][A-Za-z0-9_]*$"))
+                if (isString || isEnumLike || isSimpleToken) {
+                    freq[p.serialName] = (freq[p.serialName] ?: 0) + 1
+                }
+            }
+        }
+        if (freq.isEmpty()) return emptyList()
+        val threshold = (n + 1) / 2
+        return freq.filter { it.value >= threshold }.keys.toList()
+    }
+
+    private fun serializerExpr(typeStr: String?, modelsPkg: String, clsName: String, ownerVariant: String?): String {
+        val raw = sanitizeType(typeStr)
+        val isNullable = (typeStr ?: "").trim().endsWith("?")
+        val listRegex = Regex("^(?:[\\w\\.]+\\.)?(?:List|MutableList|ArrayList)\\s*<\\s*(.+)\\s*>")
+        val mapRegex = Regex("^(?:[\\w\\.]+\\.)?(?:Map|MutableMap)\\s*<\\s*([^,]+)\\s*,\\s*(.+)\\s*>")
+        listRegex.matchEntire(raw)?.let { m ->
+            val inner = m.groups[1]!!.value
+            val innerExpr = serializerExpr(inner, modelsPkg, clsName, ownerVariant)
+            return if (isNullable) "serializer<kotlin.collections.List<${fqType(inner, modelsPkg, clsName, ownerVariant)}>?>()" else "ListSerializer($innerExpr)"
+        }
+        mapRegex.matchEntire(raw)?.let { m ->
+            val k = m.groups[1]!!.value
+            val v = m.groups[2]!!.value
+            val ks = serializerExpr(k, modelsPkg, clsName, ownerVariant)
+            val vs = serializerExpr(v, modelsPkg, clsName, ownerVariant)
+            return if (isNullable) "serializer<kotlin.collections.Map<${fqType(k, modelsPkg, clsName, ownerVariant)}, ${fqType(v, modelsPkg, clsName, ownerVariant)}>?>()" else "MapSerializer($ks, $vs)"
+        }
+        val primitives = mapOf(
+            "String" to "kotlin.String",
+            "Int" to "kotlin.Int",
+            "Long" to "kotlin.Long",
+            "Double" to "kotlin.Double",
+            "Float" to "kotlin.Float",
+            "Boolean" to "kotlin.Boolean",
+            "Byte" to "kotlin.Byte",
+            "Short" to "kotlin.Short",
+            "Char" to "kotlin.Char",
+            "Any" to "kotlin.Any"
+        )
+        if (primitives.containsKey(raw)) {
+            val t = primitives[raw]!!
+            return "serializer<${t}${if (isNullable) "?" else ""}>()"
+        }
+        if (raw.contains('.')) {
+            return "serializer<${raw}${if (isNullable) "?" else ""}>()"
+        }
+        if (!ownerVariant.isNullOrBlank()) {
+            val nested = "${modelsPkg}.${clsName}.${ownerVariant}.${raw}"
+            return "serializer<${nested}${if (isNullable) "?" else ""}>()"
+        }
+        val cn = "${modelsPkg}.${raw}"
+        return "serializer<${cn}${if (isNullable) "?" else ""}>()"
+    }
+
+    private fun fqType(typeStr: String?, modelsPkg: String, clsName: String, ownerVariant: String?): String {
+        val raw = sanitizeType(typeStr)
+        val listRegex = Regex("^(?:[\\w\\.]+\\.)?(?:List|MutableList|ArrayList)\\s*<\\s*(.+)\\s*>")
+        val mapRegex = Regex("^(?:[\\w\\.]+\\.)?(?:Map|MutableMap)\\s*<\\s*([^,]+)\\s*,\\s*(.+)\\s*>")
+        listRegex.matchEntire(raw)?.let { m ->
+            val inner = fqType(m.groups[1]!!.value, modelsPkg, clsName, ownerVariant)
+            return "kotlin.collections.List<$inner>"
+        }
+        mapRegex.matchEntire(raw)?.let { m ->
+            val k = fqType(m.groups[1]!!.value, modelsPkg, clsName, ownerVariant)
+            val v = fqType(m.groups[2]!!.value, modelsPkg, clsName, ownerVariant)
+            return "kotlin.collections.Map<$k, $v>"
+        }
+        val primitives = setOf("String","Int","Long","Double","Float","Boolean","Byte","Short","Char","Any")
+        if (primitives.contains(raw)) return "kotlin.$raw"
+        if (raw.contains('.')) return raw
+        if (!ownerVariant.isNullOrBlank()) {
+            return "${modelsPkg}.${clsName}.${ownerVariant}.${raw}"
+        }
+        return "${modelsPkg}.${raw}"
     }
 
     private fun sanitizeType(raw: String?): String {
@@ -467,5 +467,13 @@ object SerializerGenerator {
         while (s.endsWith("?")) s = s.dropLast(1).trimEnd()
         if (s.startsWith("`") && s.endsWith("`") && s.length > 1) s = s.substring(1, s.length - 1)
         return s.trim()
+    }
+
+    // helpers to produce safe string literals in generated code
+    private fun escapeForStringLiteral(s: String): String {
+        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+    }
+    private fun escapeForContainsCheck(s: String): String {
+        return escapeForStringLiteral(s)
     }
 }
