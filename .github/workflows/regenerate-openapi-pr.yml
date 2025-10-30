@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Set Git identity
+      - name: Set Git identity (early)
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "automation@github.com"
@@ -49,6 +49,10 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -e
+          # ensure git identity is set for the commit (global to avoid runner oddities)
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "automation@github.com"
+
           BRANCH="regenerate-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::8}"
           git checkout -b "$BRANCH"
           git add .
@@ -88,11 +92,15 @@ jobs:
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          set -e
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
           NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
           git tag -a "$NEW_TAG" -m "Release $NEW_TAG (automated)"
           git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$NEW_TAG"
+          # export NEW_TAG so it's available to next steps
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+
       - name: Create GitHub Release
         if: steps.commit.outputs.pr_required == 'true'
         uses: softprops/action-gh-release@v1
