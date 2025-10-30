@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   regenerate-merge-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       # Avoid infinite loop triggered by GitHub Actions bot
