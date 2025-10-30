@@ -56,23 +56,24 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
-          git config --local user.email "automation@github.com"
-          git config --local user.name "GitHub Actions Bot"
-
+          
+          git config --global user.email "automation@github.com"
+          git config --global user.name "GitHub Actions Bot"
+          
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
           git checkout -b "$BRANCH"
-
+          
           git add .
           if git diff --staged --quiet; then
-            echo "No changes to commit"
-            echo "pr_required=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          echo "No changes to commit"
+          echo "pr_required=false" >> "$GITHUB_OUTPUT"
+          exit 0
           fi
-
+          
           git commit -m "fix: regenerate client from OpenAPI"
           git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
-
+          
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
