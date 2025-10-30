@@ -47,7 +47,7 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
     private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
 
     override fun serialize(encoder: Encoder, value: ActionsValidationError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DeleteActionMustBeFinal -> {
