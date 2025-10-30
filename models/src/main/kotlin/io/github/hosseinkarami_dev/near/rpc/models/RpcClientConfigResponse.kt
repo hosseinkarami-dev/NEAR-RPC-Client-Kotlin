@@ -102,6 +102,12 @@ public data class RpcClientConfigResponse(
   @SerialName("doomslug_step_period")
   public val doomslugStepPeriod: List<ULong>,
   /**
+   *  * If true, the runtime will do a dynamic resharding 'dry run' at the last block of each epoch.
+   * This means calculating tentative boundary accounts for splitting the tracked shards.
+   */
+  @SerialName("dynamic_resharding_dry_run")
+  public val dynamicReshardingDryRun: Boolean,
+  /**
    *  * If true, transactions for the next chunk will be prepared early, right after the previous chunk's
    * post-state is ready. This can help produce chunks faster, for high-throughput chains.
    * The current implementation increases latency on low-load chains, which will be fixed in the future.
