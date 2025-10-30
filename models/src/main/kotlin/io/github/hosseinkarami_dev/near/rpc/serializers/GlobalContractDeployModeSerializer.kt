@@ -28,18 +28,15 @@ object GlobalContractDeployModeSerializer : KSerializer<GlobalContractDeployMode
         element("AccountId", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: GlobalContractDeployMode) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.GlobalContractDeployMode.CodeHash -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("CodeHash"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("CodeHash"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.GlobalContractDeployMode.AccountId -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("AccountId"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("AccountId"))
                 }
             }
             return
