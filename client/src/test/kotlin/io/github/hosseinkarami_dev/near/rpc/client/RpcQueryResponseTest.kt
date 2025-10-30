@@ -12,6 +12,7 @@ import io.github.hosseinkarami_dev.near.rpc.models.StateItem
 import io.github.hosseinkarami_dev.near.rpc.models.StoreKey
 import io.github.hosseinkarami_dev.near.rpc.models.StoreValue
 import io.github.hosseinkarami_dev.near.rpc.serializers.RpcQueryResponseSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -190,5 +191,103 @@ class RpcQueryResponseTest {
             assertEquals(original::class, decoded::class, "Deserialized type should match original type")
             assertEquals(original, decoded, "Deserialized object should equal the original")
         }
+    }
+
+    @Test
+    fun `test encode and decode each subtype`() {
+        val variants: List<RpcQueryResponse> = listOf(
+            RpcQueryResponse.AccountView(
+                amount = NearToken("1000"),
+                codeHash = CryptoHash("hash123"),
+                globalContractAccountId = AccountId("account.near"),
+                globalContractHash = CryptoHash("gchash"),
+                locked = NearToken("0"),
+                storagePaidAt = 1uL,
+                storageUsage = 1234uL,
+                blockHash = CryptoHash("bh123"),
+                blockHeight = 999uL
+            ),
+            RpcQueryResponse.ContractCodeView(
+                codeBase64 = "YWJjMTIz",
+                hash = CryptoHash("hashABC"),
+                blockHash = CryptoHash("bhXYZ"),
+                blockHeight = 50uL
+            ),
+            RpcQueryResponse.ViewStateResult(
+                proof = listOf("proof1", "proof2"),
+                values = listOf(StateItem(StoreKey("key1"), StoreValue("value1"))),
+                blockHash = CryptoHash("hash987"),
+                blockHeight = 88uL
+            ),
+            RpcQueryResponse.CallResult(
+                logs = listOf("log1", "log2"),
+                result = listOf(1u, 2u, 3u),
+                blockHash = CryptoHash("block123"),
+                blockHeight = 777uL
+            ),
+            RpcQueryResponse.AccessKeyView(
+                nonce = 1234uL,
+                permission = AccessKeyPermissionView.FullAccess,
+                blockHash = CryptoHash("block555"),
+                blockHeight = 80uL
+            ),
+            RpcQueryResponse.AccessKeyList(
+                keys = listOf(
+                    AccessKeyInfoView(
+                        publicKey = PublicKey("ed25519:abc"),
+                        accessKey = AccessKeyView(
+                            nonce = 10uL,
+                            permission = AccessKeyPermissionView.FullAccess
+                        )
+                    )
+                ),
+                blockHash = CryptoHash("hashList"),
+                blockHeight = 600uL
+            )
+        )
+
+        variants.forEach { original ->
+            val encoded = json.encodeToString(RpcQueryResponseSerializer, original)
+            val decoded = json.decodeFromString(RpcQueryResponseSerializer, encoded)
+
+            assertEquals(original::class, decoded::class, "Decoded class type mismatch for ${original::class.simpleName}")
+            assertEquals(original, decoded, "Decoded object mismatch for ${original::class.simpleName}")
+        }
+    }
+
+    @Test
+    fun `test invalid JSON throws exception`() {
+        val invalidJson = """{"unknown_field":"oops"}"""
+        assertThrows(SerializationException::class.java) {
+            json.decodeFromString(RpcQueryResponseSerializer, invalidJson)
+        }
+    }
+
+    @Test
+    fun `test missing discriminator fields`() {
+        val incompleteJson = """{"block_hash":"abc123"}"""
+        assertThrows(SerializationException::class.java) {
+            json.decodeFromString(RpcQueryResponseSerializer, incompleteJson)
+        }
+    }
+
+    @Test
+    fun `test serializer encodes expected structure`() {
+        val model = RpcQueryResponse.ContractCodeView(
+            codeBase64 = "YWJjMTIz",
+            hash = CryptoHash("hashABC"),
+            blockHash = CryptoHash("bhXYZ"),
+            blockHeight = 50uL
+        )
+
+        val encoded = json.encodeToString(RpcQueryResponseSerializer, model)
+
+        // Basic JSON structure checks
+        assertTrue(encoded.contains("code_base64"))
+        assertTrue(encoded.contains("hashABC"))
+        assertTrue(encoded.contains("bhXYZ"))
+
+        val decoded = json.decodeFromString(RpcQueryResponseSerializer, encoded)
+        assertEquals(model, decoded)
     }
 }
