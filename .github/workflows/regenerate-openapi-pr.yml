@@ -155,6 +155,11 @@ jobs:
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
           
           echo "tag_created=true" >> $GITHUB_OUTPUT
+      - name: Set git identity for release step
+        if: steps.create_tag.outputs.tag_created == 'true'
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "automation@github.com"
 
       - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
