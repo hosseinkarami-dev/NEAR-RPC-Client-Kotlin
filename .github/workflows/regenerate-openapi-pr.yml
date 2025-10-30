@@ -2,9 +2,10 @@ name: Regenerate NEAR RPC Client (auto PR, merge & release)
 
 on:
   workflow_dispatch:
-  push:
   schedule:
     - cron: "0 0 * * *" # daily run (every day at midnight)
+
+# Note: removed `push: branches: [ main ]` trigger to avoid self-triggering
 
 permissions:
   contents: write
@@ -13,20 +14,8 @@ permissions:
 jobs:
   regenerate-merge-release:
     runs-on: ubuntu-latest
-    # Provide a PUSH_TOKEN: prefer PAT_TOKEN (if set) otherwise use the automatic github.token
-    env:
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-      PUSH_TOKEN: ${{ secrets.PAT_TOKEN || github.token }}
 
     steps:
-      - name: Configure Git identity globally
-        run: |
-          git config --global user.name "${GITHUB_ACTOR} (github-actions)"
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          echo "Git identity set:"
-          git config --get user.name
-          git config --get user.email
-
       # Avoid infinite loop triggered by GitHub Actions bot
       - name: Exit if triggered by GitHub Actions bot
         if: github.actor == 'github-actions[bot]'
@@ -40,21 +29,6 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-
-      # Configure Git identity (global) — use the runner actor as fallback
-      - name: Configure Git identity
-        run: |
-          set -euo pipefail
-          # Prefer a clear bot identity derived from the actor to avoid empty ident errors
-          COMMITTER_NAME="${GITHUB_ACTOR} (github-actions)"
-          COMMITTER_EMAIL="${GITHUB_ACTOR}@users.noreply.github.com"
-
-          git config --global user.name "${COMMITTER_NAME}"
-          git config --global user.email "${COMMITTER_EMAIL}"
-
-          echo "Configured Git identity:"
-          git config --get user.name
-          git config --get user.email
 
       # Setup JDK
       - name: Set up JDK 21
@@ -78,16 +52,15 @@ jobs:
       # Prepare branch, commit changes, push
       - name: Prepare branch, commit regenerated sources
         id: commit
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
-
-          # Use PUSH_TOKEN (prefers PAT if provided) for push operations
-          PUSH_TOKEN="${PUSH_TOKEN}"
+          git config --local user.email "automation@github.com"
+          git config --local user.name "GitHub Actions Bot"
 
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
-
-          # create branch from current checkout
           git checkout -b "$BRANCH"
 
           git add .
@@ -98,9 +71,7 @@ jobs:
           fi
 
           git commit -m "fix: regenerate client from OpenAPI"
-
-          # push using token (PAT preferred); fallback to github token if PAT not set
-          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
+          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
@@ -110,7 +81,7 @@ jobs:
         if: steps.commit.outputs.pr_required == 'true'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ env.PUSH_TOKEN }}
+          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
             const branch = '${{ steps.commit.outputs.branch }}';
             const title = `chore: regenerate client from OpenAPI (${branch})`;
@@ -169,6 +140,8 @@ jobs:
       - name: Create and push tag
         id: create_tag
         if: steps.commit.outputs.pr_required == 'true'
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
@@ -191,9 +164,9 @@ jobs:
             exit 0
           fi
 
-          # Create annotated tag and push using PUSH_TOKEN
+          # Create annotated tag and push
           git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
-          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
+          git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
           echo "tag_created=true" >> $GITHUB_OUTPUT
 
