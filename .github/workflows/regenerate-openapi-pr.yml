@@ -19,6 +19,14 @@ jobs:
       PUSH_TOKEN: ${{ secrets.PAT_TOKEN || github.token }}
 
     steps:
+      - name: Configure Git identity
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          echo "✅ Git identity configured as:"
+          git config --get user.name
+          git config --get user.email
+
       # Avoid infinite loop triggered by GitHub Actions bot
       - name: Exit if triggered by GitHub Actions bot
         if: github.actor == 'github-actions[bot]'
