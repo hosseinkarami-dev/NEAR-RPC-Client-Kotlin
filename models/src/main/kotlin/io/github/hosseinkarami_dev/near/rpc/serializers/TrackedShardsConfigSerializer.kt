@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -32,15 +32,12 @@ object TrackedShardsConfigSerializer : KSerializer<TrackedShardsConfig> {
         element("Accounts", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: TrackedShardsConfig) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.NoShards -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("NoShards"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("NoShards"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.Shards -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -49,7 +46,7 @@ object TrackedShardsConfigSerializer : KSerializer<TrackedShardsConfig> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.AllShards -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("AllShards"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("AllShards"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.ShadowValidator -> {
                     val map = mutableMapOf<String, JsonElement>()
