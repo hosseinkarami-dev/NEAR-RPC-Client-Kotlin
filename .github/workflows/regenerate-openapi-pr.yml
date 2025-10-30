@@ -19,11 +19,11 @@ jobs:
       PUSH_TOKEN: ${{ secrets.PAT_TOKEN || github.token }}
 
     steps:
-      - name: Configure Git identity
+      - name: Configure Git identity globally
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions[bot]"
-          echo "✅ Git identity configured as:"
+          git config --global user.name "${GITHUB_ACTOR} (github-actions)"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          echo "Git identity set:"
           git config --get user.name
           git config --get user.email
 
