@@ -48,11 +48,13 @@ jobs:
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          set -e
-          # ensure git identity is set for the commit (global to avoid runner oddities)
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "automation@github.com"
-
+          set -euo pipefail
+          
+          # Fix git identity (runner-safe)
+          export HOME=/home/runner
+          git config --system user.name "GitHub Actions Bot"
+          git config --system user.email "automation@github.com"
+          
           BRANCH="regenerate-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::8}"
           git checkout -b "$BRANCH"
           git add .
