@@ -57,8 +57,8 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
-          git config --local user.email "automation@github.com"
-          git config --local user.name "GitHub Actions Bot"
+          git config --global user.email "automation@github.com"
+          git config --global user.name "GitHub Actions Bot"
 
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
