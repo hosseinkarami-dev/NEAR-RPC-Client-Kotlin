@@ -2,7 +2,6 @@ name: Regenerate NEAR RPC Client (auto PR, merge & release)
 
 on:
   workflow_dispatch:
-  push:
   schedule:
     - cron: "0 0 * * *" # daily run (every day at midnight)
 
