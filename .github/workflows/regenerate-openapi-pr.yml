@@ -130,11 +130,16 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
-          AUTHOR_NAME="GitHub Actions Bot"
-          AUTHOR_EMAIL="automation@github.com"
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
+
+          # Set global identity to avoid "unknown committer"
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "automation@github.com"
+
+          # Ensure tags are fetched
           git fetch --tags
 
+          # If HEAD already has any tag, skip creating a new tag
           if git tag --points-at HEAD | grep -q .; then
             echo "Tag already exists that points at HEAD. Skipping tag creation."
             echo "tag_created=false" >> $GITHUB_OUTPUT
@@ -142,14 +147,15 @@ jobs:
             exit 0
           fi
 
+          # If the computed NEW_TAG already exists, avoid duplicate
           if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
-            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation."
+            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
             echo "tag_created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Use -c to set identity explicitly
-          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
+          # Create annotated tag and push
+          git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
           echo "tag_created=true" >> $GITHUB_OUTPUT
