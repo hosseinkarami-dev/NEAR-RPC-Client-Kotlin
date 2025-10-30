@@ -50,9 +50,9 @@ jobs:
         run: |
           set -euo pipefail
           
-          export HOME=/home/runner
-          git config --system user.name "GitHub Actions Bot"
-          git config --system user.email "automation@github.com"
+          # ست کردن identity فقط برای این repository
+          git config user.name "GitHub Actions Bot"
+          git config user.email "automation@github.com"
           
           BRANCH="regenerate-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::8}"
           git checkout -b "$BRANCH"
@@ -65,6 +65,7 @@ jobs:
           git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
           echo "pr_required=true" >> $GITHUB_OUTPUT
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
 
       - name: Create & merge PR
         if: steps.commit.outputs.pr_required == 'true'
