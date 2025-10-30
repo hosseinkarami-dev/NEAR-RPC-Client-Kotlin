@@ -31,6 +31,27 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      # Ensure we're on main and up-to-date BEFORE creating branch
+      - name: Ensure local main is up-to-date
+        run: |
+          set -euo pipefail
+          git config --local user.email "automation@github.com"
+          git config --local user.name "GitHub Actions Bot"
+          # fetch main and tags
+          git fetch origin main --tags
+          git checkout main || git switch main
+          git reset --hard origin/main
+
+      # Prepare branch (branch is created from latest main)
+      - name: Create regenerate branch
+        id: prepare_branch
+        run: |
+          set -euo pipefail
+          SHORT_SHA=${GITHUB_SHA:0:8}
+          BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          git checkout -b "$BRANCH"
+
       # Setup JDK
       - name: Set up JDK 21
         uses: actions/setup-java@v3
@@ -42,7 +63,7 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # Run Generator (regenerates client + models)
+      # Run Generator (regenerates client + models) ON THE NEW BRANCH
       - name: Run Generator
         run: ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
 
@@ -50,7 +71,7 @@ jobs:
       - name: Build project (and run tests)
         run: ./gradlew build --stacktrace --no-daemon
 
-      # Prepare branch, commit changes, push
+      # Prepare branch, commit regenerated sources, push
       - name: Prepare branch, commit regenerated sources
         id: commit
         env:
@@ -60,11 +81,18 @@ jobs:
           git config --local user.email "automation@github.com"
           git config --local user.name "GitHub Actions Bot"
 
-          SHORT_SHA=${GITHUB_SHA:0:8}
-          BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
-          git checkout -b "$BRANCH"
+          BRANCH="${{ steps.prepare_branch.outputs.branch }}"
+          echo "Working on branch: ${BRANCH}"
 
-          git add .
+          # Add everything and check if there are real changes
+          git add -A
+
+          # Debugging info if needed
+          echo "---- git status ----"
+          git status --porcelain
+          echo "---- staged diff (if any) ----"
+          git --no-pager diff --staged || true
+
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
@@ -72,10 +100,11 @@ jobs:
           fi
 
           git commit -m "fix: regenerate client from OpenAPI"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
+          # Push the new branch using PAT_TOKEN (persist-credentials true allows push, but explicit PAT is more robust)
+          git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${BRANCH}"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
 
       # Auto-create PR and merge if changes exist
       - name: Auto-create and merge PR
@@ -98,7 +127,7 @@ jobs:
               body
             });
 
-            // Auto-merge PR
+            // Auto-merge PR (squash)
             await github.rest.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -106,21 +135,26 @@ jobs:
               merge_method: "squash"
             });
 
+            core.info(`PR #${pr.data.number} created and merged.`);
+
       # Stop if no changes
       - name: Output when no changes
         if: steps.commit.outputs.pr_required != 'true'
-        run: echo "No regenerated changes — nothing to create a PR for."
+        run: |
+          echo "No regenerated changes — nothing to create a PR for."
+          # show current main commit for debugging
+          git rev-parse --short HEAD || true
+          git branch --show-current || true
 
-      # Make sure local main is up-to-date with remote before tagging
-      - name: Prepare local main for tagging
+      # After merge: ensure local main is up-to-date with remote before tagging
+      - name: Refresh local main for tagging
         if: steps.commit.outputs.pr_required == 'true'
         run: |
           set -euo pipefail
-          # fetch latest main and tags
           git fetch origin main --tags
-          # ensure we are on main and match remote
-          git checkout main
+          git checkout main || git switch main
           git reset --hard origin/main
+          echo "Latest main commit: $(git rev-parse --short HEAD)"
 
       # Determine new tag version (only if we actually created a PR & merged)
       - name: Determine new tag version

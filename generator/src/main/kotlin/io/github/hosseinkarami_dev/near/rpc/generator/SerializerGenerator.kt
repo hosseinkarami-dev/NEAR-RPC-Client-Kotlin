@@ -84,7 +84,7 @@ object SerializerGenerator {
             sb.appendLine("                is $variantClass -> {")
             if (v.kind == VariantInfo.Kind.OBJECT && v.props.isEmpty()) {
                 // pure singleton -> primitive string
-                sb.appendLine("                    jsonEncoder.encodeJsonElement(JsonPrimitive(\"${v.serialName}\"))")
+                sb.appendLine("                   jsonEncoder.encodeJsonElement(JsonPrimitive(\"${v.serialName}\"))")
             } else if (v.props.size == 1 && v.props[0].name == "value") {
                 val p = v.props[0]
                 val serExpr = serializerExpr(p.type, modelsPkg, clsName, v.name)
