@@ -49,25 +49,26 @@ jobs:
         run: |
           set -euo pipefail
           
-          AUTHOR_NAME="GitHub Actions Bot"
-          AUTHOR_EMAIL="automation@github.com"
+          # Set identity locally to avoid unknown committer
+          git config user.email "automation@github.com"
+          git config user.name "GitHub Actions Bot"
           
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
           git checkout -b "$BRANCH"
           
-          git add -A
+          git add .
           if git diff --staged --quiet; then
-            echo "No changes to commit"
-            echo "pr_required=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          echo "No changes to commit"
+          echo "pr_required=false" >> "$GITHUB_OUTPUT"
+          exit 0
           fi
           
-          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" commit --no-verify -m "fix: regenerate client from OpenAPI"
-          git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
+          git commit -m "fix: regenerate client from OpenAPI"
+          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
           
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH"
 
       # ------------------- Auto PR & Merge -------------------
       - name: Auto-create and merge PR
@@ -131,33 +132,28 @@ jobs:
         run: |
           set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
-
-          # Set global identity to avoid "unknown committer"
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "automation@github.com"
-
-          # Ensure tags are fetched
+          
+          # Set identity locally
+          git config user.name "GitHub Actions Bot"
+          git config user.email "automation@github.com"
+          
           git fetch --tags
-
-          # If HEAD already has any tag, skip creating a new tag
+          
           if git tag --points-at HEAD | grep -q .; then
-            echo "Tag already exists that points at HEAD. Skipping tag creation."
-            echo "tag_created=false" >> $GITHUB_OUTPUT
-            echo "existing_tag=$(git tag --points-at HEAD | head -n1)" >> $GITHUB_OUTPUT
-            exit 0
+          echo "Tag already exists that points at HEAD. Skipping tag creation."
+          echo "tag_created=false" >> $GITHUB_OUTPUT
+          exit 0
           fi
-
-          # If the computed NEW_TAG already exists, avoid duplicate
+          
           if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
-            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
-            echo "tag_created=false" >> $GITHUB_OUTPUT
-            exit 0
+          echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation."
+          echo "tag_created=false" >> $GITHUB_OUTPUT
+          exit 0
           fi
-
-          # Create annotated tag and push
+          
           git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
-
+          
           echo "tag_created=true" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
