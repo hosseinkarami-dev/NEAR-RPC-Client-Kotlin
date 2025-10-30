@@ -30,24 +30,21 @@ object VMKindSerializer : KSerializer<VMKind> {
         element("NearVm", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: VMKind) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmer0 -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Wasmer0"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Wasmer0"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmtime -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Wasmtime"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Wasmtime"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmer2 -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Wasmer2"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Wasmer2"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.VMKind.NearVm -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("NearVm"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("NearVm"))
                 }
             }
             return
