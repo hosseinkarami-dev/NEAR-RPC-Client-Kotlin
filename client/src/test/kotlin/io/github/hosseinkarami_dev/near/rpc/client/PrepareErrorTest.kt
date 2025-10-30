@@ -12,6 +12,31 @@ class PrepareErrorTest {
     private val json = Json { encodeDefaults = true }
 
     @Test
+    fun `test all PrepareError serialization`() {
+        val allErrors = listOf(
+            PrepareError.Serialization,
+            PrepareError.Deserialization,
+            PrepareError.InternalMemoryDeclared,
+            PrepareError.GasInstrumentation,
+            PrepareError.StackHeightInstrumentation,
+            PrepareError.Instantiate,
+            PrepareError.Memory,
+            PrepareError.TooManyFunctions,
+            PrepareError.TooManyLocals,
+            PrepareError.TooManyTables,
+            PrepareError.TooManyTableElements
+        )
+
+        for (error in allErrors) {
+            val serialized = json.encodeToString<PrepareError>(error)
+            println("${error::class.simpleName} serialized: $serialized")
+
+            val deserialized = json.decodeFromString<PrepareError>(serialized)
+            assertEquals(error, deserialized, "Failed for ${error::class.simpleName}")
+        }
+    }
+
+    @Test
     fun `test Serialization PrepareError`() {
         val error: PrepareError = PrepareError.Serialization
         val serialized = json.encodeToString(error)
