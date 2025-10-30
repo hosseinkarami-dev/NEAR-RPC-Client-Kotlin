@@ -81,7 +81,7 @@ object SerializerGenerator {
 
         // serialize
         sb.appendLine("    override fun serialize(encoder: Encoder, value: $clsName) {")
-        sb.appendLine("        if (encoder is JsonEncoder) {")
+        sb.appendLine("         if (encoder is JsonEncoder) {")
         sb.appendLine("            val jsonEncoder = encoder")
         sb.appendLine("            when (value) {")
         for (v in info.variants) {
