@@ -16,6 +16,11 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Set Git identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "automation@github.com"
+
       # Avoid infinite loop triggered by GitHub Actions bot
       - name: Exit if triggered by GitHub Actions bot
         if: github.actor == 'github-actions[bot]'
