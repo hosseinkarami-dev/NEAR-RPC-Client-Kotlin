@@ -3,6 +3,8 @@ name: Regenerate NEAR RPC Client (auto PR, merge & release)
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   schedule:
     - cron: "0 0 * * *" # daily run (every day at midnight)
 
@@ -163,7 +165,7 @@ jobs:
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "New tag determined: ${NEW_TAG}"
 
-      # Create and push tag
+      # Create and push tag, but first check whether HEAD already has a tag
       - name: Create and push tag
         id: create_tag
         if: steps.commit.outputs.pr_required == 'true'
@@ -173,42 +175,29 @@ jobs:
           set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
 
-          # ensure we have remote tags
-          git fetch --tags origin
+          # Ensure tags are fetched
+          git fetch --tags
 
-          # Double-check that no tag already points to HEAD
+          # If HEAD already has any tag, skip creating a new tag
           if git tag --points-at HEAD | grep -q .; then
-            EXISTING_TAG=$(git tag --points-at HEAD | head -n1)
-            echo "Tag already exists that points at HEAD (${EXISTING_TAG}). Skipping tag creation."
+            echo "Tag already exists that points at HEAD. Skipping tag creation."
             echo "tag_created=false" >> $GITHUB_OUTPUT
-            echo "existing_tag=${EXISTING_TAG}" >> $GITHUB_OUTPUT
+            echo "existing_tag=$(git tag --points-at HEAD | head -n1)" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # If NEW_TAG exists (race or pre-existing), attempt to find the next free tag
-          attempt=0
-          while git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1 || git ls-remote --tags origin | grep -q "refs/tags/${NEW_TAG}$"; do
-            attempt=$((attempt+1))
-            echo "Computed tag ${NEW_TAG} already exists. Trying next patch (attempt ${attempt})..."
-            # bump patch
-            base="${NEW_TAG#v}"
-            IFS='.' read -r MAJOR MINOR PATCH <<<"$base"
-            PATCH=$((PATCH+1))
-            NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
-            # for safety, break if too many attempts
-            if [ $attempt -gt 50 ]; then
-              echo "Too many attempts to compute a unique tag. Aborting."
-              echo "tag_created=false" >> $GITHUB_OUTPUT
-              exit 1
-            fi
-          done
+          # If the computed NEW_TAG already exists (race or pre-existing), avoid duplicate
+          if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
+            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
           # Create annotated tag and push
           git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
           echo "tag_created=true" >> $GITHUB_OUTPUT
-          echo "created_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
