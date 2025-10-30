@@ -30,24 +30,21 @@ object MissingTrieValueContextSerializer : KSerializer<MissingTrieValueContext> 
         element("TrieStorage", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: MissingTrieValueContext) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieIterator -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TrieIterator"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TrieIterator"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TriePrefetchingStorage -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TriePrefetchingStorage"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TriePrefetchingStorage"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieMemoryPartialStorage -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TrieMemoryPartialStorage"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TrieMemoryPartialStorage"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieStorage -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TrieStorage"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TrieStorage"))
                 }
             }
             return
