@@ -34,15 +34,12 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
         element("ProtocolVersionTooOld", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: ValidatorKickoutReason) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.UnusedSlashed -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("_UnusedSlashed"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("_UnusedSlashed"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughBlocks -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -57,7 +54,7 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.Unstaked -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Unstaked"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Unstaked"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughStake -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -66,7 +63,7 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.DidNotGetASeat -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("DidNotGetASeat"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("DidNotGetASeat"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughChunkEndorsements -> {
                     val map = mutableMapOf<String, JsonElement>()
