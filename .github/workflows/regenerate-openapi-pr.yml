@@ -5,8 +5,6 @@ on:
   schedule:
     - cron: "0 0 * * *" # daily run (every day at midnight)
 
-# Note: removed `push: branches: [ main ]` trigger to avoid self-triggering
-
 permissions:
   contents: write
   pull-requests: write
@@ -16,115 +14,62 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Avoid infinite loop triggered by GitHub Actions bot
       - name: Exit if triggered by GitHub Actions bot
         if: github.actor == 'github-actions[bot]'
         run: |
           echo "Triggered by GitHub Actions bot; exiting to avoid loop."
           exit 0
 
-      # Checkout repository (full history and tags)
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: true
 
-      # Setup JDK
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
 
-      # Grant execute permission for Gradle
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # Run Generator (regenerates client + models)
       - name: Run Generator
         run: ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
 
-      # Build and run tests
       - name: Build project (and run tests)
         run: ./gradlew build --stacktrace --no-daemon
 
-      # Prepare branch, commit changes, push
-      - name: Prepare branch, commit regenerated sources (robust)
+      # ------------------- Commit Branch -------------------
+      - name: Prepare branch, commit regenerated sources
         id: commit
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
-
-          # ---- Author/committer we want to enforce ----
+          
           AUTHOR_NAME="GitHub Actions Bot"
           AUTHOR_EMAIL="automation@github.com"
-
-          export GIT_AUTHOR_NAME="$AUTHOR_NAME"
-          export GIT_AUTHOR_EMAIL="$AUTHOR_EMAIL"
-          export GIT_COMMITTER_NAME="$AUTHOR_NAME"
-          export GIT_COMMITTER_EMAIL="$AUTHOR_EMAIL"
-          # ----------------------------------------------
-
+          
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
-
-          echo ">>> Creating branch: $BRANCH"
           git checkout -b "$BRANCH"
-
-          # write identity into local repo config (writes to .git/config)
-          git config --local user.name "$AUTHOR_NAME"
-          git config --local user.email "$AUTHOR_EMAIL"
-
-          # (optional) disable hooks from interfering by pointing hooksPath to empty dir
-          # mkdir -p .githooks-disabled
-          # git config --local core.hooksPath .githooks-disabled
-
-          echo ">>> git config after local set:"
-          git config --list --show-origin
-
-          # stage everything
+          
           git add -A
-
-          # if nothing to commit, exit early
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-
-          echo ">>> Staged files:"
-          git diff --staged --name-status || true
-
-          # final commit: use both local config and -c override and skip hooks (--no-verify)
-          echo "Attempting commit with local config + -c override + --no-verify"
-          set +e
-          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" commit --no-verify -m "fix: regenerate client from OpenAPI" 2>&1 | tee /tmp/git-commit-output.txt
-          COMMIT_EXIT=$?
-          set -e
-
-          if [ "$COMMIT_EXIT" -ne 0 ]; then
-            echo ">>> Commit FAILED (exit code $COMMIT_EXIT). Dumping diagnostics:"
-            echo "---- /tmp/git-commit-output.txt ----"
-            sed -n '1,200p' /tmp/git-commit-output.txt || true
-            echo "---- git config --list --show-origin (again) ----"
-            git config --list --show-origin || true
-            echo "---- env GIT_* ----"
-            env | grep -i '^GIT' || true
-            echo "---- .git/config (head) ----"
-            sed -n '1,200p' .git/config || true
-            # fail with same code
-            exit $COMMIT_EXIT
-          fi
-
-          # push branch
+          
+          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" commit --no-verify -m "fix: regenerate client from OpenAPI"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
-
+          
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
-      # Auto-create PR and merge if changes exist
+      # ------------------- Auto PR & Merge -------------------
       - name: Auto-create and merge PR
         if: steps.commit.outputs.pr_required == 'true'
         uses: actions/github-script@v6
@@ -135,7 +80,6 @@ jobs:
             const title = `chore: regenerate client from OpenAPI (${branch})`;
             const body = `This PR regenerates the NEAR RPC client and models from the latest OpenAPI spec.\n\nAutomatically merged after generation.`;
 
-            // Create PR
             const pr = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -145,7 +89,6 @@ jobs:
               body
             });
 
-            // Auto-merge PR
             await github.rest.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -153,23 +96,18 @@ jobs:
               merge_method: "squash"
             });
 
-      # Stop if no changes
       - name: Output when no changes
         if: steps.commit.outputs.pr_required != 'true'
         run: echo "No regenerated changes — nothing to create a PR for."
 
-      # Make sure local main is up-to-date with remote before tagging
       - name: Prepare local main for tagging
         if: steps.commit.outputs.pr_required == 'true'
         run: |
           set -euo pipefail
-          # fetch latest main and tags
           git fetch origin main --tags
-          # ensure we are on main and match remote
           git checkout main
           git reset --hard origin/main
 
-      # Determine new tag version (only if we actually created a PR & merged)
       - name: Determine new tag version
         if: steps.commit.outputs.pr_required == 'true'
         id: tag
@@ -184,7 +122,7 @@ jobs:
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "New tag determined: ${NEW_TAG}"
 
-      # Create and push tag (skip if tag exists or HEAD already tagged)
+      # ------------------- Create & Push Tag -------------------
       - name: Create and push tag
         id: create_tag
         if: steps.commit.outputs.pr_required == 'true'
@@ -192,12 +130,11 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
+          AUTHOR_NAME="GitHub Actions Bot"
+          AUTHOR_EMAIL="automation@github.com"
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
-
-          # Ensure tags are fetched
           git fetch --tags
 
-          # If HEAD already has any tag, skip creating a new tag
           if git tag --points-at HEAD | grep -q .; then
             echo "Tag already exists that points at HEAD. Skipping tag creation."
             echo "tag_created=false" >> $GITHUB_OUTPUT
@@ -205,15 +142,14 @@ jobs:
             exit 0
           fi
 
-          # If the computed NEW_TAG already exists (race or pre-existing), avoid duplicate
           if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
-            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
+            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation."
             echo "tag_created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Create annotated tag and push (use PAT_TOKEN)
-          git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
+          # Use -c to set identity explicitly
+          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
           echo "tag_created=true" >> $GITHUB_OUTPUT
