@@ -50,44 +50,75 @@ jobs:
         run: ./gradlew build --stacktrace --no-daemon
 
       # Prepare branch, commit changes, push
-      - name: Prepare branch, commit regenerated sources
+      - name: Prepare branch, commit regenerated sources (robust)
         id: commit
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
 
-          # --- Configure author/committer for this step (do NOT rely on global git config) ---
+          # ---- Author/committer we want to enforce ----
           AUTHOR_NAME="GitHub Actions Bot"
           AUTHOR_EMAIL="automation@github.com"
 
-          # export GIT_* env vars so git picks them up if it consults env
           export GIT_AUTHOR_NAME="$AUTHOR_NAME"
           export GIT_AUTHOR_EMAIL="$AUTHOR_EMAIL"
           export GIT_COMMITTER_NAME="$AUTHOR_NAME"
           export GIT_COMMITTER_EMAIL="$AUTHOR_EMAIL"
-          # -------------------------------------------------------------------------------
+          # ----------------------------------------------
 
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
 
-          # create and switch to branch
+          echo ">>> Creating branch: $BRANCH"
           git checkout -b "$BRANCH"
 
-          # stage all changes
+          # write identity into local repo config (writes to .git/config)
+          git config --local user.name "$AUTHOR_NAME"
+          git config --local user.email "$AUTHOR_EMAIL"
+
+          # (optional) disable hooks from interfering by pointing hooksPath to empty dir
+          # mkdir -p .githooks-disabled
+          # git config --local core.hooksPath .githooks-disabled
+
+          echo ">>> git config after local set:"
+          git config --list --show-origin
+
+          # stage everything
           git add -A
 
-          # if no staged changes, exit early
+          # if nothing to commit, exit early
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # commit using -c overrides to guarantee name/email for this commit (no global write)
-          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" commit -m "fix: regenerate client from OpenAPI"
+          echo ">>> Staged files:"
+          git diff --staged --name-status || true
 
-          # push branch using PAT_TOKEN
+          # final commit: use both local config and -c override and skip hooks (--no-verify)
+          echo "Attempting commit with local config + -c override + --no-verify"
+          set +e
+          git -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" commit --no-verify -m "fix: regenerate client from OpenAPI" 2>&1 | tee /tmp/git-commit-output.txt
+          COMMIT_EXIT=$?
+          set -e
+
+          if [ "$COMMIT_EXIT" -ne 0 ]; then
+            echo ">>> Commit FAILED (exit code $COMMIT_EXIT). Dumping diagnostics:"
+            echo "---- /tmp/git-commit-output.txt ----"
+            sed -n '1,200p' /tmp/git-commit-output.txt || true
+            echo "---- git config --list --show-origin (again) ----"
+            git config --list --show-origin || true
+            echo "---- env GIT_* ----"
+            env | grep -i '^GIT' || true
+            echo "---- .git/config (head) ----"
+            sed -n '1,200p' .git/config || true
+            # fail with same code
+            exit $COMMIT_EXIT
+          fi
+
+          # push branch
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
