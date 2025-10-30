@@ -56,7 +56,7 @@ jobs:
       - name: Prepare branch, commit regenerated sources
         id: commit
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           git config --local user.email "automation@github.com"
@@ -66,15 +66,21 @@ jobs:
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
           git checkout -b "$BRANCH"
 
-          git add .
+          # add all changes
+          git add -A
+
+          # if nothing staged, exit
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
+          # commit with local identity (already set)
           git commit -m "fix: regenerate client from OpenAPI"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
+
+          # push using the workflow token (actor will be github-actions[bot])
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
