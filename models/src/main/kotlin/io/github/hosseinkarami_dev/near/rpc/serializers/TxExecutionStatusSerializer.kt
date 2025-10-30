@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -32,30 +32,27 @@ object TxExecutionStatusSerializer : KSerializer<TxExecutionStatus> {
         element("FINAL", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: TxExecutionStatus) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.None -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("NONE"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("NONE"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Included -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("INCLUDED"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("INCLUDED"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.ExecutedOptimistic -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("EXECUTED_OPTIMISTIC"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("EXECUTED_OPTIMISTIC"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.IncludedFinal -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("INCLUDED_FINAL"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("INCLUDED_FINAL"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Executed -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("EXECUTED"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("EXECUTED"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Final -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("FINAL"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("FINAL"))
                 }
             }
             return

@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -30,18 +30,15 @@ object FinalExecutionStatusSerializer : KSerializer<FinalExecutionStatus> {
         element("SuccessValue", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: FinalExecutionStatus) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.NotStarted -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("NotStarted"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("NotStarted"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Started -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Started"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Started"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Failure -> {
                     val map = mutableMapOf<String, JsonElement>()
