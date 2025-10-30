@@ -128,16 +128,42 @@ jobs:
         id: tag
         run: |
           set -euo pipefail
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
+          # fetch tags from remote to be sure we see the latest tags
+          git fetch --tags origin
+
+          # find latest tag (or default to v0.0.0)
+          LATEST_TAG=$(git tag --sort=-v:refname | head -n1 || echo "v0.0.0")
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="v0.0.0"
+          fi
+
+          # split into MAJOR.MINOR.PATCH (robustly)
+          TAG_NO_PREFIX="${LATEST_TAG#v}"
+          IFS='.' read -r MAJOR MINOR PATCH <<<"${TAG_NO_PREFIX}"
           MAJOR=${MAJOR:-0}
           MINOR=${MINOR:-0}
           PATCH=${PATCH:-0}
-          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
+
+          # compute next available tag: increment patch until unique
+          while true; do
+            CANDIDATE="v${MAJOR}.${MINOR}.$((PATCH+1))"
+            if git rev-parse "refs/tags/${CANDIDATE}" >/dev/null 2>&1; then
+              PATCH=$((PATCH+1))
+              continue
+            fi
+            # also check remote explicitly (race with other runners)
+            if git ls-remote --tags origin | grep -q "refs/tags/${CANDIDATE}$"; then
+              PATCH=$((PATCH+1))
+              continue
+            fi
+            NEW_TAG="${CANDIDATE}"
+            break
+          done
+
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "New tag determined: ${NEW_TAG}"
 
-      # Create and push tag, but first check whether HEAD already has a tag
+      # Create and push tag
       - name: Create and push tag
         id: create_tag
         if: steps.commit.outputs.pr_required == 'true'
@@ -147,29 +173,42 @@ jobs:
           set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
 
-          # Ensure tags are fetched
-          git fetch --tags
+          # ensure we have remote tags
+          git fetch --tags origin
 
-          # If HEAD already has any tag, skip creating a new tag
+          # Double-check that no tag already points to HEAD
           if git tag --points-at HEAD | grep -q .; then
-            echo "Tag already exists that points at HEAD. Skipping tag creation."
+            EXISTING_TAG=$(git tag --points-at HEAD | head -n1)
+            echo "Tag already exists that points at HEAD (${EXISTING_TAG}). Skipping tag creation."
             echo "tag_created=false" >> $GITHUB_OUTPUT
-            echo "existing_tag=$(git tag --points-at HEAD | head -n1)" >> $GITHUB_OUTPUT
+            echo "existing_tag=${EXISTING_TAG}" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # If the computed NEW_TAG already exists (race or pre-existing), avoid duplicate
-          if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
-            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
-            echo "tag_created=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
+          # If NEW_TAG exists (race or pre-existing), attempt to find the next free tag
+          attempt=0
+          while git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1 || git ls-remote --tags origin | grep -q "refs/tags/${NEW_TAG}$"; do
+            attempt=$((attempt+1))
+            echo "Computed tag ${NEW_TAG} already exists. Trying next patch (attempt ${attempt})..."
+            # bump patch
+            base="${NEW_TAG#v}"
+            IFS='.' read -r MAJOR MINOR PATCH <<<"$base"
+            PATCH=$((PATCH+1))
+            NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+            # for safety, break if too many attempts
+            if [ $attempt -gt 50 ]; then
+              echo "Too many attempts to compute a unique tag. Aborting."
+              echo "tag_created=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          done
 
           # Create annotated tag and push
           git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
           echo "tag_created=true" >> $GITHUB_OUTPUT
+          echo "created_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
