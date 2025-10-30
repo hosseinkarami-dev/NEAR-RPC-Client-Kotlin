@@ -50,7 +50,6 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Fix git identity (runner-safe)
           export HOME=/home/runner
           git config --system user.name "GitHub Actions Bot"
           git config --system user.email "automation@github.com"
