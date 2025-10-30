@@ -57,11 +57,18 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
+
+          # Always set committer identity globally (local can fail in detached HEAD state)
           git config --global user.email "automation@github.com"
           git config --global user.name "GitHub Actions Bot"
 
+          echo "Configured Git identity:"
+          git config --get user.name
+          git config --get user.email
+
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
+
           git checkout -b "$BRANCH"
 
           git add .
