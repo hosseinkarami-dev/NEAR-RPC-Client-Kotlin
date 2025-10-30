@@ -224,7 +224,8 @@ class ClientConfigTest {
             ttlAccountIdRouter = twoULong,
             txRoutingHeightHorizon = 20uL,
             version = version,
-            viewClientThreads = 2u
+            viewClientThreads = 2u,
+            dynamicReshardingDryRun = true
         )
 
         // Serialize & Deserialize
