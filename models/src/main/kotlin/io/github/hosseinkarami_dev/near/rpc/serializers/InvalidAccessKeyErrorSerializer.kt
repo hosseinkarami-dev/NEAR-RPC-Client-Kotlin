@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -32,11 +32,8 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
         element("DepositWithFunctionCall", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: InvalidAccessKeyError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.AccessKeyNotFound -> {
@@ -58,7 +55,7 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.RequiresFullAccess -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("RequiresFullAccess"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("RequiresFullAccess"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.NotEnoughAllowance -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -67,7 +64,7 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.DepositWithFunctionCall -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("DepositWithFunctionCall"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("DepositWithFunctionCall"))
                 }
             }
             return
