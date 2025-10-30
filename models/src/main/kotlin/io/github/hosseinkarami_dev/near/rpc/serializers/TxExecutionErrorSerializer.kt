@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -28,11 +28,8 @@ object TxExecutionErrorSerializer : KSerializer<TxExecutionError> {
         element("InvalidTxError", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: TxExecutionError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.ActionError -> {

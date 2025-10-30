@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -35,39 +35,36 @@ object WasmTrapSerializer : KSerializer<WasmTrap> {
         element("GenericTrap", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: WasmTrap) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.Unreachable -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Unreachable"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Unreachable"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IncorrectCallIndirectSignature -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("IncorrectCallIndirectSignature"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("IncorrectCallIndirectSignature"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.MemoryOutOfBounds -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("MemoryOutOfBounds"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("MemoryOutOfBounds"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.CallIndirectOOB -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("CallIndirectOOB"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("CallIndirectOOB"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IllegalArithmetic -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("IllegalArithmetic"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("IllegalArithmetic"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.MisalignedAtomicAccess -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("MisalignedAtomicAccess"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("MisalignedAtomicAccess"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IndirectCallToNull -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("IndirectCallToNull"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("IndirectCallToNull"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.StackOverflow -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("StackOverflow"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("StackOverflow"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.GenericTrap -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("GenericTrap"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("GenericTrap"))
                 }
             }
             return
