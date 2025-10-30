@@ -1,6 +1,6 @@
 package io.github.hosseinkarami_dev.near.rpc.serializers
 
-import kotlinx.serialization.KSerializer
+import  kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -29,15 +29,12 @@ object RpcValidatorRequestSerializer : KSerializer<RpcValidatorRequest> {
         element("block_id", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: RpcValidatorRequest) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.Latest -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("latest"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("latest"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.EpochId -> {
                     val map = mutableMapOf<String, JsonElement>()
