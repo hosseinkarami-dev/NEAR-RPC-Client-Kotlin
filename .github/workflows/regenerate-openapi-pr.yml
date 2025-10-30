@@ -2,9 +2,6 @@ name: Regenerate NEAR RPC Client (auto PR, merge & release)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
   schedule:
     - cron: "0 0 * * *" # daily run (every day at midnight)
 
@@ -56,7 +53,7 @@ jobs:
       - name: Prepare branch, commit regenerated sources
         id: commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
           git config --local user.email "automation@github.com"
@@ -66,21 +63,15 @@ jobs:
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
           git checkout -b "$BRANCH"
 
-          # add all changes
-          git add -A
-
-          # if nothing staged, exit
+          git add .
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # commit with local identity (already set)
           git commit -m "fix: regenerate client from OpenAPI"
-
-          # push using the workflow token (actor will be github-actions[bot])
-          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
+          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
@@ -136,38 +127,12 @@ jobs:
         id: tag
         run: |
           set -euo pipefail
-          # fetch tags from remote to be sure we see the latest tags
-          git fetch --tags origin
-
-          # find latest tag (or default to v0.0.0)
-          LATEST_TAG=$(git tag --sort=-v:refname | head -n1 || echo "v0.0.0")
-          if [ -z "$LATEST_TAG" ]; then
-            LATEST_TAG="v0.0.0"
-          fi
-
-          # split into MAJOR.MINOR.PATCH (robustly)
-          TAG_NO_PREFIX="${LATEST_TAG#v}"
-          IFS='.' read -r MAJOR MINOR PATCH <<<"${TAG_NO_PREFIX}"
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
           MAJOR=${MAJOR:-0}
           MINOR=${MINOR:-0}
           PATCH=${PATCH:-0}
-
-          # compute next available tag: increment patch until unique
-          while true; do
-            CANDIDATE="v${MAJOR}.${MINOR}.$((PATCH+1))"
-            if git rev-parse "refs/tags/${CANDIDATE}" >/dev/null 2>&1; then
-              PATCH=$((PATCH+1))
-              continue
-            fi
-            # also check remote explicitly (race with other runners)
-            if git ls-remote --tags origin | grep -q "refs/tags/${CANDIDATE}$"; then
-              PATCH=$((PATCH+1))
-              continue
-            fi
-            NEW_TAG="${CANDIDATE}"
-            break
-          done
-
+          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "New tag determined: ${NEW_TAG}"
 

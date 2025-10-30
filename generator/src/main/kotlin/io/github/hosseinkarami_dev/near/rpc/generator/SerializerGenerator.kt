@@ -36,7 +36,7 @@ object SerializerGenerator {
         val fileName = "$serializerName.kt"
 
         val imports = mutableSetOf<String>().apply {
-            add(" kotlinx.serialization.KSerializer")
+            add("kotlinx.serialization.KSerializer")
             add("kotlinx.serialization.encoding.Decoder")
             add("kotlinx.serialization.encoding.Encoder")
             add("kotlinx.serialization.descriptors.SerialDescriptor")
