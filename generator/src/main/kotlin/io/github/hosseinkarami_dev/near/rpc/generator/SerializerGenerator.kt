@@ -74,11 +74,6 @@ object SerializerGenerator {
         sb.appendLine("    }")
         sb.appendLine()
 
-        // helpers in generated file (small functions)
-        sb.appendLine("    // --- helper functions ---")
-        sb.appendLine("    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)")
-        sb.appendLine()
-
         // serialize
         sb.appendLine("    override fun serialize(encoder: Encoder, value: $clsName) {")
         sb.appendLine("         if (encoder is JsonEncoder) {")
