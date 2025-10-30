@@ -54,7 +54,7 @@ class ErrorTest {
 
         println("TX Response: $response")
 
-        //just to have an error to be checked by kaver
+        //just to have an error to be checked by kover
         assertTrue { true }
         //  assertTrue { response is RpcResponse.Success || (response is RpcResponse.Failure && response.error is RpcError.InternalError && response.error.code == -1002L) }
     }

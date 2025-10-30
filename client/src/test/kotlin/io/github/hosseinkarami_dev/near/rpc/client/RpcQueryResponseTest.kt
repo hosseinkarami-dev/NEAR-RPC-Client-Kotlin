@@ -125,4 +125,70 @@ class RpcQueryResponseTest {
 
         assertEquals(model, decoded)
     }
+
+
+    @Test
+    fun `test polymorphic serialization and deserialization of RpcQueryResponse`() {
+        // Create several different variants of the sealed class
+        val models: List<RpcQueryResponse> = listOf(
+            RpcQueryResponse.AccountView(
+                amount = NearToken("1000"),
+                codeHash = CryptoHash("hash123"),
+                globalContractAccountId = AccountId("account.near"),
+                globalContractHash = CryptoHash("gchash"),
+                locked = NearToken("0"),
+                storagePaidAt = 1uL,
+                storageUsage = 1234uL,
+                blockHash = CryptoHash("bh123"),
+                blockHeight = 999uL
+            ),
+            RpcQueryResponse.ContractCodeView(
+                codeBase64 = "YWJjMTIz",
+                hash = CryptoHash("hashABC"),
+                blockHash = CryptoHash("bhXYZ"),
+                blockHeight = 50uL
+            ),
+            RpcQueryResponse.ViewStateResult(
+                proof = listOf("proof1", "proof2"),
+                values = listOf(StateItem(StoreKey("key1"), StoreValue("value1"))),
+                blockHash = CryptoHash("hash987"),
+                blockHeight = 88uL
+            ),
+            RpcQueryResponse.CallResult(
+                logs = listOf("log1", "log2"),
+                result = listOf(1u, 2u, 3u),
+                blockHash = CryptoHash("block123"),
+                blockHeight = 777uL
+            ),
+            RpcQueryResponse.AccessKeyView(
+                nonce = 1234uL,
+                permission = AccessKeyPermissionView.FullAccess,
+                blockHash = CryptoHash("block555"),
+                blockHeight = 80uL
+            ),
+            RpcQueryResponse.AccessKeyList(
+                keys = listOf(
+                    AccessKeyInfoView(
+                        publicKey = PublicKey("ed25519:abc"),
+                        accessKey = AccessKeyView(
+                            nonce = 10uL,
+                            permission = AccessKeyPermissionView.FullAccess
+                        )
+                    )
+                ),
+                blockHash = CryptoHash("hashList"),
+                blockHeight = 600uL
+            )
+        )
+
+        models.forEach { original ->
+            // Encode and decode through the sealed serializer
+            val encoded = json.encodeToString(RpcQueryResponseSerializer, original)
+            val decoded = json.decodeFromString(RpcQueryResponseSerializer, encoded)
+
+            // Ensure correct deserialization type and content
+            assertEquals(original::class, decoded::class, "Deserialized type should match original type")
+            assertEquals(original, decoded, "Deserialized object should equal the original")
+        }
+    }
 }
