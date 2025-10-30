@@ -34,18 +34,15 @@ object FunctionCallErrorSerializer : KSerializer<FunctionCallError> {
         element("ExecutionError", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: FunctionCallError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.WasmUnknownError -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("WasmUnknownError"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("WasmUnknownError"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.EVMError -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("_EVMError"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("_EVMError"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.CompilationError -> {
                     val map = mutableMapOf<String, JsonElement>()
