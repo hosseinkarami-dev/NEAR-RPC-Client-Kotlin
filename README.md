@@ -118,6 +118,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.launch
 import androidx.lifecycle.lifecycleScope
+import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse
 import io.github.hosseinkarami_dev.near_rpc_client.NearClient
 import io.github.hosseinkarami_dev.near_rpc_models.*
 
