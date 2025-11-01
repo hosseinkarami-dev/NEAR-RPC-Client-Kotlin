@@ -32,15 +32,12 @@ object StorageErrorSerializer : KSerializer<StorageError> {
         element("MemTrieLoadingError", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: StorageError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.StorageError.StorageInternalError -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("StorageInternalError"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("StorageInternalError"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.StorageError.MissingTrieValue -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -49,7 +46,7 @@ object StorageErrorSerializer : KSerializer<StorageError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.StorageError.UnexpectedTrieValue -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("UnexpectedTrieValue"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("UnexpectedTrieValue"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.StorageError.StorageInconsistentState -> {
                     val map = mutableMapOf<String, JsonElement>()

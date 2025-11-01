@@ -59,30 +59,27 @@ object HostErrorSerializer : KSerializer<HostError> {
         element("Ed25519VerifyInvalidInput", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: HostError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.BadUTF16 -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("BadUTF16"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("BadUTF16"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.BadUTF8 -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("BadUTF8"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("BadUTF8"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.GasExceeded -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("GasExceeded"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("GasExceeded"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.GasLimitExceeded -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("GasLimitExceeded"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("GasLimitExceeded"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.BalanceExceeded -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("BalanceExceeded"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("BalanceExceeded"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.EmptyMethodName -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("EmptyMethodName"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("EmptyMethodName"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.GuestPanic -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -91,7 +88,7 @@ object HostErrorSerializer : KSerializer<HostError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.IntegerOverflow -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("IntegerOverflow"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("IntegerOverflow"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPromiseIndex -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -100,10 +97,10 @@ object HostErrorSerializer : KSerializer<HostError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.CannotAppendActionToJointPromise -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("CannotAppendActionToJointPromise"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("CannotAppendActionToJointPromise"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.CannotReturnJointPromise -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("CannotReturnJointPromise"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("CannotReturnJointPromise"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPromiseResultIndex -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -124,7 +121,7 @@ object HostErrorSerializer : KSerializer<HostError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.MemoryAccessViolation -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("MemoryAccessViolation"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("MemoryAccessViolation"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidReceiptIndex -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -139,13 +136,13 @@ object HostErrorSerializer : KSerializer<HostError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidAccountId -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidAccountId"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidAccountId"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidMethodName -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidMethodName"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidMethodName"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPublicKey -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidPublicKey"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidPublicKey"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.HostError.ProhibitedInView -> {
                     val map = mutableMapOf<String, JsonElement>()

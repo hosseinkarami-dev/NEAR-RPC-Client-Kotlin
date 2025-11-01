@@ -44,11 +44,8 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
         element("ShardStuck", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: InvalidTxError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidAccessKeyError -> {
@@ -88,7 +85,7 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidSignature -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidSignature"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidSignature"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.NotEnoughBalance -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -103,13 +100,13 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.CostOverflow -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("CostOverflow"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("CostOverflow"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidChain -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidChain"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidChain"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.Expired -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Expired"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Expired"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.ActionsValidation -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -124,7 +121,7 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidTransactionVersion -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidTransactionVersion"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InvalidTransactionVersion"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.StorageError -> {
                     val map = mutableMapOf<String, JsonElement>()

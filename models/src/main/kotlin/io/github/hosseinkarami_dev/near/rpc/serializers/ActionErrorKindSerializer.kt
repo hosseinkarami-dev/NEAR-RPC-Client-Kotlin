@@ -49,11 +49,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
         element("GlobalContractDoesNotExist", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: ActionErrorKind) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists -> {
@@ -153,7 +150,7 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidSignature -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("DelegateActionInvalidSignature"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("DelegateActionInvalidSignature"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionSenderDoesNotMatchTxReceiver -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -162,7 +159,7 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionExpired -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("DelegateActionExpired"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("DelegateActionExpired"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionAccessKeyError -> {
                     val map = mutableMapOf<String, JsonElement>()

@@ -47,11 +47,8 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
         element("data_changes_by_sync_checkpoint", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: RpcStateChangesInBlockByTypeRequest) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AccountChangesByBlockId -> {

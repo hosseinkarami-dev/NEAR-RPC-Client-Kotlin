@@ -43,15 +43,12 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
         element("DeterministicStateInitValueLengthExceeded", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: ActionsValidationError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DeleteActionMustBeFinal -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("DeleteActionMustBeFinal"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("DeleteActionMustBeFinal"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.TotalPrepaidGasExceeded -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -78,7 +75,7 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.IntegerOverflow -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("IntegerOverflow"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("IntegerOverflow"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.InvalidAccountId -> {
                     val map = mutableMapOf<String, JsonElement>()
@@ -111,10 +108,10 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
                     jsonEncoder.encodeJsonElement(payload)
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.FunctionCallZeroAttachedGas -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("FunctionCallZeroAttachedGas"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("FunctionCallZeroAttachedGas"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DelegateActionMustBeOnlyOne -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("DelegateActionMustBeOnlyOne"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("DelegateActionMustBeOnlyOne"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.UnsupportedProtocolFeature -> {
                     val map = mutableMapOf<String, JsonElement>()

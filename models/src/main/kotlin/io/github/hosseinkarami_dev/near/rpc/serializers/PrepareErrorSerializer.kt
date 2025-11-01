@@ -37,45 +37,42 @@ object PrepareErrorSerializer : KSerializer<PrepareError> {
         element("TooManyTableElements", serializer<JsonElement>().descriptor)
     }
 
-    // --- helper functions ---
-    private fun <T> tryDecode(json: Json, serExpr: KSerializer<T>, elem: JsonElement): T = json.decodeFromJsonElement(serExpr, elem)
-
     override fun serialize(encoder: Encoder, value: PrepareError) {
-        if (encoder is JsonEncoder) {
+         if (encoder is JsonEncoder) {
             val jsonEncoder = encoder
             when (value) {
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Serialization -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Serialization"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Serialization"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Deserialization -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Deserialization"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Deserialization"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.InternalMemoryDeclared -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("InternalMemoryDeclared"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("InternalMemoryDeclared"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.GasInstrumentation -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("GasInstrumentation"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("GasInstrumentation"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.StackHeightInstrumentation -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("StackHeightInstrumentation"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("StackHeightInstrumentation"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Instantiate -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Instantiate"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Instantiate"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Memory -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("Memory"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("Memory"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyFunctions -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyFunctions"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyFunctions"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyLocals -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyLocals"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyLocals"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyTables -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyTables"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyTables"))
                 }
                 is io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyTableElements -> {
-                    jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyTableElements"))
+                   jsonEncoder.encodeJsonElement(JsonPrimitive("TooManyTableElements"))
                 }
             }
             return
