@@ -69,4 +69,3 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     testImplementation(kotlin("test"))
 }
-

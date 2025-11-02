@@ -110,6 +110,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 
 public class NearClient(
   private val httpClient: HttpClient,
@@ -123,20 +124,20 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_changes (method: post) — operationId: EXPERIMENTAL_changes
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest` (required).
+   * @param rpcStateChangesInBlockByTypeRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest` (required).
    * @return Response: `RpcResponse<RpcStateChangesInBlockResponse>`.
    */
   @Deprecated(
     message = "[Deprecated] Returns changes for a given account, contract or contract code for given block height or hash. Consider using changes instead. — deprecated.",
-    replaceWith = ReplaceWith("changes(params)"),
+    replaceWith = ReplaceWith("changes(rpcStateChangesInBlockByTypeRequest)"),
     level = DeprecationLevel.WARNING,
   )
-  public suspend fun experimentalChanges(params: RpcStateChangesInBlockByTypeRequest): RpcResponse<RpcStateChangesInBlockResponse> {
+  public suspend fun experimentalChanges(rpcStateChangesInBlockByTypeRequest: RpcStateChangesInBlockByTypeRequest): RpcResponse<RpcStateChangesInBlockResponse> {
     val request = JsonRpcRequestForExperimentalChanges(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalChanges.Method.EXPERIMENTAL_CHANGES,
-      params = params
+      params = rpcStateChangesInBlockByTypeRequest
     )
 
     try {
@@ -146,15 +147,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -163,20 +178,20 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_changes_in_block (method: post) — operationId: EXPERIMENTAL_changes_in_block
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest` (required).
+   * @param rpcStateChangesInBlockRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest` (required).
    * @return Response: `RpcResponse<RpcStateChangesInBlockByTypeResponse>`.
    */
   @Deprecated(
     message = "[Deprecated] Returns changes in block for given block height or hash over all transactions for all the types. Includes changes like account_touched, access_key_touched, data_touched, contract_code_touched. Consider using block_effects instead — deprecated.",
-    replaceWith = ReplaceWith("blockEffects(params)"),
+    replaceWith = ReplaceWith("blockEffects(rpcStateChangesInBlockRequest)"),
     level = DeprecationLevel.WARNING,
   )
-  public suspend fun experimentalChangesInBlock(params: RpcStateChangesInBlockRequest): RpcResponse<RpcStateChangesInBlockByTypeResponse> {
+  public suspend fun experimentalChangesInBlock(rpcStateChangesInBlockRequest: RpcStateChangesInBlockRequest): RpcResponse<RpcStateChangesInBlockByTypeResponse> {
     val request = JsonRpcRequestForExperimentalChangesInBlock(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalChangesInBlock.Method.EXPERIMENTAL_CHANGES_IN_BLOCK,
-      params = params
+      params = rpcStateChangesInBlockRequest
     )
 
     try {
@@ -186,15 +201,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -203,15 +232,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_congestion_level (method: post) — operationId: EXPERIMENTAL_congestion_level
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest` (required).
+   * @param rpcCongestionLevelRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest` (required).
    * @return Response: `RpcResponse<RpcCongestionLevelResponse>`.
    */
-  public suspend fun experimentalCongestionLevel(params: RpcCongestionLevelRequest): RpcResponse<RpcCongestionLevelResponse> {
+  public suspend fun experimentalCongestionLevel(rpcCongestionLevelRequest: RpcCongestionLevelRequest): RpcResponse<RpcCongestionLevelResponse> {
     val request = JsonRpcRequestForExperimentalCongestionLevel(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalCongestionLevel.Method.EXPERIMENTAL_CONGESTION_LEVEL,
-      params = params
+      params = rpcCongestionLevelRequest
     )
 
     try {
@@ -221,15 +250,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -238,7 +281,7 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_genesis_config (method: post) — operationId: EXPERIMENTAL_genesis_config
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<GenesisConfig>`.
    */
   @Deprecated(
@@ -260,15 +303,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForGenesisConfigAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForGenesisConfigAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForGenesisConfigAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForGenesisConfigAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForGenesisConfigAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForGenesisConfigAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -277,15 +334,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_light_client_block_proof (method: post) — operationId: EXPERIMENTAL_light_client_block_proof
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest` (required).
+   * @param rpcLightClientBlockProofRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest` (required).
    * @return Response: `RpcResponse<RpcLightClientBlockProofResponse>`.
    */
-  public suspend fun experimentalLightClientBlockProof(params: RpcLightClientBlockProofRequest): RpcResponse<RpcLightClientBlockProofResponse> {
+  public suspend fun experimentalLightClientBlockProof(rpcLightClientBlockProofRequest: RpcLightClientBlockProofRequest): RpcResponse<RpcLightClientBlockProofResponse> {
     val request = JsonRpcRequestForExperimentalLightClientBlockProof(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalLightClientBlockProof.Method.EXPERIMENTAL_LIGHT_CLIENT_BLOCK_PROOF,
-      params = params
+      params = rpcLightClientBlockProofRequest
     )
 
     try {
@@ -295,15 +352,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -312,15 +383,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_light_client_proof (method: post) — operationId: EXPERIMENTAL_light_client_proof
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest` (required).
+   * @param rpcLightClientExecutionProofRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest` (required).
    * @return Response: `RpcResponse<RpcLightClientExecutionProofResponse>`.
    */
-  public suspend fun experimentalLightClientProof(params: RpcLightClientExecutionProofRequest): RpcResponse<RpcLightClientExecutionProofResponse> {
+  public suspend fun experimentalLightClientProof(rpcLightClientExecutionProofRequest: RpcLightClientExecutionProofRequest): RpcResponse<RpcLightClientExecutionProofResponse> {
     val request = JsonRpcRequestForExperimentalLightClientProof(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalLightClientProof.Method.EXPERIMENTAL_LIGHT_CLIENT_PROOF,
-      params = params
+      params = rpcLightClientExecutionProofRequest
     )
 
     try {
@@ -330,15 +401,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -347,20 +432,20 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_maintenance_windows (method: post) — operationId: EXPERIMENTAL_maintenance_windows
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest` (required).
+   * @param rpcMaintenanceWindowsRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest` (required).
    * @return Response: `RpcResponse<List<RangeOfUint64>>`.
    */
   @Deprecated(
     message = "[Deprecated] Returns the future windows for maintenance in current epoch for the specified account. In the maintenance windows, the node will not be block producer or chunk producer. Consider using maintenance_windows instead. — deprecated.",
-    replaceWith = ReplaceWith("maintenanceWindows(params)"),
+    replaceWith = ReplaceWith("maintenanceWindows(rpcMaintenanceWindowsRequest)"),
     level = DeprecationLevel.WARNING,
   )
-  public suspend fun experimentalMaintenanceWindows(params: RpcMaintenanceWindowsRequest): RpcResponse<List<RangeOfUint64>> {
+  public suspend fun experimentalMaintenanceWindows(rpcMaintenanceWindowsRequest: RpcMaintenanceWindowsRequest): RpcResponse<List<RangeOfUint64>> {
     val request = JsonRpcRequestForExperimentalMaintenanceWindows(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalMaintenanceWindows.Method.EXPERIMENTAL_MAINTENANCE_WINDOWS,
-      params = params
+      params = rpcMaintenanceWindowsRequest
     )
 
     try {
@@ -370,15 +455,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -387,15 +486,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_protocol_config (method: post) — operationId: EXPERIMENTAL_protocol_config
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest` (required).
+   * @param rpcProtocolConfigRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest` (required).
    * @return Response: `RpcResponse<RpcProtocolConfigResponse>`.
    */
-  public suspend fun experimentalProtocolConfig(params: RpcProtocolConfigRequest): RpcResponse<RpcProtocolConfigResponse> {
+  public suspend fun experimentalProtocolConfig(rpcProtocolConfigRequest: RpcProtocolConfigRequest): RpcResponse<RpcProtocolConfigResponse> {
     val request = JsonRpcRequestForExperimentalProtocolConfig(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalProtocolConfig.Method.EXPERIMENTAL_PROTOCOL_CONFIG,
-      params = params
+      params = rpcProtocolConfigRequest
     )
 
     try {
@@ -405,15 +504,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -422,15 +535,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_receipt (method: post) — operationId: EXPERIMENTAL_receipt
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptRequest` (required).
+   * @param rpcReceiptRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptRequest` (required).
    * @return Response: `RpcResponse<RpcReceiptResponse>`.
    */
-  public suspend fun experimentalReceipt(params: RpcReceiptRequest): RpcResponse<RpcReceiptResponse> {
+  public suspend fun experimentalReceipt(rpcReceiptRequest: RpcReceiptRequest): RpcResponse<RpcReceiptResponse> {
     val request = JsonRpcRequestForExperimentalReceipt(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalReceipt.Method.EXPERIMENTAL_RECEIPT,
-      params = params
+      params = rpcReceiptRequest
     )
 
     try {
@@ -440,15 +553,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcReceiptResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcReceiptResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcReceiptResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcReceiptResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcReceiptResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcReceiptResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -457,7 +584,7 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_split_storage_info (method: post) — operationId: EXPERIMENTAL_split_storage_info
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcSplitStorageInfoResponse>`.
    */
   public suspend fun experimentalSplitStorageInfo(): RpcResponse<RpcSplitStorageInfoResponse> {
@@ -475,15 +602,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -492,15 +633,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_tx_status (method: post) — operationId: EXPERIMENTAL_tx_status
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest` (required).
+   * @param rpcTransactionStatusRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest` (required).
    * @return Response: `RpcResponse<RpcTransactionResponse>`.
    */
-  public suspend fun experimentalTxStatus(params: RpcTransactionStatusRequest): RpcResponse<RpcTransactionResponse> {
+  public suspend fun experimentalTxStatus(rpcTransactionStatusRequest: RpcTransactionStatusRequest): RpcResponse<RpcTransactionResponse> {
     val request = JsonRpcRequestForExperimentalTxStatus(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalTxStatus.Method.EXPERIMENTAL_TX_STATUS,
-      params = params
+      params = rpcTransactionStatusRequest
     )
 
     try {
@@ -510,15 +651,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -527,15 +682,15 @@ public class NearClient(
    *
    * @see path: /EXPERIMENTAL_validators_ordered (method: post) — operationId: EXPERIMENTAL_validators_ordered
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest` (required).
+   * @param rpcValidatorsOrderedRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest` (required).
    * @return Response: `RpcResponse<List<ValidatorStakeView>>`.
    */
-  public suspend fun experimentalValidatorsOrdered(params: RpcValidatorsOrderedRequest): RpcResponse<List<ValidatorStakeView>> {
+  public suspend fun experimentalValidatorsOrdered(rpcValidatorsOrderedRequest: RpcValidatorsOrderedRequest): RpcResponse<List<ValidatorStakeView>> {
     val request = JsonRpcRequestForExperimentalValidatorsOrdered(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForExperimentalValidatorsOrdered.Method.EXPERIMENTAL_VALIDATORS_ORDERED,
-      params = params
+      params = rpcValidatorsOrderedRequest
     )
 
     try {
@@ -545,15 +700,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -562,15 +731,15 @@ public class NearClient(
    *
    * @see path: /block (method: post) — operationId: block
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest` (required).
+   * @param rpcBlockRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest` (required).
    * @return Response: `RpcResponse<RpcBlockResponse>`.
    */
-  public suspend fun block(params: RpcBlockRequest): RpcResponse<RpcBlockResponse> {
+  public suspend fun block(rpcBlockRequest: RpcBlockRequest): RpcResponse<RpcBlockResponse> {
     val request = JsonRpcRequestForBlock(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForBlock.Method.BLOCK,
-      params = params
+      params = rpcBlockRequest
     )
 
     try {
@@ -580,15 +749,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcBlockResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcBlockResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcBlockResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcBlockResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -597,15 +780,15 @@ public class NearClient(
    *
    * @see path: /block_effects (method: post) — operationId: block_effects
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest` (required).
+   * @param rpcStateChangesInBlockRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest` (required).
    * @return Response: `RpcResponse<RpcStateChangesInBlockByTypeResponse>`.
    */
-  public suspend fun blockEffects(params: RpcStateChangesInBlockRequest): RpcResponse<RpcStateChangesInBlockByTypeResponse> {
+  public suspend fun blockEffects(rpcStateChangesInBlockRequest: RpcStateChangesInBlockRequest): RpcResponse<RpcStateChangesInBlockByTypeResponse> {
     val request = JsonRpcRequestForBlockEffects(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForBlockEffects.Method.BLOCK_EFFECTS,
-      params = params
+      params = rpcStateChangesInBlockRequest
     )
 
     try {
@@ -615,15 +798,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -632,20 +829,20 @@ public class NearClient(
    *
    * @see path: /broadcast_tx_async (method: post) — operationId: broadcast_tx_async
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
+   * @param rpcSendTransactionRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
    * @return Response: `RpcResponse<CryptoHash>`.
    */
   @Deprecated(
     message = "[Deprecated] Sends a transaction and immediately returns transaction hash. Consider using send_tx instead. — deprecated.",
-    replaceWith = ReplaceWith("sendTx(params)"),
+    replaceWith = ReplaceWith("sendTx(rpcSendTransactionRequest)"),
     level = DeprecationLevel.WARNING,
   )
-  public suspend fun broadcastTxAsync(params: RpcSendTransactionRequest): RpcResponse<CryptoHash> {
+  public suspend fun broadcastTxAsync(rpcSendTransactionRequest: RpcSendTransactionRequest): RpcResponse<CryptoHash> {
     val request = JsonRpcRequestForBroadcastTxAsync(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForBroadcastTxAsync.Method.BROADCAST_TX_ASYNC,
-      params = params
+      params = rpcSendTransactionRequest
     )
 
     try {
@@ -655,15 +852,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForCryptoHashAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForCryptoHashAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForCryptoHashAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForCryptoHashAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForCryptoHashAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForCryptoHashAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -672,20 +883,20 @@ public class NearClient(
    *
    * @see path: /broadcast_tx_commit (method: post) — operationId: broadcast_tx_commit
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
+   * @param rpcSendTransactionRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
    * @return Response: `RpcResponse<RpcTransactionResponse>`.
    */
   @Deprecated(
     message = "[Deprecated] Sends a transaction and waits until transaction is fully complete. (Has a 10 second timeout). Consider using send_tx instead. — deprecated.",
-    replaceWith = ReplaceWith("sendTx(params)"),
+    replaceWith = ReplaceWith("sendTx(rpcSendTransactionRequest)"),
     level = DeprecationLevel.WARNING,
   )
-  public suspend fun broadcastTxCommit(params: RpcSendTransactionRequest): RpcResponse<RpcTransactionResponse> {
+  public suspend fun broadcastTxCommit(rpcSendTransactionRequest: RpcSendTransactionRequest): RpcResponse<RpcTransactionResponse> {
     val request = JsonRpcRequestForBroadcastTxCommit(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForBroadcastTxCommit.Method.BROADCAST_TX_COMMIT,
-      params = params
+      params = rpcSendTransactionRequest
     )
 
     try {
@@ -695,15 +906,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -712,15 +937,15 @@ public class NearClient(
    *
    * @see path: /changes (method: post) — operationId: changes
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest` (required).
+   * @param rpcStateChangesInBlockByTypeRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest` (required).
    * @return Response: `RpcResponse<RpcStateChangesInBlockResponse>`.
    */
-  public suspend fun changes(params: RpcStateChangesInBlockByTypeRequest): RpcResponse<RpcStateChangesInBlockResponse> {
+  public suspend fun changes(rpcStateChangesInBlockByTypeRequest: RpcStateChangesInBlockByTypeRequest): RpcResponse<RpcStateChangesInBlockResponse> {
     val request = JsonRpcRequestForChanges(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForChanges.Method.CHANGES,
-      params = params
+      params = rpcStateChangesInBlockByTypeRequest
     )
 
     try {
@@ -730,15 +955,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -747,15 +986,15 @@ public class NearClient(
    *
    * @see path: /chunk (method: post) — operationId: chunk
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcChunkRequest` (required).
+   * @param rpcChunkRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcChunkRequest` (required).
    * @return Response: `RpcResponse<RpcChunkResponse>`.
    */
-  public suspend fun chunk(params: RpcChunkRequest): RpcResponse<RpcChunkResponse> {
+  public suspend fun chunk(rpcChunkRequest: RpcChunkRequest): RpcResponse<RpcChunkResponse> {
     val request = JsonRpcRequestForChunk(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForChunk.Method.CHUNK,
-      params = params
+      params = rpcChunkRequest
     )
 
     try {
@@ -765,15 +1004,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcChunkResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcChunkResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcChunkResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcChunkResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcChunkResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcChunkResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -782,7 +1035,7 @@ public class NearClient(
    *
    * @see path: /client_config (method: post) — operationId: client_config
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcClientConfigResponse>`.
    */
   public suspend fun clientConfig(): RpcResponse<RpcClientConfigResponse> {
@@ -800,15 +1053,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcClientConfigResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcClientConfigResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcClientConfigResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcClientConfigResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcClientConfigResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcClientConfigResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -817,15 +1084,15 @@ public class NearClient(
    *
    * @see path: /gas_price (method: post) — operationId: gas_price
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest` (required).
+   * @param rpcGasPriceRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest` (required).
    * @return Response: `RpcResponse<RpcGasPriceResponse>`.
    */
-  public suspend fun gasPrice(params: RpcGasPriceRequest): RpcResponse<RpcGasPriceResponse> {
+  public suspend fun gasPrice(rpcGasPriceRequest: RpcGasPriceRequest): RpcResponse<RpcGasPriceResponse> {
     val request = JsonRpcRequestForGasPrice(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForGasPrice.Method.GAS_PRICE,
-      params = params
+      params = rpcGasPriceRequest
     )
 
     try {
@@ -835,15 +1102,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcGasPriceResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcGasPriceResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcGasPriceResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcGasPriceResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcGasPriceResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcGasPriceResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -852,7 +1133,7 @@ public class NearClient(
    *
    * @see path: /genesis_config (method: post) — operationId: genesis_config
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<GenesisConfig>`.
    */
   public suspend fun genesisConfig(): RpcResponse<GenesisConfig> {
@@ -870,15 +1151,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForGenesisConfigAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForGenesisConfigAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForGenesisConfigAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForGenesisConfigAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForGenesisConfigAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForGenesisConfigAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -887,7 +1182,7 @@ public class NearClient(
    *
    * @see path: /health (method: post) — operationId: health
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcHealthResponse?>`.
    */
   public suspend fun health(): RpcResponse<RpcHealthResponse?> {
@@ -905,15 +1200,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForNullableRpcHealthResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForNullableRpcHealthResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -922,15 +1231,15 @@ public class NearClient(
    *
    * @see path: /light_client_proof (method: post) — operationId: light_client_proof
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest` (required).
+   * @param rpcLightClientExecutionProofRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest` (required).
    * @return Response: `RpcResponse<RpcLightClientExecutionProofResponse>`.
    */
-  public suspend fun lightClientProof(params: RpcLightClientExecutionProofRequest): RpcResponse<RpcLightClientExecutionProofResponse> {
+  public suspend fun lightClientProof(rpcLightClientExecutionProofRequest: RpcLightClientExecutionProofRequest): RpcResponse<RpcLightClientExecutionProofResponse> {
     val request = JsonRpcRequestForLightClientProof(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForLightClientProof.Method.LIGHT_CLIENT_PROOF,
-      params = params
+      params = rpcLightClientExecutionProofRequest
     )
 
     try {
@@ -940,15 +1249,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -957,15 +1280,15 @@ public class NearClient(
    *
    * @see path: /maintenance_windows (method: post) — operationId: maintenance_windows
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest` (required).
+   * @param rpcMaintenanceWindowsRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest` (required).
    * @return Response: `RpcResponse<List<RangeOfUint64>>`.
    */
-  public suspend fun maintenanceWindows(params: RpcMaintenanceWindowsRequest): RpcResponse<List<RangeOfUint64>> {
+  public suspend fun maintenanceWindows(rpcMaintenanceWindowsRequest: RpcMaintenanceWindowsRequest): RpcResponse<List<RangeOfUint64>> {
     val request = JsonRpcRequestForMaintenanceWindows(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForMaintenanceWindows.Method.MAINTENANCE_WINDOWS,
-      params = params
+      params = rpcMaintenanceWindowsRequest
     )
 
     try {
@@ -975,15 +1298,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -992,7 +1329,7 @@ public class NearClient(
    *
    * @see path: /network_info (method: post) — operationId: network_info
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcNetworkInfoResponse>`.
    */
   public suspend fun networkInfo(): RpcResponse<RpcNetworkInfoResponse> {
@@ -1010,15 +1347,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -1027,15 +1378,15 @@ public class NearClient(
    *
    * @see path: /next_light_client_block (method: post) — operationId: next_light_client_block
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest` (required).
+   * @param rpcLightClientNextBlockRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest` (required).
    * @return Response: `RpcResponse<RpcLightClientNextBlockResponse>`.
    */
-  public suspend fun nextLightClientBlock(params: RpcLightClientNextBlockRequest): RpcResponse<RpcLightClientNextBlockResponse> {
+  public suspend fun nextLightClientBlock(rpcLightClientNextBlockRequest: RpcLightClientNextBlockRequest): RpcResponse<RpcLightClientNextBlockResponse> {
     val request = JsonRpcRequestForNextLightClientBlock(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForNextLightClientBlock.Method.NEXT_LIGHT_CLIENT_BLOCK,
-      params = params
+      params = rpcLightClientNextBlockRequest
     )
 
     try {
@@ -1045,15 +1396,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -1074,15 +1439,15 @@ public class NearClient(
    *
    * @see path: /query (method: post) — operationId: query
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest` (required).
+   * @param rpcQueryRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest` (required).
    * @return Response: `RpcResponse<RpcQueryResponse>`.
    */
-  public suspend fun query(params: RpcQueryRequest): RpcResponse<RpcQueryResponse> {
+  public suspend fun query(rpcQueryRequest: RpcQueryRequest): RpcResponse<RpcQueryResponse> {
     val request = JsonRpcRequestForQuery(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForQuery.Method.QUERY,
-      params = params
+      params = rpcQueryRequest
     )
 
     try {
@@ -1092,15 +1457,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcQueryResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcQueryResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcQueryResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcQueryResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcQueryResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcQueryResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -1109,15 +1488,15 @@ public class NearClient(
    *
    * @see path: /send_tx (method: post) — operationId: send_tx
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
+   * @param rpcSendTransactionRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest` (required).
    * @return Response: `RpcResponse<RpcTransactionResponse>`.
    */
-  public suspend fun sendTx(params: RpcSendTransactionRequest): RpcResponse<RpcTransactionResponse> {
+  public suspend fun sendTx(rpcSendTransactionRequest: RpcSendTransactionRequest): RpcResponse<RpcTransactionResponse> {
     val request = JsonRpcRequestForSendTx(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForSendTx.Method.SEND_TX,
-      params = params
+      params = rpcSendTransactionRequest
     )
 
     try {
@@ -1127,15 +1506,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -1144,7 +1537,7 @@ public class NearClient(
    *
    * @see path: /status (method: post) — operationId: status
    *
-   * @param params This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
+   * @param unit This method does not require params; the generator will send a default instance of the params wrapper in the JSON-RPC request.
    * @return Response: `RpcResponse<RpcStatusResponse>`.
    */
   public suspend fun status(): RpcResponse<RpcStatusResponse> {
@@ -1162,15 +1555,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcStatusResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcStatusResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcStatusResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcStatusResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcStatusResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcStatusResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -1179,15 +1586,15 @@ public class NearClient(
    *
    * @see path: /tx (method: post) — operationId: tx
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest` (required).
+   * @param rpcTransactionStatusRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest` (required).
    * @return Response: `RpcResponse<RpcTransactionResponse>`.
    */
-  public suspend fun tx(params: RpcTransactionStatusRequest): RpcResponse<RpcTransactionResponse> {
+  public suspend fun tx(rpcTransactionStatusRequest: RpcTransactionStatusRequest): RpcResponse<RpcTransactionResponse> {
     val request = JsonRpcRequestForTx(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForTx.Method.TX,
-      params = params
+      params = rpcTransactionStatusRequest
     )
 
     try {
@@ -1197,15 +1604,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcTransactionResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 
@@ -1214,15 +1635,15 @@ public class NearClient(
    *
    * @see path: /validators (method: post) — operationId: validators
    *
-   * @param params Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest` (required).
+   * @param rpcValidatorRequest Request parameters: `io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest` (required).
    * @return Response: `RpcResponse<RpcValidatorResponse>`.
    */
-  public suspend fun validators(params: RpcValidatorRequest): RpcResponse<RpcValidatorResponse> {
+  public suspend fun validators(rpcValidatorRequest: RpcValidatorRequest): RpcResponse<RpcValidatorResponse> {
     val request = JsonRpcRequestForValidators(
       id = nextId(),
       jsonrpc = "2.0",
       method = JsonRpcRequestForValidators.Method.VALIDATORS,
-      params = params
+      params = rpcValidatorRequest
     )
 
     try {
@@ -1232,15 +1653,29 @@ public class NearClient(
     }
 
     val respBody = httpResponse.bodyAsText()
-    val decoded = json.decodeFromString(JsonRpcResponseForRpcValidatorResponseAndRpcError.serializer(), respBody)
 
-    return when (decoded) {
-      is JsonRpcResponseForRpcValidatorResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
-      is JsonRpcResponseForRpcValidatorResponseAndRpcError.Error -> RpcResponse.Failure(decoded.error)
+    try {
+      val decoded = json.decodeFromString(JsonRpcResponseForRpcValidatorResponseAndRpcError.serializer(), respBody)
+
+      return when (decoded) {
+        is JsonRpcResponseForRpcValidatorResponseAndRpcError.Result -> RpcResponse.Success(decoded.result)
+        is JsonRpcResponseForRpcValidatorResponseAndRpcError.Error -> RpcResponse.Failure(ErrorResult.Rpc(error = decoded.error))
+      }
+    } catch (serEx: Exception) {
+      try {
+        val root = json.parseToJsonElement(respBody).jsonObject
+        val resultEl = root["result"]
+        val hasInnerError = resultEl?.jsonObject?.containsKey("error") == true
+        if (resultEl != null && hasInnerError) {
+           val resultStr = resultEl.toString()
+           return RpcResponse.Failure(ErrorResult.UnknownError(resultStr))
+        }
+      } catch (_: Exception) { /* ignore parse error */ }
+      return RpcResponse.Failure(ErrorResult.UnknownError(serEx.message ?: "Unknown"))
     }
 
     } catch(e: Exception) {
-       return RpcResponse.Failure(localToRpcError(e, -1001L))
+       return RpcResponse.Failure(ErrorResult.UnknownError(e.message ?: "Unknown"))
     }
   }
 }

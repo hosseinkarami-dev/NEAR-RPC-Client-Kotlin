@@ -1,7 +1,8 @@
-package io.github.hosseinkarami_dev.near.rpc.generator
+package io.github.hosseinkarami_dev.near.rpc.generator.generators
 
+import io.github.hosseinkarami_dev.near.rpc.generator.SealedInfo
+import io.github.hosseinkarami_dev.near.rpc.generator.VariantInfo
 import java.io.File
-import java.lang.StringBuilder
 
 object SerializerGenerator {
     @JvmStatic

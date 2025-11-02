@@ -1,3 +1,5 @@
+package io.github.hosseinkarami_dev.near.rpc.generator.generators
+
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock

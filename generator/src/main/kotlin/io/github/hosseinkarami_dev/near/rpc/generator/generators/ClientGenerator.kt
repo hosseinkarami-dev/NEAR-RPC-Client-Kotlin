@@ -1,4 +1,4 @@
-package io.github.hosseinkarami_dev.near.rpc.generator
+package io.github.hosseinkarami_dev.near.rpc.generator.generators
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -12,6 +12,12 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
+import io.github.hosseinkarami_dev.near.rpc.generator.OpenApiSpec
+import io.github.hosseinkarami_dev.near.rpc.generator.Operation
+import io.github.hosseinkarami_dev.near.rpc.generator.Schema
+import io.github.hosseinkarami_dev.near.rpc.generator.camelCase
+import io.github.hosseinkarami_dev.near.rpc.generator.constantName
+import io.github.hosseinkarami_dev.near.rpc.generator.pascalCase
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -35,6 +41,7 @@ object ClientGenerator {
         val uuidClass = ClassName("java.util", "UUID")
 
         val rpcResponseClass = ClassName(clientPackage, "RpcResponse")
+        val errorResultClass = ClassName(clientPackage, "ErrorResult")
 
         val classBuilder = TypeSpec.classBuilder(clientClassName)
             .addModifiers(KModifier.PUBLIC)
@@ -104,6 +111,16 @@ object ClientGenerator {
             val paramsTypeName = if (hasParams) toTypeName(paramsTypeStr) else UNIT
             val paramsNullable = if (hasParams) paramsAreNullableFromOperation(op, spec) else true
 
+            // generate better parameter name from the params type string (e.g. RpcSendTransactionRequest -> rpcSendTransactionRequest)
+            fun paramNameFromType(typeStr: String?): String {
+                if (typeStr == null) return "params"
+                // remove generic wrappers like List<...>
+                val cleaned = typeStr.substringAfterLast('.').substringBefore('<').replace("?", "")
+                if (cleaned.isEmpty()) return "params"
+                return cleaned.replaceFirstChar { it.lowercaseChar() }
+            }
+            val paramName = paramNameFromType(paramsTypeStr)
+
             val funBuilder = FunSpec.builder(methodName)
                 .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
                 .returns(rpcResponseClass.parameterizedBy(resultTypeName))
@@ -112,13 +129,13 @@ object ClientGenerator {
                 if (paramsNullable) {
                     val nullableType = paramsTypeName.copy(nullable = true)
                     funBuilder.addParameter(
-                        ParameterSpec.builder("params", nullableType)
+                        ParameterSpec.builder(paramName, nullableType)
                             .defaultValue("null")
                             .build()
                     )
                 } else {
                     funBuilder.addParameter(
-                        ParameterSpec.builder("params", paramsTypeName).build()
+                        ParameterSpec.builder(paramName, paramsTypeName).build()
                     )
                 }
             }
@@ -137,10 +154,13 @@ object ClientGenerator {
                 paramsNullable -> "Request parameters (optional): `${paramsTypeStr}` — pass `null` or omit to send no params."
                 else -> "Request parameters: `${paramsTypeStr}` (required)."
             }
+
+            // update KDoc to reference the generated parameter name
             funBuilder.addKdoc(
-                "%L\n\n@see %L\n\n@param params %L\n@return Response: `%T`.\n",
+                "%L\n\n@see %L\n\n@param %L %L\n@return Response: `%T`.\n",
                 mainParts.joinToString("\n\n"),
                 seeLine,
+                paramName,
                 paramDesc,
                 rpcResponseClass.parameterizedBy(resultTypeName)
             )
@@ -162,7 +182,7 @@ object ClientGenerator {
                 val replaceExpr =
                     replacerRegex.find(replacerSource)?.groups?.get(1)?.value?.let { raw ->
                         val replacementMethod = raw.camelCase()
-                        "${replacementMethod}(params)"
+                        "${replacementMethod}(${paramName})"
                     }
 
                 val depBuilder = AnnotationSpec.builder(Deprecated::class)
@@ -192,7 +212,7 @@ object ClientGenerator {
             cb.addStatement("  method = %T.%L,", methodEnumClass, constantName)
 
             if (hasParams) {
-                cb.addStatement("  params = params")
+                cb.addStatement("  params = %L", paramName)
             } else {
                 // try to find the params schema ref name from the request wrapper; if present, generate a default
                 val paramsRefName = extractParamsSchemaRefName(op, spec)
@@ -232,28 +252,46 @@ object ClientGenerator {
             )
             cb.addStatement("}\n")
 
-            cb.addStatement("val respBody = httpResponse.bodyAsText()")
+            cb.addStatement("val respBody = httpResponse.bodyAsText()\n")
 
             // Use the exact response-wrapper schema referenced by the operation (modelsPackage + wrapper name)
+            // Surround decoding with its own try/catch to handle partial shapes (user requested)
+            cb.addStatement("try {")
             cb.addStatement(
-                "val decoded = json.decodeFromString(%T.serializer(), respBody)\n",
+                "  val decoded = json.decodeFromString(%T.serializer(), respBody)\n",
                 respWrapperClassName
             )
             // Map sealed variants to RpcResponse
-            cb.addStatement("return when (decoded) {")
+            cb.addStatement("  return when (decoded) {")
             cb.addStatement(
-                "  is %T.Result -> %T.Success(decoded.result)",
+                "    is %T.Result -> %T.Success(decoded.result)",
                 respWrapperClassName,
                 rpcResponseClass
             )
             cb.addStatement(
-                "  is %T.Error -> %T.Failure(decoded.error)",
+                "    is %T.Error -> %T.Failure(%T.Rpc(error = decoded.error))",
                 respWrapperClassName,
-                rpcResponseClass
+                rpcResponseClass,
+                errorResultClass
             )
+            cb.addStatement("  }")
+            cb.addStatement("} catch (serEx: Exception) {")
+            // try to parse respBody and see if there's result with error inside
+            cb.addStatement("  try {")
+            cb.addStatement("    val root = json.parseToJsonElement(respBody).jsonObject")
+            cb.addStatement("    val resultEl = root[\"result\"]")
+            cb.addStatement("    val hasInnerError = resultEl?.jsonObject?.containsKey(\"error\") == true")
+            cb.addStatement("    if (resultEl != null && hasInnerError) {")
+            cb.addStatement("       val resultStr = resultEl.toString()")
+            cb.addStatement("       return %T.Failure(%T.UnknownError(resultStr))", rpcResponseClass, errorResultClass)
+            cb.addStatement("    }")
+            cb.addStatement("  } catch (_: Exception) { /* ignore parse error */ }")
+            // if we couldn't handle it specially, return UnknownError with the serialization exception message
+            cb.addStatement("  return %T.Failure(%T.UnknownError(serEx.message ?: \"Unknown\"))", rpcResponseClass, errorResultClass)
             cb.addStatement("}\n")
+
             cb.addStatement("} catch(e: Exception) {")
-            cb.addStatement("   return RpcResponse.Failure(localToRpcError(e, -1001L))")
+            cb.addStatement("   return %T.Failure(%T.UnknownError(e.message ?: \"Unknown\"))", rpcResponseClass, errorResultClass)
             cb.addStatement("}")
 
             funBuilder.addCode(cb.build())
@@ -266,6 +304,7 @@ object ClientGenerator {
             .addImport("io.ktor.http", "ContentType", "contentType")
             .addImport("kotlinx.serialization.json", "Json")
             .addImport("kotlinx.serialization.json", "JsonObject")
+            .addImport("kotlinx.serialization.json", "jsonObject")
             .addImport("kotlinx.serialization.builtins", "serializer")
             .addImport("kotlinx.serialization.builtins", "ListSerializer")
             .addImport("io.ktor.client.statement", "bodyAsText")
@@ -605,8 +644,6 @@ object ClientGenerator {
             .removePrefix("JsonRpcRequest_for_")
             .removeSuffix("_and_RpcError")
 
-        // 2) detect & remove nullable variants (case-insensitive)
-        // covers: Nullable_, Nullable-, Nullable, nullable_, nullable-, etc.
         val nullablePrefixRegex = Regex("(?i)^(nullable[_\\-]?)")
         val isNullable = nullablePrefixRegex.containsMatchIn(wrapperName)
         wrapperName = wrapperName.replaceFirst(nullablePrefixRegex, "")
@@ -618,6 +655,7 @@ object ClientGenerator {
             wrapperName.replaceFirstChar { it.uppercaseChar() }
         } else {
             parts.joinToString("") { part ->
+
                 part.replaceFirstChar { it.uppercaseChar() }
             }
         }

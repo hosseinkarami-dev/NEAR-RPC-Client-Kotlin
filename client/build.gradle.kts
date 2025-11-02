@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-    id("org.jetbrains.kotlinx.kover") version "0.9.2"
+    id("org.jetbrains.kotlinx.kover") version "0.9.3"
 }
 
 java {
@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.kotlinx.cli)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
+    testImplementation(libs.ktor.client.mock)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
