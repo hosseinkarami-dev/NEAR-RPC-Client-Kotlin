@@ -1,6 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.fail
 import kotlinx.serialization.json.Json
@@ -31,7 +32,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKey.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKey.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKey.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKey: ${e.message}")
@@ -47,7 +48,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyCreationConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyCreationConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyCreationConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKeyCreationConfigView: ${e.message}")
@@ -63,7 +64,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyInfoView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyInfoView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyInfoView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKeyInfoView: ${e.message}")
@@ -79,7 +80,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyList.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyList.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyList.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKeyList: ${e.message}")
@@ -95,7 +96,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermission.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermission.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermission.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKeyPermission: ${e.message}")
@@ -111,7 +112,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKeyPermissionView: ${e.message}")
@@ -127,7 +128,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccessKeyView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccessKeyView: ${e.message}")
@@ -143,7 +144,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountCreationConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountCreationConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountCreationConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountCreationConfigView: ${e.message}")
@@ -159,7 +160,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountDataView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountDataView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountDataView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountDataView: ${e.message}")
@@ -175,7 +176,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountId.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountId.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountId.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountId: ${e.message}")
@@ -191,7 +192,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountIdValidityRulesVersion.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountIdValidityRulesVersion.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountIdValidityRulesVersion.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountIdValidityRulesVersion: ${e.message}")
@@ -207,7 +208,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountInfo: ${e.message}")
@@ -223,7 +224,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountView: ${e.message}")
@@ -239,7 +240,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountWithPublicKey.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AccountWithPublicKey.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AccountWithPublicKey.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AccountWithPublicKey: ${e.message}")
@@ -255,7 +256,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionCreationConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ActionCreationConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionCreationConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ActionCreationConfigView: ${e.message}")
@@ -271,7 +272,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ActionError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ActionError: ${e.message}")
@@ -287,7 +288,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ActionErrorKind: ${e.message}")
@@ -303,7 +304,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ActionView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ActionView: ${e.message}")
@@ -319,7 +320,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ActionsValidationError: ${e.message}")
@@ -335,7 +336,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AddKeyAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AddKeyAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AddKeyAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for AddKeyAction: ${e.message}")
@@ -351,7 +352,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BandwidthRequest: ${e.message}")
@@ -367,7 +368,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequestBitmap.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequestBitmap.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequestBitmap.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BandwidthRequestBitmap: ${e.message}")
@@ -383,7 +384,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequests.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequests.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequests.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BandwidthRequests: ${e.message}")
@@ -399,7 +400,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequestsV1.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequestsV1.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BandwidthRequestsV1.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BandwidthRequestsV1: ${e.message}")
@@ -415,7 +416,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockHeaderInnerLiteView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BlockHeaderInnerLiteView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockHeaderInnerLiteView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BlockHeaderInnerLiteView: ${e.message}")
@@ -431,7 +432,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockHeaderView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BlockHeaderView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockHeaderView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BlockHeaderView: ${e.message}")
@@ -447,7 +448,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockId.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BlockId.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockId.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BlockId: ${e.message}")
@@ -463,7 +464,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockStatusView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.BlockStatusView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.BlockStatusView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for BlockStatusView: ${e.message}")
@@ -479,7 +480,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CallResult.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CallResult.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CallResult.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CallResult: ${e.message}")
@@ -495,7 +496,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CatchupStatusView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CatchupStatusView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CatchupStatusView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CatchupStatusView: ${e.message}")
@@ -511,7 +512,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ChunkDistributionNetworkConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ChunkDistributionNetworkConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ChunkDistributionNetworkConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ChunkDistributionNetworkConfig: ${e.message}")
@@ -527,7 +528,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ChunkDistributionUris.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ChunkDistributionUris.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ChunkDistributionUris.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ChunkDistributionUris: ${e.message}")
@@ -543,7 +544,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ChunkHeaderView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ChunkHeaderView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ChunkHeaderView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ChunkHeaderView: ${e.message}")
@@ -559,7 +560,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CloudArchivalWriterConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CloudArchivalWriterConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CloudArchivalWriterConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CloudArchivalWriterConfig: ${e.message}")
@@ -575,7 +576,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CompilationError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CompilationError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CompilationError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CompilationError: ${e.message}")
@@ -591,7 +592,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CongestionControlConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CongestionControlConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CongestionControlConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CongestionControlConfigView: ${e.message}")
@@ -607,7 +608,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CongestionInfoView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CongestionInfoView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CongestionInfoView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CongestionInfoView: ${e.message}")
@@ -623,7 +624,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ContractCodeView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ContractCodeView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ContractCodeView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ContractCodeView: ${e.message}")
@@ -639,7 +640,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CostGasUsed.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CostGasUsed.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CostGasUsed.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CostGasUsed: ${e.message}")
@@ -655,7 +656,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CreateAccountAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CreateAccountAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CreateAccountAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CreateAccountAction: ${e.message}")
@@ -671,7 +672,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CryptoHash.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CryptoHash.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CryptoHash.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CryptoHash: ${e.message}")
@@ -687,7 +688,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CurrentEpochValidatorInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.CurrentEpochValidatorInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.CurrentEpochValidatorInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for CurrentEpochValidatorInfo: ${e.message}")
@@ -703,7 +704,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DataReceiptCreationConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DataReceiptCreationConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DataReceiptCreationConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DataReceiptCreationConfigView: ${e.message}")
@@ -719,7 +720,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DataReceiverView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DataReceiverView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DataReceiverView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DataReceiverView: ${e.message}")
@@ -735,7 +736,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DelegateAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DelegateAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DelegateAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DelegateAction: ${e.message}")
@@ -751,7 +752,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeleteAccountAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeleteAccountAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeleteAccountAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeleteAccountAction: ${e.message}")
@@ -767,7 +768,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeleteKeyAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeleteKeyAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeleteKeyAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeleteKeyAction: ${e.message}")
@@ -783,7 +784,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeployContractAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeployContractAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeployContractAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeployContractAction: ${e.message}")
@@ -799,7 +800,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeployGlobalContractAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeployGlobalContractAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeployGlobalContractAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeployGlobalContractAction: ${e.message}")
@@ -815,7 +816,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DetailedDebugStatus.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DetailedDebugStatus.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DetailedDebugStatus.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DetailedDebugStatus: ${e.message}")
@@ -831,7 +832,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicAccountStateInit.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicAccountStateInit.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicAccountStateInit.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeterministicAccountStateInit: ${e.message}")
@@ -847,7 +848,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicAccountStateInitV1.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicAccountStateInitV1.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicAccountStateInitV1.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeterministicAccountStateInitV1: ${e.message}")
@@ -863,7 +864,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicStateInitAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicStateInitAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeterministicStateInitAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeterministicStateInitAction: ${e.message}")
@@ -879,7 +880,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Direction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.Direction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Direction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for Direction: ${e.message}")
@@ -895,7 +896,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DumpConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DumpConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DumpConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DumpConfig: ${e.message}")
@@ -911,7 +912,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DurationAsStdSchemaProvider.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DurationAsStdSchemaProvider.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DurationAsStdSchemaProvider.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DurationAsStdSchemaProvider: ${e.message}")
@@ -927,7 +928,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.EpochId.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.EpochId.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.EpochId.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for EpochId: ${e.message}")
@@ -943,7 +944,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.EpochSyncConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.EpochSyncConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.EpochSyncConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for EpochSyncConfig: ${e.message}")
@@ -959,7 +960,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionMetadataView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionMetadataView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionMetadataView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExecutionMetadataView: ${e.message}")
@@ -975,7 +976,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExecutionOutcomeView: ${e.message}")
@@ -991,7 +992,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeWithIdView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeWithIdView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeWithIdView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExecutionOutcomeWithIdView: ${e.message}")
@@ -1007,7 +1008,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExecutionStatusView: ${e.message}")
@@ -1023,7 +1024,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExtCostsConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExtCostsConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExtCostsConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExtCostsConfigView: ${e.message}")
@@ -1039,7 +1040,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExternalStorageConfig: ${e.message}")
@@ -1055,7 +1056,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ExternalStorageLocation: ${e.message}")
@@ -1071,7 +1072,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Fee.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.Fee.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Fee.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for Fee: ${e.message}")
@@ -1087,7 +1088,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionOutcomeView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionOutcomeView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionOutcomeView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FinalExecutionOutcomeView: ${e.message}")
@@ -1103,7 +1104,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionOutcomeWithReceiptView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionOutcomeWithReceiptView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionOutcomeWithReceiptView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FinalExecutionOutcomeWithReceiptView: ${e.message}")
@@ -1119,7 +1120,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FinalExecutionStatus: ${e.message}")
@@ -1135,7 +1136,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Finality.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.Finality.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Finality.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for Finality: ${e.message}")
@@ -1151,7 +1152,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionArgs.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FunctionArgs.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionArgs.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FunctionArgs: ${e.message}")
@@ -1167,7 +1168,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FunctionCallAction: ${e.message}")
@@ -1183,7 +1184,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FunctionCallError: ${e.message}")
@@ -1199,7 +1200,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallPermission.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallPermission.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.FunctionCallPermission.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for FunctionCallPermission: ${e.message}")
@@ -1215,7 +1216,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GCConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GCConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GCConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GCConfig: ${e.message}")
@@ -1231,7 +1232,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GasKeyView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GasKeyView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GasKeyView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GasKeyView: ${e.message}")
@@ -1247,7 +1248,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GenesisConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GenesisConfig: ${e.message}")
@@ -1263,7 +1264,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GenesisConfigRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GenesisConfigRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GenesisConfigRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GenesisConfigRequest: ${e.message}")
@@ -1279,7 +1280,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractDeployMode.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractDeployMode.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractDeployMode.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GlobalContractDeployMode: ${e.message}")
@@ -1295,7 +1296,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifier.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifier.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifier.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GlobalContractIdentifier: ${e.message}")
@@ -1311,7 +1312,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for GlobalContractIdentifierView: ${e.message}")
@@ -1327,7 +1328,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.HostError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.HostError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.HostError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for HostError: ${e.message}")
@@ -1343,7 +1344,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for InvalidAccessKeyError: ${e.message}")
@@ -1359,7 +1360,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for InvalidTxError: ${e.message}")
@@ -1375,7 +1376,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalChanges.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalChanges.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalChanges.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalChanges: ${e.message}")
@@ -1391,7 +1392,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalChangesInBlock.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalChangesInBlock.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalChangesInBlock.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalChangesInBlock: ${e.message}")
@@ -1407,7 +1408,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalCongestionLevel.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalCongestionLevel.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalCongestionLevel.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalCongestionLevel: ${e.message}")
@@ -1423,7 +1424,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalGenesisConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalGenesisConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalGenesisConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalGenesisConfig: ${e.message}")
@@ -1439,7 +1440,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalLightClientBlockProof.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalLightClientBlockProof.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalLightClientBlockProof.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalLightClientBlockProof: ${e.message}")
@@ -1455,7 +1456,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalLightClientProof.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalLightClientProof.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalLightClientProof.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalLightClientProof: ${e.message}")
@@ -1471,7 +1472,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalMaintenanceWindows.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalMaintenanceWindows.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalMaintenanceWindows.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalMaintenanceWindows: ${e.message}")
@@ -1487,7 +1488,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalProtocolConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalProtocolConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalProtocolConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalProtocolConfig: ${e.message}")
@@ -1503,7 +1504,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalReceipt.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalReceipt.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalReceipt.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalReceipt: ${e.message}")
@@ -1519,7 +1520,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalSplitStorageInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalSplitStorageInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalSplitStorageInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalSplitStorageInfo: ${e.message}")
@@ -1535,7 +1536,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalTxStatus.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalTxStatus.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalTxStatus.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalTxStatus: ${e.message}")
@@ -1551,7 +1552,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalValidatorsOrdered.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalValidatorsOrdered.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForExperimentalValidatorsOrdered.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForExperimentalValidatorsOrdered: ${e.message}")
@@ -1567,7 +1568,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlock.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlock.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlock.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForBlock: ${e.message}")
@@ -1583,7 +1584,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlockEffects.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlockEffects.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBlockEffects.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForBlockEffects: ${e.message}")
@@ -1599,7 +1600,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxAsync.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxAsync.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxAsync.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForBroadcastTxAsync: ${e.message}")
@@ -1615,7 +1616,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxCommit.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxCommit.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForBroadcastTxCommit.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForBroadcastTxCommit: ${e.message}")
@@ -1631,7 +1632,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForChanges.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForChanges.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForChanges.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForChanges: ${e.message}")
@@ -1647,7 +1648,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForChunk.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForChunk.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForChunk.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForChunk: ${e.message}")
@@ -1663,7 +1664,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForClientConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForClientConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForClientConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForClientConfig: ${e.message}")
@@ -1679,7 +1680,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForGasPrice.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForGasPrice.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForGasPrice.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForGasPrice: ${e.message}")
@@ -1695,7 +1696,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForGenesisConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForGenesisConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForGenesisConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForGenesisConfig: ${e.message}")
@@ -1711,7 +1712,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForHealth.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForHealth.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForHealth.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForHealth: ${e.message}")
@@ -1727,7 +1728,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForLightClientProof.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForLightClientProof.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForLightClientProof.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForLightClientProof: ${e.message}")
@@ -1743,7 +1744,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForMaintenanceWindows.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForMaintenanceWindows.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForMaintenanceWindows.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForMaintenanceWindows: ${e.message}")
@@ -1759,7 +1760,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForNetworkInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForNetworkInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForNetworkInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForNetworkInfo: ${e.message}")
@@ -1775,7 +1776,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForNextLightClientBlock.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForNextLightClientBlock.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForNextLightClientBlock.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForNextLightClientBlock: ${e.message}")
@@ -1791,7 +1792,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForQuery.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForQuery.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForQuery.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForQuery: ${e.message}")
@@ -1807,7 +1808,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForSendTx.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForSendTx.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForSendTx.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForSendTx: ${e.message}")
@@ -1823,7 +1824,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForStatus.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForStatus.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForStatus.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForStatus: ${e.message}")
@@ -1839,7 +1840,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForTx.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForTx.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForTx.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForTx: ${e.message}")
@@ -1855,7 +1856,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForValidators.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForValidators.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcRequestForValidators.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcRequestForValidators: ${e.message}")
@@ -1871,7 +1872,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForArrayOfRangeOfUint64AndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForArrayOfRangeOfUint64AndRpcError: ${e.message}")
@@ -1887,7 +1888,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForArrayOfValidatorStakeViewAndRpcError: ${e.message}")
@@ -1903,7 +1904,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForCryptoHashAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForCryptoHashAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForCryptoHashAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForCryptoHashAndRpcError: ${e.message}")
@@ -1919,7 +1920,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForGenesisConfigAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForGenesisConfigAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForGenesisConfigAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForGenesisConfigAndRpcError: ${e.message}")
@@ -1935,7 +1936,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForNullableRpcHealthResponseAndRpcError: ${e.message}")
@@ -1951,7 +1952,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcBlockResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcBlockResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcBlockResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcBlockResponseAndRpcError: ${e.message}")
@@ -1967,7 +1968,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcChunkResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcChunkResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcChunkResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcChunkResponseAndRpcError: ${e.message}")
@@ -1983,7 +1984,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcClientConfigResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcClientConfigResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcClientConfigResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcClientConfigResponseAndRpcError: ${e.message}")
@@ -1999,7 +2000,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcCongestionLevelResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcCongestionLevelResponseAndRpcError: ${e.message}")
@@ -2015,7 +2016,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcGasPriceResponseAndRpcError: ${e.message}")
@@ -2031,7 +2032,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcLightClientBlockProofResponseAndRpcError: ${e.message}")
@@ -2047,7 +2048,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcLightClientExecutionProofResponseAndRpcError: ${e.message}")
@@ -2063,7 +2064,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcLightClientNextBlockResponseAndRpcError: ${e.message}")
@@ -2079,7 +2080,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcNetworkInfoResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcNetworkInfoResponseAndRpcError: ${e.message}")
@@ -2095,7 +2096,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcProtocolConfigResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcProtocolConfigResponseAndRpcError: ${e.message}")
@@ -2111,7 +2112,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcQueryResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcQueryResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcQueryResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcQueryResponseAndRpcError: ${e.message}")
@@ -2127,7 +2128,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcReceiptResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcReceiptResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcReceiptResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcReceiptResponseAndRpcError: ${e.message}")
@@ -2143,7 +2144,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcSplitStorageInfoResponseAndRpcError: ${e.message}")
@@ -2159,7 +2160,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcError: ${e.message}")
@@ -2175,7 +2176,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcStateChangesInBlockResponseAndRpcError: ${e.message}")
@@ -2191,7 +2192,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStatusResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStatusResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcStatusResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcStatusResponseAndRpcError: ${e.message}")
@@ -2207,7 +2208,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcTransactionResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcTransactionResponseAndRpcError: ${e.message}")
@@ -2223,7 +2224,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcValidatorResponseAndRpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcValidatorResponseAndRpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcValidatorResponseAndRpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for JsonRpcResponseForRpcValidatorResponseAndRpcError: ${e.message}")
@@ -2239,7 +2240,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.KnownProducerView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.KnownProducerView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.KnownProducerView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for KnownProducerView: ${e.message}")
@@ -2255,7 +2256,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.LightClientBlockLiteView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.LightClientBlockLiteView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.LightClientBlockLiteView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for LightClientBlockLiteView: ${e.message}")
@@ -2271,7 +2272,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.LimitConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.LimitConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.LimitConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for LimitConfig: ${e.message}")
@@ -2287,7 +2288,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.LogSummaryStyle.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.LogSummaryStyle.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.LogSummaryStyle.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for LogSummaryStyle: ${e.message}")
@@ -2303,7 +2304,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MerklePathItem.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.MerklePathItem.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MerklePathItem.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for MerklePathItem: ${e.message}")
@@ -2319,7 +2320,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MethodResolveError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.MethodResolveError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MethodResolveError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for MethodResolveError: ${e.message}")
@@ -2335,7 +2336,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValue.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValue.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValue.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for MissingTrieValue: ${e.message}")
@@ -2351,7 +2352,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for MissingTrieValueContext: ${e.message}")
@@ -2367,7 +2368,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MutableConfigValue.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.MutableConfigValue.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.MutableConfigValue.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for MutableConfigValue: ${e.message}")
@@ -2383,7 +2384,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NearGas.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.NearGas.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NearGas.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for NearGas: ${e.message}")
@@ -2399,7 +2400,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NearToken.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.NearToken.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NearToken.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for NearToken: ${e.message}")
@@ -2415,7 +2416,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NetworkInfoView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.NetworkInfoView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NetworkInfoView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for NetworkInfoView: ${e.message}")
@@ -2431,7 +2432,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NextEpochValidatorInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.NextEpochValidatorInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NextEpochValidatorInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for NextEpochValidatorInfo: ${e.message}")
@@ -2447,7 +2448,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for NonDelegateAction: ${e.message}")
@@ -2463,7 +2464,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PeerId.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.PeerId.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PeerId.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for PeerId: ${e.message}")
@@ -2479,7 +2480,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PeerInfoView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.PeerInfoView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PeerInfoView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for PeerInfoView: ${e.message}")
@@ -2495,7 +2496,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PrepareError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.PrepareError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PrepareError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for PrepareError: ${e.message}")
@@ -2511,7 +2512,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ProtocolVersionCheckConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ProtocolVersionCheckConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ProtocolVersionCheckConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ProtocolVersionCheckConfig: ${e.message}")
@@ -2527,7 +2528,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PublicKey.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.PublicKey.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.PublicKey.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for PublicKey: ${e.message}")
@@ -2543,7 +2544,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RangeOfUint64.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RangeOfUint64.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RangeOfUint64.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RangeOfUint64: ${e.message}")
@@ -2559,7 +2560,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ReceiptEnumView: ${e.message}")
@@ -2575,7 +2576,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ReceiptValidationError: ${e.message}")
@@ -2591,7 +2592,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ReceiptView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ReceiptView: ${e.message}")
@@ -2607,7 +2608,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcBlockRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcBlockRequest: ${e.message}")
@@ -2623,7 +2624,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcBlockResponse: ${e.message}")
@@ -2639,7 +2640,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcChunkRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcChunkRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcChunkRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcChunkRequest: ${e.message}")
@@ -2655,7 +2656,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcChunkResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcChunkResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcChunkResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcChunkResponse: ${e.message}")
@@ -2671,7 +2672,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcClientConfigRequest: ${e.message}")
@@ -2687,7 +2688,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcClientConfigResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcClientConfigResponse: ${e.message}")
@@ -2703,7 +2704,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcCongestionLevelRequest: ${e.message}")
@@ -2719,7 +2720,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcCongestionLevelResponse: ${e.message}")
@@ -2735,7 +2736,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcError: ${e.message}")
@@ -2751,7 +2752,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcGasPriceRequest: ${e.message}")
@@ -2767,7 +2768,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcGasPriceResponse: ${e.message}")
@@ -2783,7 +2784,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcHealthRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcHealthRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcHealthRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcHealthRequest: ${e.message}")
@@ -2799,7 +2800,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcHealthResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcHealthResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcHealthResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcHealthResponse: ${e.message}")
@@ -2815,7 +2816,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcKnownProducer.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcKnownProducer.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcKnownProducer.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcKnownProducer: ${e.message}")
@@ -2831,7 +2832,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcLightClientBlockProofRequest: ${e.message}")
@@ -2847,7 +2848,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientBlockProofResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcLightClientBlockProofResponse: ${e.message}")
@@ -2863,7 +2864,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcLightClientExecutionProofRequest: ${e.message}")
@@ -2879,7 +2880,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcLightClientExecutionProofResponse: ${e.message}")
@@ -2895,7 +2896,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcLightClientNextBlockRequest: ${e.message}")
@@ -2911,7 +2912,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientNextBlockResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcLightClientNextBlockResponse: ${e.message}")
@@ -2927,7 +2928,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcMaintenanceWindowsRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcMaintenanceWindowsRequest: ${e.message}")
@@ -2943,7 +2944,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcNetworkInfoRequest: ${e.message}")
@@ -2959,7 +2960,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcNetworkInfoResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcNetworkInfoResponse: ${e.message}")
@@ -2975,7 +2976,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcPeerInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcPeerInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcPeerInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcPeerInfo: ${e.message}")
@@ -2991,7 +2992,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcProtocolConfigRequest: ${e.message}")
@@ -3007,7 +3008,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcProtocolConfigResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcProtocolConfigResponse: ${e.message}")
@@ -3023,7 +3024,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcQueryRequest: ${e.message}")
@@ -3039,7 +3040,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcQueryResponse: ${e.message}")
@@ -3055,7 +3056,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcReceiptRequest: ${e.message}")
@@ -3071,7 +3072,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcReceiptResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcReceiptResponse: ${e.message}")
@@ -3087,7 +3088,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcRequestValidationErrorKind: ${e.message}")
@@ -3103,7 +3104,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcSendTransactionRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcSendTransactionRequest: ${e.message}")
@@ -3119,7 +3120,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcSplitStorageInfoRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcSplitStorageInfoRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcSplitStorageInfoRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcSplitStorageInfoRequest: ${e.message}")
@@ -3135,7 +3136,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcSplitStorageInfoResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcSplitStorageInfoResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcSplitStorageInfoResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcSplitStorageInfoResponse: ${e.message}")
@@ -3151,7 +3152,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcStateChangesInBlockByTypeRequest: ${e.message}")
@@ -3167,7 +3168,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcStateChangesInBlockByTypeResponse: ${e.message}")
@@ -3183,7 +3184,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcStateChangesInBlockRequest: ${e.message}")
@@ -3199,7 +3200,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcStateChangesInBlockResponse: ${e.message}")
@@ -3215,7 +3216,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStatusRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcStatusRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStatusRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcStatusRequest: ${e.message}")
@@ -3231,7 +3232,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcStatusResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcStatusResponse: ${e.message}")
@@ -3247,7 +3248,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcTransactionResponse: ${e.message}")
@@ -3263,7 +3264,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcTransactionStatusRequest: ${e.message}")
@@ -3279,7 +3280,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcValidatorRequest: ${e.message}")
@@ -3295,7 +3296,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorResponse.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorResponse.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorResponse.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcValidatorResponse: ${e.message}")
@@ -3311,7 +3312,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorsOrderedRequest.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RpcValidatorsOrderedRequest: ${e.message}")
@@ -3327,7 +3328,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RuntimeConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RuntimeConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RuntimeConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RuntimeConfigView: ${e.message}")
@@ -3343,7 +3344,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RuntimeFeesConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.RuntimeFeesConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.RuntimeFeesConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for RuntimeFeesConfigView: ${e.message}")
@@ -3359,7 +3360,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardId.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardId.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardId.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ShardId: ${e.message}")
@@ -3375,7 +3376,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ShardLayout: ${e.message}")
@@ -3391,7 +3392,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV0.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV0.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV0.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ShardLayoutV0: ${e.message}")
@@ -3407,7 +3408,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV1.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV1.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV1.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ShardLayoutV1: ${e.message}")
@@ -3423,7 +3424,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV2.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV2.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV2.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ShardLayoutV2: ${e.message}")
@@ -3439,7 +3440,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardUId.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardUId.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardUId.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ShardUId: ${e.message}")
@@ -3455,7 +3456,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Signature.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.Signature.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Signature.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for Signature: ${e.message}")
@@ -3471,7 +3472,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SignedDelegateAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SignedDelegateAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SignedDelegateAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SignedDelegateAction: ${e.message}")
@@ -3487,7 +3488,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SignedTransaction: ${e.message}")
@@ -3503,7 +3504,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SignedTransactionView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SignedTransactionView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SignedTransactionView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SignedTransactionView: ${e.message}")
@@ -3519,7 +3520,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SlashedValidator.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SlashedValidator.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SlashedValidator.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SlashedValidator: ${e.message}")
@@ -3535,7 +3536,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StakeAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StakeAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StakeAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StakeAction: ${e.message}")
@@ -3551,7 +3552,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StateChangeCauseView: ${e.message}")
@@ -3567,7 +3568,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StateChangeKindView: ${e.message}")
@@ -3583,7 +3584,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StateChangeWithCauseView: ${e.message}")
@@ -3599,7 +3600,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateItem.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StateItem.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateItem.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StateItem: ${e.message}")
@@ -3615,7 +3616,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateSyncConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StateSyncConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StateSyncConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StateSyncConfig: ${e.message}")
@@ -3631,7 +3632,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StatusSyncInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StatusSyncInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StatusSyncInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StatusSyncInfo: ${e.message}")
@@ -3647,7 +3648,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StorageError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StorageError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StorageError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StorageError: ${e.message}")
@@ -3663,7 +3664,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StorageGetMode.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StorageGetMode.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StorageGetMode.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StorageGetMode: ${e.message}")
@@ -3679,7 +3680,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StorageUsageConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StorageUsageConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StorageUsageConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StorageUsageConfigView: ${e.message}")
@@ -3695,7 +3696,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StoreKey.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StoreKey.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StoreKey.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StoreKey: ${e.message}")
@@ -3711,7 +3712,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StoreValue.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.StoreValue.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.StoreValue.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for StoreValue: ${e.message}")
@@ -3727,7 +3728,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SyncCheckpoint.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SyncCheckpoint.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SyncCheckpoint.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SyncCheckpoint: ${e.message}")
@@ -3743,7 +3744,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SyncConcurrency.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SyncConcurrency.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SyncConcurrency.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SyncConcurrency: ${e.message}")
@@ -3759,7 +3760,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for SyncConfig: ${e.message}")
@@ -3775,7 +3776,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Tier1ProxyView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.Tier1ProxyView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Tier1ProxyView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for Tier1ProxyView: ${e.message}")
@@ -3791,7 +3792,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for TrackedShardsConfig: ${e.message}")
@@ -3807,7 +3808,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TransferAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.TransferAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TransferAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for TransferAction: ${e.message}")
@@ -3823,7 +3824,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for TxExecutionError: ${e.message}")
@@ -3839,7 +3840,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for TxExecutionStatus: ${e.message}")
@@ -3855,7 +3856,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.UseGlobalContractAction.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.UseGlobalContractAction.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.UseGlobalContractAction.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for UseGlobalContractAction: ${e.message}")
@@ -3871,7 +3872,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.VMConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.VMConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.VMConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for VMConfigView: ${e.message}")
@@ -3887,7 +3888,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.VMKind.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.VMKind.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.VMKind.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for VMKind: ${e.message}")
@@ -3903,7 +3904,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorInfo.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorInfo.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorInfo.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ValidatorInfo: ${e.message}")
@@ -3919,7 +3920,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ValidatorKickoutReason: ${e.message}")
@@ -3935,7 +3936,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ValidatorKickoutView: ${e.message}")
@@ -3951,7 +3952,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ValidatorStakeView: ${e.message}")
@@ -3967,7 +3968,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeViewV1.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeViewV1.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ValidatorStakeViewV1.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ValidatorStakeViewV1: ${e.message}")
@@ -3983,7 +3984,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Version.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.Version.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.Version.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for Version: ${e.message}")
@@ -3999,7 +4000,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ViewStateResult.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ViewStateResult.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ViewStateResult.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for ViewStateResult: ${e.message}")
@@ -4015,7 +4016,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for WasmTrap: ${e.message}")
@@ -4031,7 +4032,7 @@ class ModelSerializationTests {
             val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.WitnessConfigView.serializer(), data)
             val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.WitnessConfigView.serializer(), decoded)
             val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.WitnessConfigView.serializer(), encoded)
-            assertNotNull(decoded2)
+            assertEquals(decoded, decoded2)
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for WitnessConfigView: ${e.message}")
