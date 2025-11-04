@@ -8,7 +8,6 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import java.io.File
-import kotlin.reflect.KClass
 
 fun main(args: Array<String>) {
     val parser = ArgParser("generator")
@@ -50,6 +49,8 @@ fun main(args: Array<String>) {
     val modelFiles = File(modelsOut + modelPackage.replace(".", "/"))
     val nearClientFile = File(clientOut + clientPackage.replace(".", "/"))
 
+    val testsDirectory = File(testsOut + clientPackage.replace(".", "/"))
+
     serializerFiles.mkdirs()
     modelFiles.mkdirs()
     nearClientFile.mkdirs()
@@ -83,14 +84,14 @@ fun main(args: Array<String>) {
     //tests
     ModelTestGenerator.generateTestsForModels(
         spec = spec,
-        output = File(testsOut),
+        output = testsDirectory,
         testsPackage = testsPackage,
         modelsPackage = modelPackage
     )
 
     ClientTestGenerator.generateTestsForClient(
         spec = spec,
-        output = File(testsOut),
+        output = testsDirectory,
         testsPackage = testsPackage,
         clientPackage = clientPackage,
         modelsPackage = modelPackage

@@ -42,6 +42,7 @@ object ClientGenerator {
 
         val rpcResponseClass = ClassName(clientPackage, "RpcResponse")
         val errorResultClass = ClassName(clientPackage, "ErrorResult")
+        val rpcErrorClassGuess = toClassNameOrBestGuess("$modelsPackage.RpcError")
 
         val classBuilder = TypeSpec.classBuilder(clientClassName)
             .addModifiers(KModifier.PUBLIC)
@@ -240,6 +241,8 @@ object ClientGenerator {
                 }
             }
             cb.addStatement(")\n")
+
+            // Begin network call + robust error handling
             cb.addStatement("try {")
             cb.addStatement("   val httpResponse = httpClient.post(baseUrl) {")
             cb.addStatement(
@@ -250,48 +253,88 @@ object ClientGenerator {
                 "       setBody(json.encodeToString(%T.serializer(), request))",
                 reqWrapperClassName
             )
-            cb.addStatement("}\n")
+            cb.addStatement("   }\n")
 
-            cb.addStatement("val respBody = httpResponse.bodyAsText()\n")
+            cb.addStatement("   val status = httpResponse.status.value")
+            cb.addStatement("   val respBody = httpResponse.bodyAsText()\n")
 
-            // Use the exact response-wrapper schema referenced by the operation (modelsPackage + wrapper name)
-            // Surround decoding with its own try/catch to handle partial shapes (user requested)
-            cb.addStatement("try {")
+            // if non-2xx -> try to extract RpcError from body, otherwise return Http error
+            cb.addStatement("   if (status !in 200..299) {")
+            cb.addStatement("     try {")
+            cb.addStatement("       val root = json.parseToJsonElement(respBody).jsonObject")
+            cb.addStatement("       if (root.containsKey(\"error\")) {")
             cb.addStatement(
-                "  val decoded = json.decodeFromString(%T.serializer(), respBody)\n",
+                "         val rpcErr = json.decodeFromString(%T.serializer(), root[\"error\"].toString())",
+                rpcErrorClassGuess
+            )
+            cb.addStatement("         return %T.Failure(%T.Rpc(error = rpcErr))", rpcResponseClass, errorResultClass)
+            cb.addStatement("       }")
+            cb.addStatement("       val resultEl = root[\"result\"]")
+            cb.addStatement("       if (resultEl?.jsonObject?.containsKey(\"error\") == true) {")
+            cb.addStatement(
+                "val errJson = resultEl!!.jsonObject[%S].toString()", "error"
+            )
+            cb.addStatement(
+                "val rpcErr = runCatching { json.decodeFromString(%T.serializer(), errJson) }.getOrNull()",
+                rpcErrorClassGuess
+            )
+            cb.addStatement(
+                "return if (rpcErr != null) %T.Failure(%T.Rpc(error = rpcErr)) else %T.Failure(%T.Unknown(errJson, null))",
+                rpcResponseClass,
+                errorResultClass,
+                rpcResponseClass,
+                errorResultClass
+            )
+            cb.addStatement("       }")
+            cb.addStatement("     } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }")
+            cb.addStatement("     return %T.Failure(%T.Http(status, respBody))", rpcResponseClass, errorResultClass)
+            cb.addStatement("   }\n")
+
+            // successful status -> try decode expected wrapper
+            cb.addStatement("   try {")
+            cb.addStatement(
+                "     val decoded = json.decodeFromString(%T.serializer(), respBody)\n",
                 respWrapperClassName
             )
-            // Map sealed variants to RpcResponse
-            cb.addStatement("  return when (decoded) {")
+            cb.addStatement("     return when (decoded) {")
             cb.addStatement(
-                "    is %T.Result -> %T.Success(decoded.result)",
+                "       is %T.Result -> %T.Success(decoded.result)",
                 respWrapperClassName,
                 rpcResponseClass
             )
             cb.addStatement(
-                "    is %T.Error -> %T.Failure(%T.Rpc(error = decoded.error))",
+                "       is %T.Error -> %T.Failure(%T.Rpc(error = decoded.error))",
                 respWrapperClassName,
                 rpcResponseClass,
                 errorResultClass
             )
-            cb.addStatement("  }")
-            cb.addStatement("} catch (serEx: Exception) {")
-            // try to parse respBody and see if there's result with error inside
-            cb.addStatement("  try {")
-            cb.addStatement("    val root = json.parseToJsonElement(respBody).jsonObject")
-            cb.addStatement("    val resultEl = root[\"result\"]")
-            cb.addStatement("    val hasInnerError = resultEl?.jsonObject?.containsKey(\"error\") == true")
-            cb.addStatement("    if (resultEl != null && hasInnerError) {")
-            cb.addStatement("       val resultStr = resultEl.toString()")
-            cb.addStatement("       return %T.Failure(%T.UnknownError(resultStr))", rpcResponseClass, errorResultClass)
-            cb.addStatement("    }")
-            cb.addStatement("  } catch (_: Exception) { /* ignore parse error */ }")
-            // if we couldn't handle it specially, return UnknownError with the serialization exception message
-            cb.addStatement("  return %T.Failure(%T.UnknownError(serEx.message ?: \"Unknown\"))", rpcResponseClass, errorResultClass)
-            cb.addStatement("}\n")
+            cb.addStatement("     }")
+            cb.addStatement("   } catch (serEx: Exception) {")
+            // fall back: maybe an inner error inside result; otherwise Deserialization
+            cb.addStatement("     try {")
+            cb.addStatement("       val root = json.parseToJsonElement(respBody).jsonObject")
+            cb.addStatement("       val resultEl = root[\"result\"]")
+            cb.addStatement("       val hasInnerError = resultEl?.jsonObject?.containsKey(\"error\") == true")
+            cb.addStatement("       if (resultEl != null && hasInnerError) {")
+            cb.addStatement(
+                "         val rpcErr = json.decodeFromString(%T.serializer(), resultEl.jsonObject[\"error\"].toString())",
+                rpcErrorClassGuess
+            )
+            cb.addStatement("         return %T.Failure(%T.Rpc(error = rpcErr))", rpcResponseClass, errorResultClass)
+            cb.addStatement("       }")
+            cb.addStatement("     } catch (_: Exception) { /* ignore parse error */ }")
+            cb.addStatement("     return %T.Failure(%T.Deserialization(serEx, respBody))", rpcResponseClass, errorResultClass)
+            cb.addStatement("   }\n")
 
-            cb.addStatement("} catch(e: Exception) {")
-            cb.addStatement("   return %T.Failure(%T.UnknownError(e.message ?: \"Unknown\"))", rpcResponseClass, errorResultClass)
+            // top-level network / runtime exceptions mapping
+            cb.addStatement("} catch (e: Throwable) {")
+            cb.addStatement("   val mapped = when (e) {")
+            cb.addStatement("     is java.util.concurrent.CancellationException -> %T.Cancellation(e)", errorResultClass)
+            cb.addStatement("     is java.net.SocketTimeoutException, is io.ktor.client.plugins.HttpRequestTimeoutException -> %T.Timeout(e)", errorResultClass)
+            cb.addStatement("     is java.io.IOException -> %T.Network(e)", errorResultClass)
+            cb.addStatement("     else -> %T.Unknown(e.message ?: \"Unknown\", e)", errorResultClass)
+            cb.addStatement("   }")
+            cb.addStatement("   return %T.Failure(mapped)", rpcResponseClass)
             cb.addStatement("}")
 
             funBuilder.addCode(cb.build())
@@ -307,7 +350,6 @@ object ClientGenerator {
             .addImport("kotlinx.serialization.json", "jsonObject")
             .addImport("kotlinx.serialization.builtins", "serializer")
             .addImport("kotlinx.serialization.builtins", "ListSerializer")
-            .addImport("io.ktor.client.statement", "bodyAsText")
             .addType(classBuilder.build())
             .build()
 
