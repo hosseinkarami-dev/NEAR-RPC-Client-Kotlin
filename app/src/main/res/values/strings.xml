@@ -1,3 +1,54 @@
 <resources>
     <string name="app_name">NearOpenApiClient</string>
+    <string name="home">Home</string>
+    <string name="request">Request</string>
+    <string name="rpc_endpoints">RPC Endpoints</string>
+    <string name="settings">Settings</string>
+    <string name="theme">Theme</string>
+    <string name="dynamic_color">Dynamic Color</string>
+    <string name="done">Done</string>
+    <string name="back">Back</string>
+
+    <string name="status">status</string>
+    <string name="health">health</string>
+    <string name="network_info">network_info</string>
+    <string name="block">block</string>
+    <string name="chunk">chunk</string>
+    <string name="validators">validators</string>
+    <string name="query">query</string>
+    <string name="network">network</string>
+    <string name="broadcast_tx_commit">broadcast_tx_commit</string>
+    <string name="gas_price">gas_price</string>
+    <string name="experimental_changes">experimental_changes</string>
+    <string name="experimental_changes_in_block">experimental_changes_in_block</string>
+    <string name="experimental_protocol_config">experimental_protocol_config</string>
+
+    <string name="status_desc">Returns general status of the node</string>
+    <string name="health_desc">Returns the health status of the node</string>
+    <string name="network_info_desc">Returns basic information about the network</string>
+    <string name="block_desc">Returns details of a specific block</string>
+    <string name="chunk_desc">Returns details of a specific chunk</string>
+    <string name="validators_desc">Returns the list of validators for a specific epoch</string>
+    <string name="query_desc">Queries the contract state</string>
+    <string name="broadcast_tx_commit_desc">Broadcasts a transaction and waits until it is committed</string>
+    <string name="gas_price_desc">Returns the gas price for a specific block</string>
+    <string name="experimental_changes_desc">Returns changes in accounts and contracts</string>
+    <string name="experimental_changes_in_block_desc">Returns changes in a specific block</string>
+    <string name="experimental_protocol_config_desc">Returns the protocol configuration</string>
+
+    <string name="send_request">Send Request</string>
+    <string name="response">Response</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="network_mainnet">Mainnet Network</string>
+    <string name="network_testnet">Testnet Network</string>
+    <string name="block_effects">block_effects</string>
+    <string name="block_effects_desc">Returns the effects of a specific block, such as state changes</string>
+    <string name="view_account">view_account</string>
+    <string name="view_account_desc">Returns details for a specific account.</string>
+    <string name="tx_status_desc">Queries the status of a specific transaction</string>
+    <string name="tx_status">transaction_status</string>
+    <string name="transaction">transaction</string>
+    <string name="transaction_desc">Retrieves a specific transaction</string>
+    <string name="next_light_client_block">next_light_client_block</string>
+    <string name="next_light_client_block_desc">Returns the next light client block after the last known block hash</string>
 </resources>

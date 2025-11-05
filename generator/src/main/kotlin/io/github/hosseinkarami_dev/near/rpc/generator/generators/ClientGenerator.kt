@@ -279,7 +279,7 @@ object ClientGenerator {
                 rpcErrorClassGuess
             )
             cb.addStatement(
-                "return if (rpcErr != null) %T.Failure(%T.Rpc(error = rpcErr)) else %T.Failure(%T.Unknown(errJson, null))",
+                "return if (rpcErr != null) %T.Failure(%T.Rpc(error = rpcErr)) else %T.Failure(%T.RpcRuntime(errJson))",
                 rpcResponseClass,
                 errorResultClass,
                 rpcResponseClass,

@@ -161,7 +161,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -239,7 +239,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -312,7 +312,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -389,7 +389,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -462,7 +462,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -535,7 +535,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -613,7 +613,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -686,7 +686,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -759,7 +759,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -832,7 +832,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -905,7 +905,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -978,7 +978,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1051,7 +1051,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1124,7 +1124,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1202,7 +1202,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1280,7 +1280,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1353,7 +1353,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1426,7 +1426,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1499,7 +1499,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1572,7 +1572,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1645,7 +1645,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1718,7 +1718,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1791,7 +1791,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1864,7 +1864,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -1937,7 +1937,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -2010,7 +2010,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -2095,7 +2095,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -2168,7 +2168,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -2241,7 +2241,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -2314,7 +2314,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))
@@ -2387,7 +2387,7 @@ public class NearClient(
            if (resultEl?.jsonObject?.containsKey("error") == true) {
     val errJson = resultEl!!.jsonObject["error"].toString()
     val rpcErr = runCatching { json.decodeFromString(RpcError.serializer(), errJson) }.getOrNull()
-    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.Unknown(errJson, null))
+    return if (rpcErr != null) RpcResponse.Failure(ErrorResult.Rpc(error = rpcErr)) else RpcResponse.Failure(ErrorResult.RpcRuntime(errJson))
            }
          } catch (_: Exception) { /* ignore parse error when checking for rpc error */ }
          return RpcResponse.Failure(ErrorResult.Http(status, respBody))

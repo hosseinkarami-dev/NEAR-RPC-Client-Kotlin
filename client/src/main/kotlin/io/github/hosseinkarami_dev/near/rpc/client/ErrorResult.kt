@@ -4,6 +4,7 @@ import io.github.hosseinkarami_dev.near.rpc.models.RpcError
 
 sealed class ErrorResult {
     data class Rpc(val error: RpcError): ErrorResult()
+    data class RpcRuntime(val error: String): ErrorResult()
 
     data class Http(
         val statusCode: Int,
