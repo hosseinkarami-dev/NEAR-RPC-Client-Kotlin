@@ -16,7 +16,7 @@
     <string name="chunk">chunk</string>
     <string name="validators">validators</string>
     <string name="query">query</string>
-    <string name="network">network</string>
+    <string name="network">Network</string>
     <string name="broadcast_tx_commit">broadcast_tx_commit</string>
     <string name="gas_price">gas_price</string>
     <string name="experimental_changes">experimental_changes</string>
