@@ -39,8 +39,8 @@
     <string name="send_request">Send Request</string>
     <string name="response">Response</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
-    <string name="network_mainnet">Mainnet Network</string>
-    <string name="network_testnet">Testnet Network</string>
+    <string name="network_mainnet">Mainnet</string>
+    <string name="network_testnet">Testnet</string>
     <string name="block_effects">block_effects</string>
     <string name="block_effects_desc">Returns the effects of a specific block, such as state changes</string>
     <string name="view_account">view_account</string>
