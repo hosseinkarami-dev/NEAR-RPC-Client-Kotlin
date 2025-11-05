@@ -78,7 +78,7 @@ class RequestViewModel(
 
         "view_account" -> listOf(
             ParameterItem(
-                "block_id",
+                "block_height",
                 "The height of the block",
                 required = true,
                 keyboardType = KeyboardInputType.NUMBER
@@ -106,7 +106,7 @@ class RequestViewModel(
 
         "gas_price" -> listOf(
             ParameterItem(
-                "block_id",
+                "block_height",
                 "Can be empty for latest",
                 required = false,
                 keyboardType = KeyboardInputType.NUMBER
@@ -133,7 +133,7 @@ class RequestViewModel(
             try {
                 response = when (endpointName) {
                     "view_account" -> {
-                        val blockId = params["block_id"]!!
+                        val blockId = params["block_height"]!!
                         val accountId = params["account_id"]!!
                         val requestType =
                             RpcQueryRequest.ViewAccountByBlockId.RequestType.VIEW_ACCOUNT
@@ -209,7 +209,7 @@ class RequestViewModel(
                     }
 
                     "gas_price" -> {
-                        val blockId = params["block_id"]
+                        val blockId = params["block_height"]
                         val request =
                             RpcGasPriceRequest(blockId = blockId?.let { BlockId.BlockHeight(it.toULong()) })
                         nearClient.gasPrice(request)
