@@ -1,6 +1,6 @@
 # NEAR JSON-RPC Kotlin Client
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](#)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](#) [![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
 
 A **type-safe**, Kotlin client for the NEAR JSON-RPC API. This repository contains:
 
@@ -277,7 +277,8 @@ This structured approach to error handling makes it easy to differentiate betwee
 
 ```bash
 # Run all tests
-./gradlew test
+./gradlew :generator:test
+./gradlew :client:test
 ```
 
 ### Test Structure
