@@ -238,7 +238,19 @@ when (response) {
     is RpcResponse.Failure -> {
         when (val error = response.error) {
             is ErrorResult.Rpc -> {
-                println("❌ RPC Error: ${error.error})")
+                when (error.error) {
+                    is RpcError.HandlerError -> {
+                        println("❌ RPC Handler Error: ${(error.error as RpcError.HandlerError).message}")
+                    }
+
+                    is RpcError.InternalError -> {
+                        println("❌ RPC Internal Error: ${(error.error as RpcError.InternalError).message}")
+                    }
+
+                    is RpcError.RequestValidationError -> {
+                        println("❌ RPC Internal Error: ${(error.error as RpcError.RequestValidationError).message}")
+                    }
+                }
             }
             is ErrorResult.Http -> {
                 println("❌ HTTP Error: Status ${error.statusCode}, body: ${error.body}")
