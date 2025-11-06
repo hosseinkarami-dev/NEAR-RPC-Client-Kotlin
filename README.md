@@ -1,4 +1,4 @@
-# Kotlin JSON-RPC Kotlin Client
+# NEAR JSON-RPC Kotlin Client
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#)  
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](#)
