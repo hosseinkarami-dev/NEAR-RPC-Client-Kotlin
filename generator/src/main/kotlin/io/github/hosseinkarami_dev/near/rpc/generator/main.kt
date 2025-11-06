@@ -1,6 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.ClientGenerator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.ClientTestGenerator
+import io.github.hosseinkarami_dev.near.rpc.generator.generators.MockGenerator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.ModelGenerator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.ModelTestGenerator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.SerializerGenerator
@@ -44,6 +45,7 @@ fun main(args: Array<String>) {
     val clientPackage = "io.github.hosseinkarami_dev.near.rpc.client"
     val testsPackage = "io.github.hosseinkarami_dev.near.rpc.client"
     val serializerPackage = modelPackage.replace(".models", ".serializers")
+    val mocksForClient = File("$rootDir/client/src/test/resources/mock")
 
     val serializerFiles = File(modelsOut + serializerPackage.replace(".", "/"))
     val modelFiles = File(modelsOut + modelPackage.replace(".", "/"))
@@ -54,9 +56,11 @@ fun main(args: Array<String>) {
     serializerFiles.mkdirs()
     modelFiles.mkdirs()
     nearClientFile.mkdirs()
+    mocksForClient.mkdirs()
 
     serializerFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
     modelFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
+    mocksForClient.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
 
     nearClientFile.delete()
 
@@ -96,4 +100,6 @@ fun main(args: Array<String>) {
         clientPackage = clientPackage,
         modelsPackage = modelPackage
     )
+
+    MockGenerator.generate(spec, listOf(mocksForClient))
 }

@@ -238,7 +238,7 @@ when (response) {
     is RpcResponse.Failure -> {
         when (val error = response.error) {
             is ErrorResult.Rpc -> {
-                println("❌ RPC Error: ${error.error.message} (code: ${error.error.code})")
+                println("❌ RPC Error: ${error.error})")
             }
             is ErrorResult.Http -> {
                 println("❌ HTTP Error: Status ${error.statusCode}, body: ${error.body}")
