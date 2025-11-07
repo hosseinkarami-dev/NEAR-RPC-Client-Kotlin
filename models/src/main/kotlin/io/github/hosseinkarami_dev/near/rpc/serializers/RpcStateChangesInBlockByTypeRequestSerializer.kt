@@ -267,11 +267,13 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("account_changes_by_block_id", "single_access_key_changes_by_block_id", "single_gas_key_changes_by_block_id", "all_access_key_changes_by_block_id", "all_gas_key_changes_by_block_id", "contract_code_changes_by_block_id", "data_changes_by_block_id", "account_changes_by_finality", "single_access_key_changes_by_finality", "single_gas_key_changes_by_finality", "all_access_key_changes_by_finality", "all_gas_key_changes_by_finality", "contract_code_changes_by_finality", "data_changes_by_finality", "account_changes_by_sync_checkpoint", "single_access_key_changes_by_sync_checkpoint", "single_gas_key_changes_by_sync_checkpoint", "all_access_key_changes_by_sync_checkpoint", "all_gas_key_changes_by_sync_checkpoint", "contract_code_changes_by_sync_checkpoint", "data_changes_by_sync_checkpoint")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "account_changes_by_block_id" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant account_changes_by_block_id: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AccountChangesByBlockId>(), obj)
@@ -356,7 +358,8 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant data_changes_by_sync_checkpoint: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.DataChangesBySyncCheckpoint>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcStateChangesInBlockByTypeRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -369,7 +372,6 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("account_changes_by_block_id", "single_access_key_changes_by_block_id", "single_gas_key_changes_by_block_id", "all_access_key_changes_by_block_id", "all_gas_key_changes_by_block_id", "contract_code_changes_by_block_id", "data_changes_by_block_id", "account_changes_by_finality", "single_access_key_changes_by_finality", "single_gas_key_changes_by_finality", "all_access_key_changes_by_finality", "all_gas_key_changes_by_finality", "contract_code_changes_by_finality", "data_changes_by_finality", "account_changes_by_sync_checkpoint", "single_access_key_changes_by_sync_checkpoint", "single_gas_key_changes_by_sync_checkpoint", "all_access_key_changes_by_sync_checkpoint", "all_gas_key_changes_by_sync_checkpoint", "contract_code_changes_by_sync_checkpoint", "data_changes_by_sync_checkpoint")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -430,7 +432,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AccountChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AccountChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AccountChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'account_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'account_changes' and tf='\$tf'")
                                 }
                                 "single_access_key_changes" -> {
                                     if (jobj["block_id"] != null) {
@@ -445,7 +447,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.SingleAccessKeyChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.SingleAccessKeyChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.SingleAccessKeyChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'single_access_key_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'single_access_key_changes' and tf='\$tf'")
                                 }
                                 "single_gas_key_changes" -> {
                                     if (jobj["block_id"] != null) {
@@ -460,7 +462,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.SingleGasKeyChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.SingleGasKeyChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.SingleGasKeyChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'single_gas_key_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'single_gas_key_changes' and tf='\$tf'")
                                 }
                                 "all_access_key_changes" -> {
                                     if (jobj["block_id"] != null) {
@@ -475,7 +477,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AllAccessKeyChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AllAccessKeyChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AllAccessKeyChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'all_access_key_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'all_access_key_changes' and tf='\$tf'")
                                 }
                                 "all_gas_key_changes" -> {
                                     if (jobj["block_id"] != null) {
@@ -490,7 +492,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AllGasKeyChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AllGasKeyChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.AllGasKeyChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'all_gas_key_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'all_gas_key_changes' and tf='\$tf'")
                                 }
                                 "contract_code_changes" -> {
                                     if (jobj["block_id"] != null) {
@@ -505,7 +507,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.ContractCodeChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.ContractCodeChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.ContractCodeChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_changes' and tf='\$tf'")
                                 }
                                 "data_changes" -> {
                                     if (jobj["block_id"] != null) {
@@ -520,7 +522,7 @@ object RpcStateChangesInBlockByTypeRequestSerializer : KSerializer<RpcStateChang
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.DataChangesByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.DataChangesByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockByTypeRequest.DataChangesBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'data_changes' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'data_changes' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

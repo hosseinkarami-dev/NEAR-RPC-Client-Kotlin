@@ -78,6 +78,7 @@ object ExternalStorageLocationSerializer : KSerializer<ExternalStorageLocation> 
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("S3", "Filesystem", "GCS")
                     if (jobj["S3"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.S3(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.S3.S3Payload>(), jobj["S3"]!!))
                     }
@@ -91,7 +92,8 @@ object ExternalStorageLocationSerializer : KSerializer<ExternalStorageLocation> 
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "S3" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant S3: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.S3>(), obj)
@@ -104,7 +106,8 @@ object ExternalStorageLocationSerializer : KSerializer<ExternalStorageLocation> 
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant GCS: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.Gcs>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for ExternalStorageLocation: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -117,7 +120,6 @@ object ExternalStorageLocationSerializer : KSerializer<ExternalStorageLocation> 
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("S3", "Filesystem", "GCS")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -145,15 +147,15 @@ object ExternalStorageLocationSerializer : KSerializer<ExternalStorageLocation> 
                             when (chosenGroupKey) {
                                 "S3" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.S3>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'S3' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'S3' and tf='\$tf'")
                                 }
                                 "Filesystem" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.Filesystem>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Filesystem' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Filesystem' and tf='\$tf'")
                                 }
                                 "GCS" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageLocation.Gcs>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GCS' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GCS' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

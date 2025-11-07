@@ -68,6 +68,7 @@ object AccessKeyPermissionViewSerializer : KSerializer<AccessKeyPermissionView> 
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("FullAccess", "FunctionCall")
                     if (jobj["FunctionCall"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.FunctionCall(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.FunctionCall.FunctionCallPayload>(), jobj["FunctionCall"]!!))
                     }
@@ -75,13 +76,15 @@ object AccessKeyPermissionViewSerializer : KSerializer<AccessKeyPermissionView> 
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "FunctionCall" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant FunctionCall: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.FunctionCall>(), obj)
                             }
                             "FullAccess" -> return io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.FullAccess
-                            else -> throw SerializationException("Unknown discriminator key for AccessKeyPermissionView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -94,7 +97,6 @@ object AccessKeyPermissionViewSerializer : KSerializer<AccessKeyPermissionView> 
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("FullAccess", "FunctionCall")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -120,11 +122,11 @@ object AccessKeyPermissionViewSerializer : KSerializer<AccessKeyPermissionView> 
                             when (chosenGroupKey) {
                                 "FullAccess" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.FullAccess>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FullAccess' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FullAccess' and tf='\$tf'")
                                 }
                                 "FunctionCall" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AccessKeyPermissionView.FunctionCall>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCall' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCall' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

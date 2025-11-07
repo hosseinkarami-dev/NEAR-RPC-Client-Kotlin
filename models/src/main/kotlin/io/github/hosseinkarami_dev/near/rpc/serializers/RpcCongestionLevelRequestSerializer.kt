@@ -71,6 +71,7 @@ object RpcCongestionLevelRequestSerializer : KSerializer<RpcCongestionLevelReque
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("block_shard_id", "chunk_hash")
                     if (jobj["block_id"] != null) {
                         val blockIdVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.BlockId>(), jobj["block_id"] ?: throw SerializationException("Missing field 'block_id' for variant BlockShardId"))
                         val shardIdVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardId>(), jobj["shard_id"] ?: throw SerializationException("Missing field 'shard_id' for variant BlockShardId"))
@@ -83,7 +84,8 @@ object RpcCongestionLevelRequestSerializer : KSerializer<RpcCongestionLevelReque
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "block_shard_id" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant block_shard_id: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.BlockShardId>(), obj)
@@ -92,13 +94,13 @@ object RpcCongestionLevelRequestSerializer : KSerializer<RpcCongestionLevelReque
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant chunk_hash: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.ChunkHash>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcCongestionLevelRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("block_shard_id", "chunk_hash")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -124,11 +126,11 @@ object RpcCongestionLevelRequestSerializer : KSerializer<RpcCongestionLevelReque
                             when (chosenGroupKey) {
                                 "block_shard_id" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.BlockShardId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'block_shard_id' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'block_shard_id' and tf='\$tf'")
                                 }
                                 "chunk_hash" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcCongestionLevelRequest.ChunkHash>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'chunk_hash' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'chunk_hash' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

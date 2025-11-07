@@ -182,6 +182,7 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("DeleteActionMustBeFinal", "TotalPrepaidGasExceeded", "TotalNumberOfActionsExceeded", "AddKeyMethodNamesNumberOfBytesExceeded", "AddKeyMethodNameLengthExceeded", "IntegerOverflow", "InvalidAccountId", "ContractSizeExceeded", "FunctionCallMethodNameLengthExceeded", "FunctionCallArgumentsLengthExceeded", "UnsuitableStakingKey", "FunctionCallZeroAttachedGas", "DelegateActionMustBeOnlyOne", "UnsupportedProtocolFeature", "InvalidDeterministicStateInitReceiver", "DeterministicStateInitKeyLengthExceeded", "DeterministicStateInitValueLengthExceeded")
                     if (jobj["TotalPrepaidGasExceeded"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.TotalPrepaidGasExceeded(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.TotalPrepaidGasExceeded.TotalPrepaidGasExceededPayload>(), jobj["TotalPrepaidGasExceeded"]!!))
                     }
@@ -225,7 +226,8 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "TotalPrepaidGasExceeded" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant TotalPrepaidGasExceeded: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.TotalPrepaidGasExceeded>(), obj)
@@ -282,7 +284,8 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
                             "IntegerOverflow" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.IntegerOverflow
                             "FunctionCallZeroAttachedGas" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.FunctionCallZeroAttachedGas
                             "DelegateActionMustBeOnlyOne" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DelegateActionMustBeOnlyOne
-                            else -> throw SerializationException("Unknown discriminator key for ActionsValidationError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -295,7 +298,6 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("DeleteActionMustBeFinal", "TotalPrepaidGasExceeded", "TotalNumberOfActionsExceeded", "AddKeyMethodNamesNumberOfBytesExceeded", "AddKeyMethodNameLengthExceeded", "IntegerOverflow", "InvalidAccountId", "ContractSizeExceeded", "FunctionCallMethodNameLengthExceeded", "FunctionCallArgumentsLengthExceeded", "UnsuitableStakingKey", "FunctionCallZeroAttachedGas", "DelegateActionMustBeOnlyOne", "UnsupportedProtocolFeature", "InvalidDeterministicStateInitReceiver", "DeterministicStateInitKeyLengthExceeded", "DeterministicStateInitValueLengthExceeded")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -351,71 +353,71 @@ object ActionsValidationErrorSerializer : KSerializer<ActionsValidationError> {
                             when (chosenGroupKey) {
                                 "DeleteActionMustBeFinal" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DeleteActionMustBeFinal>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteActionMustBeFinal' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteActionMustBeFinal' and tf='\$tf'")
                                 }
                                 "TotalPrepaidGasExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.TotalPrepaidGasExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TotalPrepaidGasExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TotalPrepaidGasExceeded' and tf='\$tf'")
                                 }
                                 "TotalNumberOfActionsExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.TotalNumberOfActionsExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TotalNumberOfActionsExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TotalNumberOfActionsExceeded' and tf='\$tf'")
                                 }
                                 "AddKeyMethodNamesNumberOfBytesExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.AddKeyMethodNamesNumberOfBytesExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKeyMethodNamesNumberOfBytesExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKeyMethodNamesNumberOfBytesExceeded' and tf='\$tf'")
                                 }
                                 "AddKeyMethodNameLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.AddKeyMethodNameLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKeyMethodNameLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKeyMethodNameLengthExceeded' and tf='\$tf'")
                                 }
                                 "IntegerOverflow" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.IntegerOverflow>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'IntegerOverflow' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'IntegerOverflow' and tf='\$tf'")
                                 }
                                 "InvalidAccountId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.InvalidAccountId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidAccountId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidAccountId' and tf='\$tf'")
                                 }
                                 "ContractSizeExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.ContractSizeExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ContractSizeExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ContractSizeExceeded' and tf='\$tf'")
                                 }
                                 "FunctionCallMethodNameLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.FunctionCallMethodNameLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallMethodNameLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallMethodNameLengthExceeded' and tf='\$tf'")
                                 }
                                 "FunctionCallArgumentsLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.FunctionCallArgumentsLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallArgumentsLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallArgumentsLengthExceeded' and tf='\$tf'")
                                 }
                                 "UnsuitableStakingKey" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.UnsuitableStakingKey>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'UnsuitableStakingKey' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'UnsuitableStakingKey' and tf='\$tf'")
                                 }
                                 "FunctionCallZeroAttachedGas" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.FunctionCallZeroAttachedGas>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallZeroAttachedGas' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallZeroAttachedGas' and tf='\$tf'")
                                 }
                                 "DelegateActionMustBeOnlyOne" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DelegateActionMustBeOnlyOne>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionMustBeOnlyOne' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionMustBeOnlyOne' and tf='\$tf'")
                                 }
                                 "UnsupportedProtocolFeature" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.UnsupportedProtocolFeature>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'UnsupportedProtocolFeature' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'UnsupportedProtocolFeature' and tf='\$tf'")
                                 }
                                 "InvalidDeterministicStateInitReceiver" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.InvalidDeterministicStateInitReceiver>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidDeterministicStateInitReceiver' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidDeterministicStateInitReceiver' and tf='\$tf'")
                                 }
                                 "DeterministicStateInitKeyLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DeterministicStateInitKeyLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInitKeyLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInitKeyLengthExceeded' and tf='\$tf'")
                                 }
                                 "DeterministicStateInitValueLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionsValidationError.DeterministicStateInitValueLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInitValueLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInitValueLengthExceeded' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

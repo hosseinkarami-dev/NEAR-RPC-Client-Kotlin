@@ -292,6 +292,7 @@ object HostErrorSerializer : KSerializer<HostError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("BadUTF16", "BadUTF8", "GasExceeded", "GasLimitExceeded", "BalanceExceeded", "EmptyMethodName", "GuestPanic", "IntegerOverflow", "InvalidPromiseIndex", "CannotAppendActionToJointPromise", "CannotReturnJointPromise", "InvalidPromiseResultIndex", "InvalidRegisterId", "IteratorWasInvalidated", "MemoryAccessViolation", "InvalidReceiptIndex", "InvalidIteratorIndex", "InvalidAccountId", "InvalidMethodName", "InvalidPublicKey", "ProhibitedInView", "NumberOfLogsExceeded", "KeyLengthExceeded", "ValueLengthExceeded", "TotalLogLengthExceeded", "NumberPromisesExceeded", "NumberInputDataDependenciesExceeded", "ReturnedValueLengthExceeded", "ContractSizeExceeded", "Deprecated", "ECRecoverError", "AltBn128InvalidInput", "Ed25519VerifyInvalidInput")
                     if (jobj["GuestPanic"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.HostError.GuestPanic(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.GuestPanic.GuestPanicPayload>(), jobj["GuestPanic"]!!))
                     }
@@ -356,7 +357,8 @@ object HostErrorSerializer : KSerializer<HostError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "GuestPanic" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant GuestPanic: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.GuestPanic>(), obj)
@@ -450,7 +452,8 @@ object HostErrorSerializer : KSerializer<HostError> {
                             "InvalidAccountId" -> return io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidAccountId
                             "InvalidMethodName" -> return io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidMethodName
                             "InvalidPublicKey" -> return io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPublicKey
-                            else -> throw SerializationException("Unknown discriminator key for HostError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -463,7 +466,6 @@ object HostErrorSerializer : KSerializer<HostError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("BadUTF16", "BadUTF8", "GasExceeded", "GasLimitExceeded", "BalanceExceeded", "EmptyMethodName", "GuestPanic", "IntegerOverflow", "InvalidPromiseIndex", "CannotAppendActionToJointPromise", "CannotReturnJointPromise", "InvalidPromiseResultIndex", "InvalidRegisterId", "IteratorWasInvalidated", "MemoryAccessViolation", "InvalidReceiptIndex", "InvalidIteratorIndex", "InvalidAccountId", "InvalidMethodName", "InvalidPublicKey", "ProhibitedInView", "NumberOfLogsExceeded", "KeyLengthExceeded", "ValueLengthExceeded", "TotalLogLengthExceeded", "NumberPromisesExceeded", "NumberInputDataDependenciesExceeded", "ReturnedValueLengthExceeded", "ContractSizeExceeded", "Deprecated", "ECRecoverError", "AltBn128InvalidInput", "Ed25519VerifyInvalidInput")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -551,135 +553,135 @@ object HostErrorSerializer : KSerializer<HostError> {
                             when (chosenGroupKey) {
                                 "BadUTF16" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.BadUTF16>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'BadUTF16' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'BadUTF16' and tf='\$tf'")
                                 }
                                 "BadUTF8" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.BadUTF8>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'BadUTF8' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'BadUTF8' and tf='\$tf'")
                                 }
                                 "GasExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.GasExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GasExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GasExceeded' and tf='\$tf'")
                                 }
                                 "GasLimitExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.GasLimitExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GasLimitExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GasLimitExceeded' and tf='\$tf'")
                                 }
                                 "BalanceExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.BalanceExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'BalanceExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'BalanceExceeded' and tf='\$tf'")
                                 }
                                 "EmptyMethodName" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.EmptyMethodName>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'EmptyMethodName' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'EmptyMethodName' and tf='\$tf'")
                                 }
                                 "GuestPanic" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.GuestPanic>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GuestPanic' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GuestPanic' and tf='\$tf'")
                                 }
                                 "IntegerOverflow" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.IntegerOverflow>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'IntegerOverflow' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'IntegerOverflow' and tf='\$tf'")
                                 }
                                 "InvalidPromiseIndex" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPromiseIndex>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPromiseIndex' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPromiseIndex' and tf='\$tf'")
                                 }
                                 "CannotAppendActionToJointPromise" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.CannotAppendActionToJointPromise>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CannotAppendActionToJointPromise' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CannotAppendActionToJointPromise' and tf='\$tf'")
                                 }
                                 "CannotReturnJointPromise" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.CannotReturnJointPromise>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CannotReturnJointPromise' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CannotReturnJointPromise' and tf='\$tf'")
                                 }
                                 "InvalidPromiseResultIndex" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPromiseResultIndex>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPromiseResultIndex' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPromiseResultIndex' and tf='\$tf'")
                                 }
                                 "InvalidRegisterId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidRegisterId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidRegisterId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidRegisterId' and tf='\$tf'")
                                 }
                                 "IteratorWasInvalidated" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.IteratorWasInvalidated>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'IteratorWasInvalidated' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'IteratorWasInvalidated' and tf='\$tf'")
                                 }
                                 "MemoryAccessViolation" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.MemoryAccessViolation>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MemoryAccessViolation' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MemoryAccessViolation' and tf='\$tf'")
                                 }
                                 "InvalidReceiptIndex" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidReceiptIndex>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidReceiptIndex' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidReceiptIndex' and tf='\$tf'")
                                 }
                                 "InvalidIteratorIndex" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidIteratorIndex>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidIteratorIndex' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidIteratorIndex' and tf='\$tf'")
                                 }
                                 "InvalidAccountId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidAccountId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidAccountId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidAccountId' and tf='\$tf'")
                                 }
                                 "InvalidMethodName" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidMethodName>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidMethodName' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidMethodName' and tf='\$tf'")
                                 }
                                 "InvalidPublicKey" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.InvalidPublicKey>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPublicKey' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPublicKey' and tf='\$tf'")
                                 }
                                 "ProhibitedInView" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.ProhibitedInView>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ProhibitedInView' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ProhibitedInView' and tf='\$tf'")
                                 }
                                 "NumberOfLogsExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.NumberOfLogsExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberOfLogsExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberOfLogsExceeded' and tf='\$tf'")
                                 }
                                 "KeyLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.KeyLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'KeyLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'KeyLengthExceeded' and tf='\$tf'")
                                 }
                                 "ValueLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.ValueLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ValueLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ValueLengthExceeded' and tf='\$tf'")
                                 }
                                 "TotalLogLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.TotalLogLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TotalLogLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TotalLogLengthExceeded' and tf='\$tf'")
                                 }
                                 "NumberPromisesExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.NumberPromisesExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberPromisesExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberPromisesExceeded' and tf='\$tf'")
                                 }
                                 "NumberInputDataDependenciesExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.NumberInputDataDependenciesExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberInputDataDependenciesExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberInputDataDependenciesExceeded' and tf='\$tf'")
                                 }
                                 "ReturnedValueLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.ReturnedValueLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ReturnedValueLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ReturnedValueLengthExceeded' and tf='\$tf'")
                                 }
                                 "ContractSizeExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.ContractSizeExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ContractSizeExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ContractSizeExceeded' and tf='\$tf'")
                                 }
                                 "Deprecated" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.Deprecated>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Deprecated' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Deprecated' and tf='\$tf'")
                                 }
                                 "ECRecoverError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.ECRecoverError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ECRecoverError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ECRecoverError' and tf='\$tf'")
                                 }
                                 "AltBn128InvalidInput" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.AltBn128InvalidInput>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AltBn128InvalidInput' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AltBn128InvalidInput' and tf='\$tf'")
                                 }
                                 "Ed25519VerifyInvalidInput" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.HostError.Ed25519VerifyInvalidInput>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Ed25519VerifyInvalidInput' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Ed25519VerifyInvalidInput' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

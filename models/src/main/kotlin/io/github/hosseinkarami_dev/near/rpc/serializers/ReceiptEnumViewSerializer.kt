@@ -78,6 +78,7 @@ object ReceiptEnumViewSerializer : KSerializer<ReceiptEnumView> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("Action", "Data", "GlobalContractDistribution")
                     if (jobj["Action"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.Action(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.Action.ActionPayload>(), jobj["Action"]!!))
                     }
@@ -91,7 +92,8 @@ object ReceiptEnumViewSerializer : KSerializer<ReceiptEnumView> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Action" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant Action: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.Action>(), obj)
@@ -104,7 +106,8 @@ object ReceiptEnumViewSerializer : KSerializer<ReceiptEnumView> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant GlobalContractDistribution: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.GlobalContractDistribution>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for ReceiptEnumView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -117,7 +120,6 @@ object ReceiptEnumViewSerializer : KSerializer<ReceiptEnumView> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("Action", "Data", "GlobalContractDistribution")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -145,15 +147,15 @@ object ReceiptEnumViewSerializer : KSerializer<ReceiptEnumView> {
                             when (chosenGroupKey) {
                                 "Action" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.Action>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Action' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Action' and tf='\$tf'")
                                 }
                                 "Data" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.Data>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Data' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Data' and tf='\$tf'")
                                 }
                                 "GlobalContractDistribution" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptEnumView.GlobalContractDistribution>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GlobalContractDistribution' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GlobalContractDistribution' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

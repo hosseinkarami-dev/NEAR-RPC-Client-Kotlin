@@ -96,11 +96,13 @@ object RpcErrorSerializer : KSerializer<RpcError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("REQUEST_VALIDATION_ERROR", "HANDLER_ERROR", "INTERNAL_ERROR")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "REQUEST_VALIDATION_ERROR" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant REQUEST_VALIDATION_ERROR: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcError.RequestValidationError>(), obj)
@@ -113,7 +115,8 @@ object RpcErrorSerializer : KSerializer<RpcError> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant INTERNAL_ERROR: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcError.InternalError>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -126,7 +129,6 @@ object RpcErrorSerializer : KSerializer<RpcError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("REQUEST_VALIDATION_ERROR", "HANDLER_ERROR", "INTERNAL_ERROR")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -154,15 +156,15 @@ object RpcErrorSerializer : KSerializer<RpcError> {
                             when (chosenGroupKey) {
                                 "REQUEST_VALIDATION_ERROR" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcError.RequestValidationError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'REQUEST_VALIDATION_ERROR' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'REQUEST_VALIDATION_ERROR' and tf='\$tf'")
                                 }
                                 "HANDLER_ERROR" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcError.HandlerError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'HANDLER_ERROR' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'HANDLER_ERROR' and tf='\$tf'")
                                 }
                                 "INTERNAL_ERROR" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcError.InternalError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'INTERNAL_ERROR' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'INTERNAL_ERROR' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

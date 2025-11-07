@@ -78,22 +78,24 @@ object MissingTrieValueContextSerializer : KSerializer<MissingTrieValueContext> 
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("TrieIterator", "TriePrefetchingStorage", "TrieMemoryPartialStorage", "TrieStorage")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "TrieIterator" -> return io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieIterator
                             "TriePrefetchingStorage" -> return io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TriePrefetchingStorage
                             "TrieMemoryPartialStorage" -> return io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieMemoryPartialStorage
                             "TrieStorage" -> return io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieStorage
-                            else -> throw SerializationException("Unknown discriminator key for MissingTrieValueContext: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("TrieIterator", "TriePrefetchingStorage", "TrieMemoryPartialStorage", "TrieStorage")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -123,19 +125,19 @@ object MissingTrieValueContextSerializer : KSerializer<MissingTrieValueContext> 
                             when (chosenGroupKey) {
                                 "TrieIterator" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieIterator>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TrieIterator' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TrieIterator' and tf='\$tf'")
                                 }
                                 "TriePrefetchingStorage" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TriePrefetchingStorage>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TriePrefetchingStorage' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TriePrefetchingStorage' and tf='\$tf'")
                                 }
                                 "TrieMemoryPartialStorage" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieMemoryPartialStorage>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TrieMemoryPartialStorage' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TrieMemoryPartialStorage' and tf='\$tf'")
                                 }
                                 "TrieStorage" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValueContext.TrieStorage>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TrieStorage' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TrieStorage' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

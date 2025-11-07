@@ -90,11 +90,13 @@ object StateChangeKindViewSerializer : KSerializer<StateChangeKindView> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("account_touched", "access_key_touched", "data_touched", "contract_code_touched")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "account_touched" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant account_touched: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.AccountTouched>(), obj)
@@ -111,7 +113,8 @@ object StateChangeKindViewSerializer : KSerializer<StateChangeKindView> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant contract_code_touched: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.ContractCodeTouched>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for StateChangeKindView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -124,7 +127,6 @@ object StateChangeKindViewSerializer : KSerializer<StateChangeKindView> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("account_touched", "access_key_touched", "data_touched", "contract_code_touched")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -154,19 +156,19 @@ object StateChangeKindViewSerializer : KSerializer<StateChangeKindView> {
                             when (chosenGroupKey) {
                                 "account_touched" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.AccountTouched>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'account_touched' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'account_touched' and tf='\$tf'")
                                 }
                                 "access_key_touched" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.AccessKeyTouched>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'access_key_touched' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'access_key_touched' and tf='\$tf'")
                                 }
                                 "data_touched" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.DataTouched>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'data_touched' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'data_touched' and tf='\$tf'")
                                 }
                                 "contract_code_touched" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeKindView.ContractCodeTouched>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_touched' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_touched' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

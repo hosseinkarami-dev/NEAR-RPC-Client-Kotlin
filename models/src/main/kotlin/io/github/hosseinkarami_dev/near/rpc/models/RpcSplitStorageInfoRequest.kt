@@ -1,9 +1,11 @@
 package io.github.hosseinkarami_dev.near.rpc.models
 
+import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
 @Serializable
-public data class RpcSplitStorageInfoRequest(
+@JvmInline
+public value class RpcSplitStorageInfoRequest(
   public val `value`: JsonElement,
 )

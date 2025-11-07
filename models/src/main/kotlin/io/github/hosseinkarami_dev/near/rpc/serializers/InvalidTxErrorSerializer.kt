@@ -188,6 +188,7 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("InvalidAccessKeyError", "InvalidSignerId", "SignerDoesNotExist", "InvalidNonce", "NonceTooLarge", "InvalidReceiverId", "InvalidSignature", "NotEnoughBalance", "LackBalanceForState", "CostOverflow", "InvalidChain", "Expired", "ActionsValidation", "TransactionSizeExceeded", "InvalidTransactionVersion", "StorageError", "ShardCongested", "ShardStuck")
                     if (jobj["InvalidAccessKeyError"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidAccessKeyError(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError>(), jobj["InvalidAccessKeyError"]!!))
                     }
@@ -231,7 +232,8 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "InvalidAccessKeyError" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant InvalidAccessKeyError: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidAccessKeyError>(), obj)
@@ -289,7 +291,8 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                             "InvalidChain" -> return io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidChain
                             "Expired" -> return io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.Expired
                             "InvalidTransactionVersion" -> return io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidTransactionVersion
-                            else -> throw SerializationException("Unknown discriminator key for InvalidTxError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -302,7 +305,6 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("InvalidAccessKeyError", "InvalidSignerId", "SignerDoesNotExist", "InvalidNonce", "NonceTooLarge", "InvalidReceiverId", "InvalidSignature", "NotEnoughBalance", "LackBalanceForState", "CostOverflow", "InvalidChain", "Expired", "ActionsValidation", "TransactionSizeExceeded", "InvalidTransactionVersion", "StorageError", "ShardCongested", "ShardStuck")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -360,75 +362,75 @@ object InvalidTxErrorSerializer : KSerializer<InvalidTxError> {
                             when (chosenGroupKey) {
                                 "InvalidAccessKeyError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidAccessKeyError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidAccessKeyError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidAccessKeyError' and tf='\$tf'")
                                 }
                                 "InvalidSignerId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidSignerId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidSignerId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidSignerId' and tf='\$tf'")
                                 }
                                 "SignerDoesNotExist" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.SignerDoesNotExist>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'SignerDoesNotExist' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'SignerDoesNotExist' and tf='\$tf'")
                                 }
                                 "InvalidNonce" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidNonce>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidNonce' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidNonce' and tf='\$tf'")
                                 }
                                 "NonceTooLarge" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.NonceTooLarge>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NonceTooLarge' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NonceTooLarge' and tf='\$tf'")
                                 }
                                 "InvalidReceiverId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidReceiverId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidReceiverId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidReceiverId' and tf='\$tf'")
                                 }
                                 "InvalidSignature" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidSignature>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidSignature' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidSignature' and tf='\$tf'")
                                 }
                                 "NotEnoughBalance" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.NotEnoughBalance>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughBalance' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughBalance' and tf='\$tf'")
                                 }
                                 "LackBalanceForState" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.LackBalanceForState>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'LackBalanceForState' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'LackBalanceForState' and tf='\$tf'")
                                 }
                                 "CostOverflow" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.CostOverflow>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CostOverflow' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CostOverflow' and tf='\$tf'")
                                 }
                                 "InvalidChain" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidChain>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidChain' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidChain' and tf='\$tf'")
                                 }
                                 "Expired" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.Expired>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Expired' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Expired' and tf='\$tf'")
                                 }
                                 "ActionsValidation" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.ActionsValidation>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ActionsValidation' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ActionsValidation' and tf='\$tf'")
                                 }
                                 "TransactionSizeExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.TransactionSizeExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TransactionSizeExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TransactionSizeExceeded' and tf='\$tf'")
                                 }
                                 "InvalidTransactionVersion" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.InvalidTransactionVersion>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidTransactionVersion' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidTransactionVersion' and tf='\$tf'")
                                 }
                                 "StorageError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.StorageError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'StorageError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'StorageError' and tf='\$tf'")
                                 }
                                 "ShardCongested" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.ShardCongested>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ShardCongested' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ShardCongested' and tf='\$tf'")
                                 }
                                 "ShardStuck" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidTxError.ShardStuck>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ShardStuck' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ShardStuck' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

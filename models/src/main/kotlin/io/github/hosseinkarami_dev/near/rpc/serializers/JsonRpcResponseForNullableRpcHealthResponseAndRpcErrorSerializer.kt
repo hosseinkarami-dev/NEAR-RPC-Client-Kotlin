@@ -76,6 +76,7 @@ object JsonRpcResponseForNullableRpcHealthResponseAndRpcErrorSerializer : KSeria
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("result", "error")
                     if (jobj["result"] != null) {
                         val resultVal = jobj["result"]?.let { decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcHealthResponse?>(), it) }
                         val idVal = decoder.json.decodeFromJsonElement(serializer<kotlin.String>(), jobj["id"] ?: throw SerializationException("Missing field 'id' for variant Result"))
@@ -92,7 +93,8 @@ object JsonRpcResponseForNullableRpcHealthResponseAndRpcErrorSerializer : KSeria
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "result" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant result: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Result>(), obj)
@@ -101,7 +103,8 @@ object JsonRpcResponseForNullableRpcHealthResponseAndRpcErrorSerializer : KSeria
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant error: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Error>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for JsonRpcResponseForNullableRpcHealthResponseAndRpcError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -114,7 +117,6 @@ object JsonRpcResponseForNullableRpcHealthResponseAndRpcErrorSerializer : KSeria
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("result", "error")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -140,11 +142,11 @@ object JsonRpcResponseForNullableRpcHealthResponseAndRpcErrorSerializer : KSeria
                             when (chosenGroupKey) {
                                 "result" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Result>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'result' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'result' and tf='\$tf'")
                                 }
                                 "error" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForNullableRpcHealthResponseAndRpcError.Error>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'error' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'error' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

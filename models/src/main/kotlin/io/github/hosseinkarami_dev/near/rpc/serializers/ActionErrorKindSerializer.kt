@@ -234,6 +234,7 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("AccountAlreadyExists", "AccountDoesNotExist", "CreateAccountOnlyByRegistrar", "CreateAccountNotAllowed", "ActorNoPermission", "DeleteKeyDoesNotExist", "AddKeyAlreadyExists", "DeleteAccountStaking", "LackBalanceForState", "TriesToUnstake", "TriesToStake", "InsufficientStake", "FunctionCallError", "NewReceiptValidationError", "OnlyImplicitAccountCreationAllowed", "DeleteAccountWithLargeState", "DelegateActionInvalidSignature", "DelegateActionSenderDoesNotMatchTxReceiver", "DelegateActionExpired", "DelegateActionAccessKeyError", "DelegateActionInvalidNonce", "DelegateActionNonceTooLarge", "GlobalContractDoesNotExist")
                     if (jobj["AccountAlreadyExists"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists.AccountAlreadyExistsPayload>(), jobj["AccountAlreadyExists"]!!))
                     }
@@ -301,7 +302,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "AccountAlreadyExists" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant AccountAlreadyExists: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists>(), obj)
@@ -388,7 +390,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                             }
                             "DelegateActionInvalidSignature" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidSignature
                             "DelegateActionExpired" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionExpired
-                            else -> throw SerializationException("Unknown discriminator key for ActionErrorKind: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -401,7 +404,6 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("AccountAlreadyExists", "AccountDoesNotExist", "CreateAccountOnlyByRegistrar", "CreateAccountNotAllowed", "ActorNoPermission", "DeleteKeyDoesNotExist", "AddKeyAlreadyExists", "DeleteAccountStaking", "LackBalanceForState", "TriesToUnstake", "TriesToStake", "InsufficientStake", "FunctionCallError", "NewReceiptValidationError", "OnlyImplicitAccountCreationAllowed", "DeleteAccountWithLargeState", "DelegateActionInvalidSignature", "DelegateActionSenderDoesNotMatchTxReceiver", "DelegateActionExpired", "DelegateActionAccessKeyError", "DelegateActionInvalidNonce", "DelegateActionNonceTooLarge", "GlobalContractDoesNotExist")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -469,95 +471,95 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                             when (chosenGroupKey) {
                                 "AccountAlreadyExists" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountAlreadyExists' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountAlreadyExists' and tf='\$tf'")
                                 }
                                 "AccountDoesNotExist" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountDoesNotExist>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountDoesNotExist' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountDoesNotExist' and tf='\$tf'")
                                 }
                                 "CreateAccountOnlyByRegistrar" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.CreateAccountOnlyByRegistrar>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CreateAccountOnlyByRegistrar' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CreateAccountOnlyByRegistrar' and tf='\$tf'")
                                 }
                                 "CreateAccountNotAllowed" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.CreateAccountNotAllowed>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CreateAccountNotAllowed' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CreateAccountNotAllowed' and tf='\$tf'")
                                 }
                                 "ActorNoPermission" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.ActorNoPermission>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ActorNoPermission' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ActorNoPermission' and tf='\$tf'")
                                 }
                                 "DeleteKeyDoesNotExist" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DeleteKeyDoesNotExist>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteKeyDoesNotExist' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteKeyDoesNotExist' and tf='\$tf'")
                                 }
                                 "AddKeyAlreadyExists" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AddKeyAlreadyExists>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKeyAlreadyExists' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKeyAlreadyExists' and tf='\$tf'")
                                 }
                                 "DeleteAccountStaking" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DeleteAccountStaking>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteAccountStaking' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteAccountStaking' and tf='\$tf'")
                                 }
                                 "LackBalanceForState" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.LackBalanceForState>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'LackBalanceForState' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'LackBalanceForState' and tf='\$tf'")
                                 }
                                 "TriesToUnstake" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.TriesToUnstake>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TriesToUnstake' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TriesToUnstake' and tf='\$tf'")
                                 }
                                 "TriesToStake" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.TriesToStake>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TriesToStake' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TriesToStake' and tf='\$tf'")
                                 }
                                 "InsufficientStake" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.InsufficientStake>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InsufficientStake' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InsufficientStake' and tf='\$tf'")
                                 }
                                 "FunctionCallError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.FunctionCallError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCallError' and tf='\$tf'")
                                 }
                                 "NewReceiptValidationError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.NewReceiptValidationError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NewReceiptValidationError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NewReceiptValidationError' and tf='\$tf'")
                                 }
                                 "OnlyImplicitAccountCreationAllowed" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.OnlyImplicitAccountCreationAllowed>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'OnlyImplicitAccountCreationAllowed' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'OnlyImplicitAccountCreationAllowed' and tf='\$tf'")
                                 }
                                 "DeleteAccountWithLargeState" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DeleteAccountWithLargeState>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteAccountWithLargeState' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteAccountWithLargeState' and tf='\$tf'")
                                 }
                                 "DelegateActionInvalidSignature" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidSignature>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionInvalidSignature' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionInvalidSignature' and tf='\$tf'")
                                 }
                                 "DelegateActionSenderDoesNotMatchTxReceiver" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionSenderDoesNotMatchTxReceiver>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionSenderDoesNotMatchTxReceiver' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionSenderDoesNotMatchTxReceiver' and tf='\$tf'")
                                 }
                                 "DelegateActionExpired" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionExpired>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionExpired' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionExpired' and tf='\$tf'")
                                 }
                                 "DelegateActionAccessKeyError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionAccessKeyError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionAccessKeyError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionAccessKeyError' and tf='\$tf'")
                                 }
                                 "DelegateActionInvalidNonce" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionInvalidNonce' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionInvalidNonce' and tf='\$tf'")
                                 }
                                 "DelegateActionNonceTooLarge" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionNonceTooLarge' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DelegateActionNonceTooLarge' and tf='\$tf'")
                                 }
                                 "GlobalContractDoesNotExist" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GlobalContractDoesNotExist' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GlobalContractDoesNotExist' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

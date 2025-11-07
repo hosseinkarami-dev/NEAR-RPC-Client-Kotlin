@@ -74,6 +74,7 @@ object JsonRpcResponseForRpcGasPriceResponseAndRpcErrorSerializer : KSerializer<
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("result", "error")
                     if (jobj["result"] != null) {
                         val resultVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcGasPriceResponse>(), jobj["result"] ?: throw SerializationException("Missing field 'result' for variant Result"))
                         val idVal = decoder.json.decodeFromJsonElement(serializer<kotlin.String>(), jobj["id"] ?: throw SerializationException("Missing field 'id' for variant Result"))
@@ -90,7 +91,8 @@ object JsonRpcResponseForRpcGasPriceResponseAndRpcErrorSerializer : KSerializer<
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "result" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant result: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.Result>(), obj)
@@ -99,7 +101,8 @@ object JsonRpcResponseForRpcGasPriceResponseAndRpcErrorSerializer : KSerializer<
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant error: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.Error>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for JsonRpcResponseForRpcGasPriceResponseAndRpcError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -112,7 +115,6 @@ object JsonRpcResponseForRpcGasPriceResponseAndRpcErrorSerializer : KSerializer<
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("result", "error")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -138,11 +140,11 @@ object JsonRpcResponseForRpcGasPriceResponseAndRpcErrorSerializer : KSerializer<
                             when (chosenGroupKey) {
                                 "result" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.Result>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'result' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'result' and tf='\$tf'")
                                 }
                                 "error" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.JsonRpcResponseForRpcGasPriceResponseAndRpcError.Error>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'error' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'error' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

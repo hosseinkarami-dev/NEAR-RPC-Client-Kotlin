@@ -84,6 +84,7 @@ object ExecutionStatusViewSerializer : KSerializer<ExecutionStatusView> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("Unknown", "Failure", "SuccessValue", "SuccessReceiptId")
                     if (jobj["Failure"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.Failure(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError>(), jobj["Failure"]!!))
                     }
@@ -97,7 +98,8 @@ object ExecutionStatusViewSerializer : KSerializer<ExecutionStatusView> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Failure" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant Failure: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.Failure>(), obj)
@@ -111,7 +113,8 @@ object ExecutionStatusViewSerializer : KSerializer<ExecutionStatusView> {
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.SuccessReceiptId>(), obj)
                             }
                             "Unknown" -> return io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.Unknown
-                            else -> throw SerializationException("Unknown discriminator key for ExecutionStatusView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -124,7 +127,6 @@ object ExecutionStatusViewSerializer : KSerializer<ExecutionStatusView> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("Unknown", "Failure", "SuccessValue", "SuccessReceiptId")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -154,19 +156,19 @@ object ExecutionStatusViewSerializer : KSerializer<ExecutionStatusView> {
                             when (chosenGroupKey) {
                                 "Unknown" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.Unknown>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Unknown' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Unknown' and tf='\$tf'")
                                 }
                                 "Failure" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.Failure>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Failure' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Failure' and tf='\$tf'")
                                 }
                                 "SuccessValue" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.SuccessValue>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'SuccessValue' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'SuccessValue' and tf='\$tf'")
                                 }
                                 "SuccessReceiptId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionStatusView.SuccessReceiptId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'SuccessReceiptId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'SuccessReceiptId' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

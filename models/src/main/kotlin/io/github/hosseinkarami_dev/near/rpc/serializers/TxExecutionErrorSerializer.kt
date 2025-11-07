@@ -70,6 +70,7 @@ object TxExecutionErrorSerializer : KSerializer<TxExecutionError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("ActionError", "InvalidTxError")
                     if (jobj["ActionError"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.ActionError(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionError>(), jobj["ActionError"]!!))
                     }
@@ -80,7 +81,8 @@ object TxExecutionErrorSerializer : KSerializer<TxExecutionError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "ActionError" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant ActionError: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.ActionError>(), obj)
@@ -89,13 +91,13 @@ object TxExecutionErrorSerializer : KSerializer<TxExecutionError> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant InvalidTxError: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.InvalidTxError>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for TxExecutionError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("ActionError", "InvalidTxError")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -121,11 +123,11 @@ object TxExecutionErrorSerializer : KSerializer<TxExecutionError> {
                             when (chosenGroupKey) {
                                 "ActionError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.ActionError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ActionError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ActionError' and tf='\$tf'")
                                 }
                                 "InvalidTxError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError.InvalidTxError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidTxError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidTxError' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

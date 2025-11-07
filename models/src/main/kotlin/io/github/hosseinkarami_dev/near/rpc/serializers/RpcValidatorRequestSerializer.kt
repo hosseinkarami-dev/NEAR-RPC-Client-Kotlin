@@ -76,6 +76,7 @@ object RpcValidatorRequestSerializer : KSerializer<RpcValidatorRequest> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("latest", "epoch_id", "block_id")
                     if (jobj["epoch_id"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.EpochId(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.EpochId>(), jobj["epoch_id"]!!))
                     }
@@ -86,7 +87,8 @@ object RpcValidatorRequestSerializer : KSerializer<RpcValidatorRequest> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "epoch_id" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant epoch_id: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.EpochId>(), obj)
@@ -96,13 +98,13 @@ object RpcValidatorRequestSerializer : KSerializer<RpcValidatorRequest> {
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.BlockId>(), obj)
                             }
                             "latest" -> return io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.Latest
-                            else -> throw SerializationException("Unknown discriminator key for RpcValidatorRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("latest", "epoch_id", "block_id")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -130,15 +132,15 @@ object RpcValidatorRequestSerializer : KSerializer<RpcValidatorRequest> {
                             when (chosenGroupKey) {
                                 "latest" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.Latest>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'latest' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'latest' and tf='\$tf'")
                                 }
                                 "epoch_id" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.EpochId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'epoch_id' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'epoch_id' and tf='\$tf'")
                                 }
                                 "block_id" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcValidatorRequest.BlockId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'block_id' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'block_id' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

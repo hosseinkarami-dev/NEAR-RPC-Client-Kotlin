@@ -147,6 +147,7 @@ object StateChangeCauseViewSerializer : KSerializer<StateChangeCauseView> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("not_writable_to_disk", "initial_state", "transaction_processing", "action_receipt_processing_started", "action_receipt_gas_reward", "receipt_processing", "postponed_receipt", "updated_delayed_receipts", "validator_accounts_update", "migration", "bandwidth_scheduler_state_update")
                     if (jobj["tx_hash"] != null) {
                         val txHashVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CryptoHash>(), jobj["tx_hash"] ?: throw SerializationException("Missing field 'tx_hash' for variant TransactionProcessing"))
                         val typeVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.TransactionProcessing.Type>(), jobj["type"] ?: throw SerializationException("Missing field 'type' for variant TransactionProcessing"))
@@ -156,7 +157,8 @@ object StateChangeCauseViewSerializer : KSerializer<StateChangeCauseView> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "not_writable_to_disk" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant not_writable_to_disk: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.NotWritableToDisk>(), obj)
@@ -201,7 +203,8 @@ object StateChangeCauseViewSerializer : KSerializer<StateChangeCauseView> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant bandwidth_scheduler_state_update: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.BandwidthSchedulerStateUpdate>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for StateChangeCauseView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -214,7 +217,6 @@ object StateChangeCauseViewSerializer : KSerializer<StateChangeCauseView> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("not_writable_to_disk", "initial_state", "transaction_processing", "action_receipt_processing_started", "action_receipt_gas_reward", "receipt_processing", "postponed_receipt", "updated_delayed_receipts", "validator_accounts_update", "migration", "bandwidth_scheduler_state_update")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -258,47 +260,47 @@ object StateChangeCauseViewSerializer : KSerializer<StateChangeCauseView> {
                             when (chosenGroupKey) {
                                 "not_writable_to_disk" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.NotWritableToDisk>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'not_writable_to_disk' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'not_writable_to_disk' and tf='\$tf'")
                                 }
                                 "initial_state" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.InitialState>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'initial_state' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'initial_state' and tf='\$tf'")
                                 }
                                 "transaction_processing" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.TransactionProcessing>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'transaction_processing' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'transaction_processing' and tf='\$tf'")
                                 }
                                 "action_receipt_processing_started" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.ActionReceiptProcessingStarted>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'action_receipt_processing_started' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'action_receipt_processing_started' and tf='\$tf'")
                                 }
                                 "action_receipt_gas_reward" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.ActionReceiptGasReward>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'action_receipt_gas_reward' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'action_receipt_gas_reward' and tf='\$tf'")
                                 }
                                 "receipt_processing" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.ReceiptProcessing>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'receipt_processing' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'receipt_processing' and tf='\$tf'")
                                 }
                                 "postponed_receipt" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.PostponedReceipt>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'postponed_receipt' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'postponed_receipt' and tf='\$tf'")
                                 }
                                 "updated_delayed_receipts" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.UpdatedDelayedReceipts>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'updated_delayed_receipts' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'updated_delayed_receipts' and tf='\$tf'")
                                 }
                                 "validator_accounts_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.ValidatorAccountsUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'validator_accounts_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'validator_accounts_update' and tf='\$tf'")
                                 }
                                 "migration" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.Migration>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'migration' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'migration' and tf='\$tf'")
                                 }
                                 "bandwidth_scheduler_state_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeCauseView.BandwidthSchedulerStateUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'bandwidth_scheduler_state_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'bandwidth_scheduler_state_update' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

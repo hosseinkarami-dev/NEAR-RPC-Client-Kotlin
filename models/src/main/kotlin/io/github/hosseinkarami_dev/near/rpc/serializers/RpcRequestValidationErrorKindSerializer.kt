@@ -72,11 +72,13 @@ object RpcRequestValidationErrorKindSerializer : KSerializer<RpcRequestValidatio
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("METHOD_NOT_FOUND", "PARSE_ERROR")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "METHOD_NOT_FOUND" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant METHOD_NOT_FOUND: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.MethodNotFound>(), obj)
@@ -85,7 +87,8 @@ object RpcRequestValidationErrorKindSerializer : KSerializer<RpcRequestValidatio
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant PARSE_ERROR: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.ParseError>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcRequestValidationErrorKind: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -98,7 +101,6 @@ object RpcRequestValidationErrorKindSerializer : KSerializer<RpcRequestValidatio
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("METHOD_NOT_FOUND", "PARSE_ERROR")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -124,11 +126,11 @@ object RpcRequestValidationErrorKindSerializer : KSerializer<RpcRequestValidatio
                             when (chosenGroupKey) {
                                 "METHOD_NOT_FOUND" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.MethodNotFound>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'METHOD_NOT_FOUND' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'METHOD_NOT_FOUND' and tf='\$tf'")
                                 }
                                 "PARSE_ERROR" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcRequestValidationErrorKind.ParseError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'PARSE_ERROR' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'PARSE_ERROR' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

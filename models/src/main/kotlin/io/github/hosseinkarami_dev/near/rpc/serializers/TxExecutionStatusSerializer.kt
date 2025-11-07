@@ -90,24 +90,26 @@ object TxExecutionStatusSerializer : KSerializer<TxExecutionStatus> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("NONE", "INCLUDED", "EXECUTED_OPTIMISTIC", "INCLUDED_FINAL", "EXECUTED", "FINAL")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "NONE" -> return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.None
                             "INCLUDED" -> return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Included
                             "EXECUTED_OPTIMISTIC" -> return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.ExecutedOptimistic
                             "INCLUDED_FINAL" -> return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.IncludedFinal
                             "EXECUTED" -> return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Executed
                             "FINAL" -> return io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Final
-                            else -> throw SerializationException("Unknown discriminator key for TxExecutionStatus: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("NONE", "INCLUDED", "EXECUTED_OPTIMISTIC", "INCLUDED_FINAL", "EXECUTED", "FINAL")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -141,27 +143,27 @@ object TxExecutionStatusSerializer : KSerializer<TxExecutionStatus> {
                             when (chosenGroupKey) {
                                 "NONE" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.None>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NONE' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NONE' and tf='\$tf'")
                                 }
                                 "INCLUDED" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Included>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'INCLUDED' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'INCLUDED' and tf='\$tf'")
                                 }
                                 "EXECUTED_OPTIMISTIC" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.ExecutedOptimistic>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'EXECUTED_OPTIMISTIC' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'EXECUTED_OPTIMISTIC' and tf='\$tf'")
                                 }
                                 "INCLUDED_FINAL" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.IncludedFinal>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'INCLUDED_FINAL' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'INCLUDED_FINAL' and tf='\$tf'")
                                 }
                                 "EXECUTED" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Executed>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'EXECUTED' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'EXECUTED' and tf='\$tf'")
                                 }
                                 "FINAL" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus.Final>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FINAL' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FINAL' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

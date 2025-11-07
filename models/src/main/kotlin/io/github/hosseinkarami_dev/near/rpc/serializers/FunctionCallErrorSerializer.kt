@@ -114,6 +114,7 @@ object FunctionCallErrorSerializer : KSerializer<FunctionCallError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("WasmUnknownError", "_EVMError", "CompilationError", "LinkError", "MethodResolveError", "WasmTrap", "HostError", "ExecutionError")
                     if (jobj["CompilationError"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.CompilationError(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError>(), jobj["CompilationError"]!!))
                     }
@@ -136,7 +137,8 @@ object FunctionCallErrorSerializer : KSerializer<FunctionCallError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "CompilationError" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant CompilationError: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.CompilationError>(), obj)
@@ -163,7 +165,8 @@ object FunctionCallErrorSerializer : KSerializer<FunctionCallError> {
                             }
                             "WasmUnknownError" -> return io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.WasmUnknownError
                             "_EVMError" -> return io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.EVMError
-                            else -> throw SerializationException("Unknown discriminator key for FunctionCallError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -176,7 +179,6 @@ object FunctionCallErrorSerializer : KSerializer<FunctionCallError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("WasmUnknownError", "_EVMError", "CompilationError", "LinkError", "MethodResolveError", "WasmTrap", "HostError", "ExecutionError")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -214,35 +216,35 @@ object FunctionCallErrorSerializer : KSerializer<FunctionCallError> {
                             when (chosenGroupKey) {
                                 "WasmUnknownError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.WasmUnknownError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'WasmUnknownError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'WasmUnknownError' and tf='\$tf'")
                                 }
                                 "_EVMError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.EVMError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token '_EVMError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token '_EVMError' and tf='\$tf'")
                                 }
                                 "CompilationError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.CompilationError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CompilationError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CompilationError' and tf='\$tf'")
                                 }
                                 "LinkError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.LinkError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'LinkError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'LinkError' and tf='\$tf'")
                                 }
                                 "MethodResolveError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.MethodResolveError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MethodResolveError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MethodResolveError' and tf='\$tf'")
                                 }
                                 "WasmTrap" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.WasmTrap>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'WasmTrap' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'WasmTrap' and tf='\$tf'")
                                 }
                                 "HostError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.HostError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'HostError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'HostError' and tf='\$tf'")
                                 }
                                 "ExecutionError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FunctionCallError.ExecutionError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ExecutionError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ExecutionError' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

@@ -162,6 +162,9 @@ object SerializerGenerator {
         // object
         sb.appendLine("                is JsonObject -> {")
         sb.appendLine("                    val jobj = element")
+        // Declare knownVariantNames early once and reuse
+        val knownVariantNamesLiteral = info.variants.joinToString(", ") { "\"${it.serialName}\"" }
+        sb.appendLine("                    val knownVariantNames = setOf($knownVariantNamesLiteral)")
         // unique-key detection for data-class variants
         val dataVariants = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS }
         if (dataVariants.isNotEmpty()) {
@@ -200,12 +203,13 @@ object SerializerGenerator {
             }
         }
 
-        // wrapper-style { "VariantName": payload }
+        // wrapper-style { "VariantName": payload } - only try this if the single key is a known variant name
         sb.appendLine("                    if (jobj.size == 1) {")
         sb.appendLine("                        val entry = jobj.entries.first()")
         sb.appendLine("                        val key = entry.key")
         sb.appendLine("                        val valueElem = entry.value")
-        sb.appendLine("                        when (key) {")
+        sb.appendLine("                        if (knownVariantNames.contains(key)) {")
+        sb.appendLine("                            when (key) {")
         val dataOrSingle = info.variants.filter { it.kind == VariantInfo.Kind.DATA_CLASS || (it.props.size == 1 && it.props[0].name == "value") }
         for (v in dataOrSingle) {
             sb.appendLine("                            \"${v.serialName}\" -> {")
@@ -227,9 +231,10 @@ object SerializerGenerator {
         for (v in pureObjectSingletons) {
             sb.appendLine("                            \"${v.serialName}\" -> return $modelsPkg.$clsName.${v.name}")
         }
-        sb.appendLine("                            else -> throw SerializationException(\"Unknown discriminator key for $clsName: \" + key)")
-        sb.appendLine("                        }")
-        sb.appendLine("                    }") // end wrapper-style
+        sb.appendLine("                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }")
+        sb.appendLine("                            }")
+        sb.appendLine("                        }") // end if knownVariantNames.contains(key)
+        sb.appendLine("                    }") // end if jobj.size == 1
 
         // --- dynamic discriminator detection (no hardcode) ---
         val discCandidates = findDiscCandidates(info) // list of candidate field names inferred
@@ -248,7 +253,7 @@ object SerializerGenerator {
             sb.appendLine("                    val discriminatorCandidates = emptyList<String>()")
         }
         sb.appendLine("                    if (typeField == null) {")
-        sb.appendLine("                        val knownVariantNames = setOf(${info.variants.joinToString(", ") { "\"${it.serialName}\"" }})")
+        // Use the previously declared knownVariantNames
         sb.appendLine("                        for ((k, v) in jobj.entries) {")
         sb.appendLine("                            if (v is JsonPrimitive && v.isString) {")
         sb.appendLine("                                val s = v.content")
@@ -256,7 +261,6 @@ object SerializerGenerator {
         sb.appendLine("                            }")
         sb.appendLine("                        }")
         sb.appendLine("                    }")
-        // IMPORTANT CHANGE: Do NOT throw here. proceed to other heuristics even if typeField == null
         sb.appendLine()
 
         // try exact match first (only if we have typeField)
@@ -310,7 +314,7 @@ object SerializerGenerator {
             for (v in variantsInGroup) {
                 sb.appendLine("                                    try { return decoder.json.decodeFromJsonElement(serializer<${modelsPkg}.${clsName}.${v.name}>(), jobj) } catch (_: Exception) { }")
             }
-            sb.appendLine("                                    throw SerializationException(\"Cannot disambiguate variant for base token '${groupKey}' and tf='\$tf'\")")
+            sb.appendLine("                                    throw SerializationException(\"Cannot disambiguate variant for base token '${groupKey}' and tf='\\\$tf'\")")
             sb.appendLine("                                }")
         }
         sb.appendLine("                                else -> { /* no group matched */ }")
@@ -323,7 +327,7 @@ object SerializerGenerator {
         // Grouped handling by presence of distinguishing keys (even without tf)
         sb.appendLine("                    // grouped handling by presence of distinguishing keys (no discriminator value available)")
         for ((groupKey, variantsInGroup) in grouped) {
-            sb.appendLine("                    // group: ${groupKey}")
+            sb.appendLine("                    // group: $groupKey")
             val byBlock = variantsInGroup.filter { it.serialName.endsWith("_by_block_id") }
             val byFinality = variantsInGroup.filter { it.serialName.endsWith("_by_finality") }
             val bySync = variantsInGroup.filter { it.serialName.endsWith("_by_sync_checkpoint") }
@@ -441,9 +445,9 @@ object SerializerGenerator {
         val threshold = (n + 1) / 2
         val candidates = freq.filter { it.value >= threshold }.keys.toList()
         // if none reached threshold, still return top-1 candidate (best-effort)
-        return if (candidates.isEmpty()) {
+        return candidates.ifEmpty {
             freq.entries.sortedByDescending { it.value }.take(1).map { it.key }
-        } else candidates
+        }
     }
 
     // produce serializer expression string for embedding in generated code
@@ -517,7 +521,7 @@ object SerializerGenerator {
         if (raw == null) return ""
         var s = raw.trim()
         val eqIndex = s.indexOf('=')
-        if (eqIndex >= 0) s = s.substring(0, eqIndex).trimEnd()
+        if (eqIndex >= 0) s = s.take(eqIndex).trimEnd()
         s = s.trimEnd { it == ',' || it == ')' || it == ']' }
         while (s.endsWith("?")) s = s.dropLast(1).trimEnd()
         if (s.startsWith("`") && s.endsWith("`") && s.length > 1) s = s.substring(1, s.length - 1)

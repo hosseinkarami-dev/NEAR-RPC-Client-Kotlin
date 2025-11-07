@@ -1,4 +1,5 @@
 package io.github.hosseinkarami_dev.near.rpc.generator
+
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.ClientGenerator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.ClientTestGenerator
 import io.github.hosseinkarami_dev.near.rpc.generator.generators.MockGenerator
@@ -13,7 +14,10 @@ import java.io.File
 fun main(args: Array<String>) {
     val parser = ArgParser("generator")
 
-    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: File(System.getProperty("user.dir"), "..").canonicalPath
+    val rootDir = System.getenv("GITHUB_WORKSPACE") ?: File(
+        System.getProperty("user.dir"),
+        ".."
+    ).canonicalPath
 
     val openApiUrl by parser.option(
         ArgType.String,
@@ -21,7 +25,7 @@ fun main(args: Array<String>) {
         description = "URL to the OpenAPI specification"
     )
         //.default("https://raw.githubusercontent.com/near/nearcore/refs/heads/2.9.0/chain/jsonrpc/openapi/openapi.json")
-       .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/master/chain/jsonrpc/openapi/openapi.json")
+        .default("https://raw.githubusercontent.com/near/nearcore/refs/heads/master/chain/jsonrpc/openapi/openapi.json")
 
     val modelsOut by parser.option(
         ArgType.String,
@@ -60,7 +64,7 @@ fun main(args: Array<String>) {
 
     serializerFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
     modelFiles.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
-    mocksForClient.takeIf { it.exists() }?.listFiles()?.forEach { it.delete() }
+    mocksForClient.takeIf { it.exists() }?.listFiles()?.filter { it.extension == "json" }?.forEach { it.delete() }
 
     nearClientFile.delete()
 
@@ -71,11 +75,12 @@ fun main(args: Array<String>) {
         serializerPackage = serializerPackage,
         packageName = modelPackage
     ) { sealedClasses ->
-            SerializerGenerator.generateFromSealedInfos(
-                sealedInfos = sealedClasses,
-                serializerPackage = serializerPackage,
-                output = File(modelsOut)
-            )
+
+        SerializerGenerator.generateFromSealedInfos(
+            sealedInfos = sealedClasses,
+            serializerPackage = serializerPackage,
+            output = File(modelsOut)
+        )
     }
 
     ClientGenerator.generateNearClientFile(

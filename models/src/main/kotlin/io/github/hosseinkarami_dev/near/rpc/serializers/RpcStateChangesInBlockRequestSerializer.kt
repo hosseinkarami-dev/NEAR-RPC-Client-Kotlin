@@ -78,6 +78,7 @@ object RpcStateChangesInBlockRequestSerializer : KSerializer<RpcStateChangesInBl
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("block_id", "finality", "sync_checkpoint")
                     if (jobj["block_id"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.BlockId(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.BlockId>(), jobj["block_id"]!!))
                     }
@@ -91,7 +92,8 @@ object RpcStateChangesInBlockRequestSerializer : KSerializer<RpcStateChangesInBl
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "block_id" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant block_id: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.BlockId>(), obj)
@@ -104,13 +106,13 @@ object RpcStateChangesInBlockRequestSerializer : KSerializer<RpcStateChangesInBl
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant sync_checkpoint: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.SyncCheckpoint>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcStateChangesInBlockRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("block_id", "finality", "sync_checkpoint")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -138,15 +140,15 @@ object RpcStateChangesInBlockRequestSerializer : KSerializer<RpcStateChangesInBl
                             when (chosenGroupKey) {
                                 "block_id" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.BlockId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'block_id' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'block_id' and tf='\$tf'")
                                 }
                                 "finality" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.Finality>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'finality' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'finality' and tf='\$tf'")
                                 }
                                 "sync_checkpoint" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcStateChangesInBlockRequest.SyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'sync_checkpoint' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'sync_checkpoint' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

@@ -142,6 +142,7 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("CreateAccount", "DeployContract", "FunctionCall", "Transfer", "Stake", "AddKey", "DeleteKey", "DeleteAccount", "DeployGlobalContract", "UseGlobalContract", "DeterministicStateInit")
                     if (jobj["CreateAccount"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.CreateAccount(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CreateAccountAction>(), jobj["CreateAccount"]!!))
                     }
@@ -179,7 +180,8 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "CreateAccount" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant CreateAccount: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.CreateAccount>(), obj)
@@ -224,13 +226,13 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant DeterministicStateInit: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for NonDelegateAction: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("CreateAccount", "DeployContract", "FunctionCall", "Transfer", "Stake", "AddKey", "DeleteKey", "DeleteAccount", "DeployGlobalContract", "UseGlobalContract", "DeterministicStateInit")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -274,47 +276,47 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                             when (chosenGroupKey) {
                                 "CreateAccount" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.CreateAccount>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CreateAccount' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CreateAccount' and tf='\$tf'")
                                 }
                                 "DeployContract" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployContract>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeployContract' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeployContract' and tf='\$tf'")
                                 }
                                 "FunctionCall" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.FunctionCall>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCall' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FunctionCall' and tf='\$tf'")
                                 }
                                 "Transfer" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.Transfer>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Transfer' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Transfer' and tf='\$tf'")
                                 }
                                 "Stake" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.Stake>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Stake' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Stake' and tf='\$tf'")
                                 }
                                 "AddKey" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddKey>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKey' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AddKey' and tf='\$tf'")
                                 }
                                 "DeleteKey" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteKey>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteKey' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteKey' and tf='\$tf'")
                                 }
                                 "DeleteAccount" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteAccount>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteAccount' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteAccount' and tf='\$tf'")
                                 }
                                 "DeployGlobalContract" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeployGlobalContract' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeployGlobalContract' and tf='\$tf'")
                                 }
                                 "UseGlobalContract" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'UseGlobalContract' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'UseGlobalContract' and tf='\$tf'")
                                 }
                                 "DeterministicStateInit" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInit' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInit' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

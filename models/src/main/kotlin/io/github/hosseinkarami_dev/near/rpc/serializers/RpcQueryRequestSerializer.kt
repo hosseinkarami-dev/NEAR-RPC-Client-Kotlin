@@ -315,11 +315,13 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("view_account_by_block_id", "view_code_by_block_id", "view_state_by_block_id", "view_access_key_by_block_id", "view_access_key_list_by_block_id", "call_function_by_block_id", "view_global_contract_code_by_block_id", "view_global_contract_code_by_account_id_by_block_id", "view_account_by_finality", "view_code_by_finality", "view_state_by_finality", "view_access_key_by_finality", "view_access_key_list_by_finality", "call_function_by_finality", "view_global_contract_code_by_finality", "view_global_contract_code_by_account_id_by_finality", "view_account_by_sync_checkpoint", "view_code_by_sync_checkpoint", "view_state_by_sync_checkpoint", "view_access_key_by_sync_checkpoint", "view_access_key_list_by_sync_checkpoint", "call_function_by_sync_checkpoint", "view_global_contract_code_by_sync_checkpoint", "view_global_contract_code_by_account_id_by_sync_checkpoint")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "view_account_by_block_id" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant view_account_by_block_id: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccountByBlockId>(), obj)
@@ -416,7 +418,8 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant view_global_contract_code_by_account_id_by_sync_checkpoint: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewGlobalContractCodeByAccountIdBySyncCheckpoint>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcQueryRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -429,7 +432,6 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("view_account_by_block_id", "view_code_by_block_id", "view_state_by_block_id", "view_access_key_by_block_id", "view_access_key_list_by_block_id", "call_function_by_block_id", "view_global_contract_code_by_block_id", "view_global_contract_code_by_account_id_by_block_id", "view_account_by_finality", "view_code_by_finality", "view_state_by_finality", "view_access_key_by_finality", "view_access_key_list_by_finality", "call_function_by_finality", "view_global_contract_code_by_finality", "view_global_contract_code_by_account_id_by_finality", "view_account_by_sync_checkpoint", "view_code_by_sync_checkpoint", "view_state_by_sync_checkpoint", "view_access_key_by_sync_checkpoint", "view_access_key_list_by_sync_checkpoint", "call_function_by_sync_checkpoint", "view_global_contract_code_by_sync_checkpoint", "view_global_contract_code_by_account_id_by_sync_checkpoint")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -493,7 +495,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccountByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccountByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccountBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'view_account' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'view_account' and tf='\$tf'")
                                 }
                                 "view_code" -> {
                                     if (jobj["block_id"] != null) {
@@ -508,7 +510,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewCodeByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewCodeByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewCodeBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'view_code' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'view_code' and tf='\$tf'")
                                 }
                                 "view_state" -> {
                                     if (jobj["block_id"] != null) {
@@ -523,7 +525,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewStateByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewStateByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewStateBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'view_state' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'view_state' and tf='\$tf'")
                                 }
                                 "view_access_key" -> {
                                     if (jobj["block_id"] != null) {
@@ -538,7 +540,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccessKeyByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccessKeyByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccessKeyBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'view_access_key' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'view_access_key' and tf='\$tf'")
                                 }
                                 "view_access_key_list" -> {
                                     if (jobj["block_id"] != null) {
@@ -553,7 +555,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccessKeyListByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccessKeyListByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewAccessKeyListBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'view_access_key_list' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'view_access_key_list' and tf='\$tf'")
                                 }
                                 "call_function" -> {
                                     if (jobj["block_id"] != null) {
@@ -568,7 +570,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.CallFunctionByBlockId>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.CallFunctionByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.CallFunctionBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'call_function' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'call_function' and tf='\$tf'")
                                 }
                                 "view_global_contract_code" -> {
                                     if (jobj["block_id"] != null) {
@@ -589,7 +591,7 @@ object RpcQueryRequestSerializer : KSerializer<RpcQueryRequest> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewGlobalContractCodeByAccountIdByFinality>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewGlobalContractCodeBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryRequest.ViewGlobalContractCodeByAccountIdBySyncCheckpoint>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'view_global_contract_code' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'view_global_contract_code' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

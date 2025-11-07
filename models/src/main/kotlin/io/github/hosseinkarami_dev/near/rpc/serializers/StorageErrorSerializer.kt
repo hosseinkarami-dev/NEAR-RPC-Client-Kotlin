@@ -98,6 +98,7 @@ object StorageErrorSerializer : KSerializer<StorageError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("StorageInternalError", "MissingTrieValue", "UnexpectedTrieValue", "StorageInconsistentState", "FlatStorageBlockNotSupported", "MemTrieLoadingError")
                     if (jobj["MissingTrieValue"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.StorageError.MissingTrieValue(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.MissingTrieValue>(), jobj["MissingTrieValue"]!!))
                     }
@@ -114,7 +115,8 @@ object StorageErrorSerializer : KSerializer<StorageError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "MissingTrieValue" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant MissingTrieValue: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.MissingTrieValue>(), obj)
@@ -133,7 +135,8 @@ object StorageErrorSerializer : KSerializer<StorageError> {
                             }
                             "StorageInternalError" -> return io.github.hosseinkarami_dev.near.rpc.models.StorageError.StorageInternalError
                             "UnexpectedTrieValue" -> return io.github.hosseinkarami_dev.near.rpc.models.StorageError.UnexpectedTrieValue
-                            else -> throw SerializationException("Unknown discriminator key for StorageError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -146,7 +149,6 @@ object StorageErrorSerializer : KSerializer<StorageError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("StorageInternalError", "MissingTrieValue", "UnexpectedTrieValue", "StorageInconsistentState", "FlatStorageBlockNotSupported", "MemTrieLoadingError")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -180,27 +182,27 @@ object StorageErrorSerializer : KSerializer<StorageError> {
                             when (chosenGroupKey) {
                                 "StorageInternalError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.StorageInternalError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'StorageInternalError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'StorageInternalError' and tf='\$tf'")
                                 }
                                 "MissingTrieValue" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.MissingTrieValue>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MissingTrieValue' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MissingTrieValue' and tf='\$tf'")
                                 }
                                 "UnexpectedTrieValue" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.UnexpectedTrieValue>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'UnexpectedTrieValue' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'UnexpectedTrieValue' and tf='\$tf'")
                                 }
                                 "StorageInconsistentState" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.StorageInconsistentState>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'StorageInconsistentState' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'StorageInconsistentState' and tf='\$tf'")
                                 }
                                 "FlatStorageBlockNotSupported" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.FlatStorageBlockNotSupported>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FlatStorageBlockNotSupported' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FlatStorageBlockNotSupported' and tf='\$tf'")
                                 }
                                 "MemTrieLoadingError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StorageError.MemTrieLoadingError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MemTrieLoadingError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MemTrieLoadingError' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

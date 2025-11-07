@@ -82,6 +82,7 @@ object FinalExecutionStatusSerializer : KSerializer<FinalExecutionStatus> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("NotStarted", "Started", "Failure", "SuccessValue")
                     if (jobj["Failure"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Failure(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionError>(), jobj["Failure"]!!))
                     }
@@ -92,7 +93,8 @@ object FinalExecutionStatusSerializer : KSerializer<FinalExecutionStatus> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Failure" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant Failure: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Failure>(), obj)
@@ -103,7 +105,8 @@ object FinalExecutionStatusSerializer : KSerializer<FinalExecutionStatus> {
                             }
                             "NotStarted" -> return io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.NotStarted
                             "Started" -> return io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Started
-                            else -> throw SerializationException("Unknown discriminator key for FinalExecutionStatus: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -116,7 +119,6 @@ object FinalExecutionStatusSerializer : KSerializer<FinalExecutionStatus> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("NotStarted", "Started", "Failure", "SuccessValue")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -146,19 +148,19 @@ object FinalExecutionStatusSerializer : KSerializer<FinalExecutionStatus> {
                             when (chosenGroupKey) {
                                 "NotStarted" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.NotStarted>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotStarted' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotStarted' and tf='\$tf'")
                                 }
                                 "Started" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Started>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Started' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Started' and tf='\$tf'")
                                 }
                                 "Failure" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.Failure>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Failure' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Failure' and tf='\$tf'")
                                 }
                                 "SuccessValue" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.FinalExecutionStatus.SuccessValue>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'SuccessValue' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'SuccessValue' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

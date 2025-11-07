@@ -78,6 +78,7 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("V0", "V1", "V2")
                     if (jobj["V0"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV0>(), jobj["V0"]!!))
                     }
@@ -91,7 +92,8 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "V0" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant V0: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), obj)
@@ -104,13 +106,13 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant V2: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for ShardLayout: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("V0", "V1", "V2")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -138,15 +140,15 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                             when (chosenGroupKey) {
                                 "V0" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'V0' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'V0' and tf='\$tf'")
                                 }
                                 "V1" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'V1' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'V1' and tf='\$tf'")
                                 }
                                 "V2" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'V2' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'V2' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

@@ -76,7 +76,6 @@ fun main() = runBlocking {
         }
     }
 
-
     //Transaction Status
     when (val response = nearClient.tx(
         RpcTransactionStatusRequest.SenderAccountId(

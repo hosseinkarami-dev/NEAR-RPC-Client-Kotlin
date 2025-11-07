@@ -433,8 +433,9 @@ class ModelGenerator(
         val ctor = FunSpec.constructorBuilder()
             .addParameter("value", ClassName("kotlinx.serialization.json", "JsonElement")).build()
         val cbBuilder = TypeSpec.classBuilder(className)
-            .addModifiers(KModifier.DATA)
+            .addModifiers(KModifier.VALUE)
             .addAnnotation(Serializable::class)
+            .addAnnotation(JvmInline::class)
             .primaryConstructor(ctor)
             .addProperty(
                 PropertySpec.builder(

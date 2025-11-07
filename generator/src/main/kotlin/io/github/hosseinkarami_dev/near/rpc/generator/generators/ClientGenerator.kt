@@ -242,7 +242,7 @@ object ClientGenerator {
             }
             cb.addStatement(")\n")
 
-// Begin network call + robust error handling
+            // Begin network call + robust error handling
             cb.addStatement("try {")
             cb.addStatement("    val httpResponse = httpClient.post(baseUrl) {")
             cb.addStatement("        contentType(%T.Application.Json)", ClassName("io.ktor.http", "ContentType"))

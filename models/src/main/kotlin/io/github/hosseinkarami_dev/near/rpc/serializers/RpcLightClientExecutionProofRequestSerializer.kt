@@ -76,6 +76,7 @@ object RpcLightClientExecutionProofRequestSerializer : KSerializer<RpcLightClien
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("transaction", "receipt")
                     if (jobj["sender_id"] != null) {
                         val senderIdVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AccountId>(), jobj["sender_id"] ?: throw SerializationException("Missing field 'sender_id' for variant Transaction"))
                         val transactionHashVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CryptoHash>(), jobj["transaction_hash"] ?: throw SerializationException("Missing field 'transaction_hash' for variant Transaction"))
@@ -94,7 +95,8 @@ object RpcLightClientExecutionProofRequestSerializer : KSerializer<RpcLightClien
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "transaction" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant transaction: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.Transaction>(), obj)
@@ -103,7 +105,8 @@ object RpcLightClientExecutionProofRequestSerializer : KSerializer<RpcLightClien
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant receipt: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.Receipt>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcLightClientExecutionProofRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -116,7 +119,6 @@ object RpcLightClientExecutionProofRequestSerializer : KSerializer<RpcLightClien
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("transaction", "receipt")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -142,11 +144,11 @@ object RpcLightClientExecutionProofRequestSerializer : KSerializer<RpcLightClien
                             when (chosenGroupKey) {
                                 "transaction" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.Transaction>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'transaction' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'transaction' and tf='\$tf'")
                                 }
                                 "receipt" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcLightClientExecutionProofRequest.Receipt>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'receipt' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'receipt' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

@@ -79,6 +79,7 @@ object RpcTransactionResponseSerializer : KSerializer<RpcTransactionResponse> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("FinalExecutionOutcomeWithReceiptView", "FinalExecutionOutcomeView")
                     if (jobj["receipts"] != null) {
                         val receiptsVal = decoder.json.decodeFromJsonElement(ListSerializer(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptView>()), jobj["receipts"] ?: throw SerializationException("Missing field 'receipts' for variant FinalExecutionOutcomeWithReceiptView"))
                         val receiptsOutcomeVal = decoder.json.decodeFromJsonElement(ListSerializer(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExecutionOutcomeWithIdView>()), jobj["receipts_outcome"] ?: throw SerializationException("Missing field 'receipts_outcome' for variant FinalExecutionOutcomeWithReceiptView"))
@@ -92,7 +93,8 @@ object RpcTransactionResponseSerializer : KSerializer<RpcTransactionResponse> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "FinalExecutionOutcomeWithReceiptView" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant FinalExecutionOutcomeWithReceiptView: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.FinalExecutionOutcomeWithReceiptView>(), obj)
@@ -101,13 +103,13 @@ object RpcTransactionResponseSerializer : KSerializer<RpcTransactionResponse> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant FinalExecutionOutcomeView: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.FinalExecutionOutcomeView>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcTransactionResponse: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("FinalExecutionOutcomeWithReceiptView", "FinalExecutionOutcomeView")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -133,11 +135,11 @@ object RpcTransactionResponseSerializer : KSerializer<RpcTransactionResponse> {
                             when (chosenGroupKey) {
                                 "FinalExecutionOutcomeWithReceiptView" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.FinalExecutionOutcomeWithReceiptView>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FinalExecutionOutcomeWithReceiptView' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FinalExecutionOutcomeWithReceiptView' and tf='\$tf'")
                                 }
                                 "FinalExecutionOutcomeView" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionResponse.FinalExecutionOutcomeView>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'FinalExecutionOutcomeView' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'FinalExecutionOutcomeView' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

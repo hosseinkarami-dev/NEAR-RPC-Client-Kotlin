@@ -77,6 +77,7 @@ object RpcTransactionStatusRequestSerializer : KSerializer<RpcTransactionStatusR
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("signed_tx_base64", "sender_account_id")
                     if (jobj["signed_tx_base64"] != null) {
                         val signedTxBase64Val = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.SignedTransaction>(), jobj["signed_tx_base64"] ?: throw SerializationException("Missing field 'signed_tx_base64' for variant SignedTxBase64"))
                         val waitUntilVal = jobj["wait_until"]?.let { decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TxExecutionStatus?>(), it) }
@@ -92,7 +93,8 @@ object RpcTransactionStatusRequestSerializer : KSerializer<RpcTransactionStatusR
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "signed_tx_base64" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant signed_tx_base64: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.SignedTxBase64>(), obj)
@@ -101,13 +103,13 @@ object RpcTransactionStatusRequestSerializer : KSerializer<RpcTransactionStatusR
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant sender_account_id: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.SenderAccountId>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcTransactionStatusRequest: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("signed_tx_base64", "sender_account_id")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -133,11 +135,11 @@ object RpcTransactionStatusRequestSerializer : KSerializer<RpcTransactionStatusR
                             when (chosenGroupKey) {
                                 "signed_tx_base64" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.SignedTxBase64>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'signed_tx_base64' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'signed_tx_base64' and tf='\$tf'")
                                 }
                                 "sender_account_id" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcTransactionStatusRequest.SenderAccountId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'sender_account_id' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'sender_account_id' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

@@ -164,11 +164,13 @@ object StateChangeWithCauseViewSerializer : KSerializer<StateChangeWithCauseView
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("account_update", "account_deletion", "access_key_update", "access_key_deletion", "gas_key_update", "gas_key_nonce_update", "gas_key_deletion", "data_update", "data_deletion", "contract_code_update", "contract_code_deletion")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "account_update" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant account_update: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.AccountUpdate>(), obj)
@@ -213,7 +215,8 @@ object StateChangeWithCauseViewSerializer : KSerializer<StateChangeWithCauseView
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant contract_code_deletion: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.ContractCodeDeletion>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for StateChangeWithCauseView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -226,7 +229,6 @@ object StateChangeWithCauseViewSerializer : KSerializer<StateChangeWithCauseView
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("account_update", "account_deletion", "access_key_update", "access_key_deletion", "gas_key_update", "gas_key_nonce_update", "gas_key_deletion", "data_update", "data_deletion", "contract_code_update", "contract_code_deletion")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -270,47 +272,47 @@ object StateChangeWithCauseViewSerializer : KSerializer<StateChangeWithCauseView
                             when (chosenGroupKey) {
                                 "account_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.AccountUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'account_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'account_update' and tf='\$tf'")
                                 }
                                 "account_deletion" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.AccountDeletion>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'account_deletion' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'account_deletion' and tf='\$tf'")
                                 }
                                 "access_key_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.AccessKeyUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'access_key_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'access_key_update' and tf='\$tf'")
                                 }
                                 "access_key_deletion" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.AccessKeyDeletion>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'access_key_deletion' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'access_key_deletion' and tf='\$tf'")
                                 }
                                 "gas_key_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.GasKeyUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'gas_key_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'gas_key_update' and tf='\$tf'")
                                 }
                                 "gas_key_nonce_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.GasKeyNonceUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'gas_key_nonce_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'gas_key_nonce_update' and tf='\$tf'")
                                 }
                                 "gas_key_deletion" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.GasKeyDeletion>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'gas_key_deletion' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'gas_key_deletion' and tf='\$tf'")
                                 }
                                 "data_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.DataUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'data_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'data_update' and tf='\$tf'")
                                 }
                                 "data_deletion" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.DataDeletion>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'data_deletion' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'data_deletion' and tf='\$tf'")
                                 }
                                 "contract_code_update" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.ContractCodeUpdate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_update' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_update' and tf='\$tf'")
                                 }
                                 "contract_code_deletion" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.StateChangeWithCauseView.ContractCodeDeletion>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_deletion' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'contract_code_deletion' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

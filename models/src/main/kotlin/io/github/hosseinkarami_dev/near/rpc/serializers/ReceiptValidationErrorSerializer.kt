@@ -118,6 +118,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("InvalidPredecessorId", "InvalidReceiverId", "InvalidSignerId", "InvalidDataReceiverId", "ReturnedValueLengthExceeded", "NumberInputDataDependenciesExceeded", "ActionsValidation", "ReceiptSizeExceeded")
                     if (jobj["InvalidPredecessorId"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId.InvalidPredecessorIdPayload>(), jobj["InvalidPredecessorId"]!!))
                     }
@@ -146,7 +147,8 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "InvalidPredecessorId" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant InvalidPredecessorId: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId>(), obj)
@@ -179,7 +181,8 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant ReceiptSizeExceeded: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for ReceiptValidationError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -192,7 +195,6 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("InvalidPredecessorId", "InvalidReceiverId", "InvalidSignerId", "InvalidDataReceiverId", "ReturnedValueLengthExceeded", "NumberInputDataDependenciesExceeded", "ActionsValidation", "ReceiptSizeExceeded")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -230,35 +232,35 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                             when (chosenGroupKey) {
                                 "InvalidPredecessorId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPredecessorId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidPredecessorId' and tf='\$tf'")
                                 }
                                 "InvalidReceiverId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidReceiverId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidReceiverId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidReceiverId' and tf='\$tf'")
                                 }
                                 "InvalidSignerId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidSignerId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidSignerId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidSignerId' and tf='\$tf'")
                                 }
                                 "InvalidDataReceiverId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidDataReceiverId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidDataReceiverId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidDataReceiverId' and tf='\$tf'")
                                 }
                                 "ReturnedValueLengthExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReturnedValueLengthExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ReturnedValueLengthExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ReturnedValueLengthExceeded' and tf='\$tf'")
                                 }
                                 "NumberInputDataDependenciesExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberInputDataDependenciesExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NumberInputDataDependenciesExceeded' and tf='\$tf'")
                                 }
                                 "ActionsValidation" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ActionsValidation' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ActionsValidation' and tf='\$tf'")
                                 }
                                 "ReceiptSizeExceeded" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ReceiptSizeExceeded' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ReceiptSizeExceeded' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

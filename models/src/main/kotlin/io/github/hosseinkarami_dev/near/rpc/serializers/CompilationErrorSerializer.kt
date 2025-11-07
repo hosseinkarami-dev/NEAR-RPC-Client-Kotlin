@@ -78,6 +78,7 @@ object CompilationErrorSerializer : KSerializer<CompilationError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("CodeDoesNotExist", "PrepareError", "WasmerCompileError")
                     if (jobj["CodeDoesNotExist"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.CompilationError.CodeDoesNotExist(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError.CodeDoesNotExist.CodeDoesNotExistPayload>(), jobj["CodeDoesNotExist"]!!))
                     }
@@ -91,7 +92,8 @@ object CompilationErrorSerializer : KSerializer<CompilationError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "CodeDoesNotExist" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant CodeDoesNotExist: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError.CodeDoesNotExist>(), obj)
@@ -104,7 +106,8 @@ object CompilationErrorSerializer : KSerializer<CompilationError> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant WasmerCompileError: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError.WasmerCompileError>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for CompilationError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -117,7 +120,6 @@ object CompilationErrorSerializer : KSerializer<CompilationError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("CodeDoesNotExist", "PrepareError", "WasmerCompileError")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -145,15 +147,15 @@ object CompilationErrorSerializer : KSerializer<CompilationError> {
                             when (chosenGroupKey) {
                                 "CodeDoesNotExist" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError.CodeDoesNotExist>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CodeDoesNotExist' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CodeDoesNotExist' and tf='\$tf'")
                                 }
                                 "PrepareError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError.PrepareError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'PrepareError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'PrepareError' and tf='\$tf'")
                                 }
                                 "WasmerCompileError" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CompilationError.WasmerCompileError>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'WasmerCompileError' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'WasmerCompileError' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

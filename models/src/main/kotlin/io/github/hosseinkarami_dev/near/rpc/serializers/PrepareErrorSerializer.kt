@@ -120,11 +120,13 @@ object PrepareErrorSerializer : KSerializer<PrepareError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("Serialization", "Deserialization", "InternalMemoryDeclared", "GasInstrumentation", "StackHeightInstrumentation", "Instantiate", "Memory", "TooManyFunctions", "TooManyLocals", "TooManyTables", "TooManyTableElements")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Serialization" -> return io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Serialization
                             "Deserialization" -> return io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Deserialization
                             "InternalMemoryDeclared" -> return io.github.hosseinkarami_dev.near.rpc.models.PrepareError.InternalMemoryDeclared
@@ -136,13 +138,13 @@ object PrepareErrorSerializer : KSerializer<PrepareError> {
                             "TooManyLocals" -> return io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyLocals
                             "TooManyTables" -> return io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyTables
                             "TooManyTableElements" -> return io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyTableElements
-                            else -> throw SerializationException("Unknown discriminator key for PrepareError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("Serialization", "Deserialization", "InternalMemoryDeclared", "GasInstrumentation", "StackHeightInstrumentation", "Instantiate", "Memory", "TooManyFunctions", "TooManyLocals", "TooManyTables", "TooManyTableElements")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -186,47 +188,47 @@ object PrepareErrorSerializer : KSerializer<PrepareError> {
                             when (chosenGroupKey) {
                                 "Serialization" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Serialization>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Serialization' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Serialization' and tf='\$tf'")
                                 }
                                 "Deserialization" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Deserialization>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Deserialization' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Deserialization' and tf='\$tf'")
                                 }
                                 "InternalMemoryDeclared" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.InternalMemoryDeclared>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'InternalMemoryDeclared' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InternalMemoryDeclared' and tf='\$tf'")
                                 }
                                 "GasInstrumentation" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.GasInstrumentation>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GasInstrumentation' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GasInstrumentation' and tf='\$tf'")
                                 }
                                 "StackHeightInstrumentation" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.StackHeightInstrumentation>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'StackHeightInstrumentation' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'StackHeightInstrumentation' and tf='\$tf'")
                                 }
                                 "Instantiate" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Instantiate>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Instantiate' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Instantiate' and tf='\$tf'")
                                 }
                                 "Memory" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.Memory>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Memory' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Memory' and tf='\$tf'")
                                 }
                                 "TooManyFunctions" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyFunctions>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyFunctions' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyFunctions' and tf='\$tf'")
                                 }
                                 "TooManyLocals" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyLocals>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyLocals' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyLocals' and tf='\$tf'")
                                 }
                                 "TooManyTables" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyTables>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyTables' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyTables' and tf='\$tf'")
                                 }
                                 "TooManyTableElements" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.PrepareError.TooManyTableElements>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyTableElements' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TooManyTableElements' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

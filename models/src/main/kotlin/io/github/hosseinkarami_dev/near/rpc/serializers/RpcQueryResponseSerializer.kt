@@ -132,6 +132,7 @@ object RpcQueryResponseSerializer : KSerializer<RpcQueryResponse> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("AccountView", "ContractCodeView", "ViewStateResult", "CallResult", "AccessKeyView", "AccessKeyList")
                     if (jobj["amount"] != null) {
                         val amountVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NearToken>(), jobj["amount"] ?: throw SerializationException("Missing field 'amount' for variant AccountView"))
                         val codeHashVal = decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CryptoHash>(), jobj["code_hash"] ?: throw SerializationException("Missing field 'code_hash' for variant AccountView"))
@@ -182,7 +183,8 @@ object RpcQueryResponseSerializer : KSerializer<RpcQueryResponse> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "AccountView" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant AccountView: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.AccountView>(), obj)
@@ -207,7 +209,8 @@ object RpcQueryResponseSerializer : KSerializer<RpcQueryResponse> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant AccessKeyList: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.AccessKeyList>(), obj)
                             }
-                            else -> throw SerializationException("Unknown discriminator key for RpcQueryResponse: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -220,7 +223,6 @@ object RpcQueryResponseSerializer : KSerializer<RpcQueryResponse> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("AccountView", "ContractCodeView", "ViewStateResult", "CallResult", "AccessKeyView", "AccessKeyList")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -254,27 +256,27 @@ object RpcQueryResponseSerializer : KSerializer<RpcQueryResponse> {
                             when (chosenGroupKey) {
                                 "AccountView" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.AccountView>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountView' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountView' and tf='\$tf'")
                                 }
                                 "ContractCodeView" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.ContractCodeView>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ContractCodeView' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ContractCodeView' and tf='\$tf'")
                                 }
                                 "ViewStateResult" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.ViewStateResult>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ViewStateResult' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ViewStateResult' and tf='\$tf'")
                                 }
                                 "CallResult" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.CallResult>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CallResult' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CallResult' and tf='\$tf'")
                                 }
                                 "AccessKeyView" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.AccessKeyView>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccessKeyView' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccessKeyView' and tf='\$tf'")
                                 }
                                 "AccessKeyList" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.RpcQueryResponse.AccessKeyList>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccessKeyList' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccessKeyList' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

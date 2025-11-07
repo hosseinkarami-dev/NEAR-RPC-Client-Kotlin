@@ -98,6 +98,7 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("AccessKeyNotFound", "ReceiverMismatch", "MethodNameMismatch", "RequiresFullAccess", "NotEnoughAllowance", "DepositWithFunctionCall")
                     if (jobj["AccessKeyNotFound"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.AccessKeyNotFound(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.AccessKeyNotFound.AccessKeyNotFoundPayload>(), jobj["AccessKeyNotFound"]!!))
                     }
@@ -114,7 +115,8 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "AccessKeyNotFound" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant AccessKeyNotFound: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.AccessKeyNotFound>(), obj)
@@ -133,7 +135,8 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
                             }
                             "RequiresFullAccess" -> return io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.RequiresFullAccess
                             "DepositWithFunctionCall" -> return io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.DepositWithFunctionCall
-                            else -> throw SerializationException("Unknown discriminator key for InvalidAccessKeyError: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -146,7 +149,6 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("AccessKeyNotFound", "ReceiverMismatch", "MethodNameMismatch", "RequiresFullAccess", "NotEnoughAllowance", "DepositWithFunctionCall")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -180,27 +182,27 @@ object InvalidAccessKeyErrorSerializer : KSerializer<InvalidAccessKeyError> {
                             when (chosenGroupKey) {
                                 "AccessKeyNotFound" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.AccessKeyNotFound>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccessKeyNotFound' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccessKeyNotFound' and tf='\$tf'")
                                 }
                                 "ReceiverMismatch" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.ReceiverMismatch>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ReceiverMismatch' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ReceiverMismatch' and tf='\$tf'")
                                 }
                                 "MethodNameMismatch" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.MethodNameMismatch>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MethodNameMismatch' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MethodNameMismatch' and tf='\$tf'")
                                 }
                                 "RequiresFullAccess" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.RequiresFullAccess>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'RequiresFullAccess' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'RequiresFullAccess' and tf='\$tf'")
                                 }
                                 "NotEnoughAllowance" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.NotEnoughAllowance>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughAllowance' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughAllowance' and tf='\$tf'")
                                 }
                                 "DepositWithFunctionCall" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.InvalidAccessKeyError.DepositWithFunctionCall>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DepositWithFunctionCall' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DepositWithFunctionCall' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

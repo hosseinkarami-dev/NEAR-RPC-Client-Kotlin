@@ -78,22 +78,24 @@ object VMKindSerializer : KSerializer<VMKind> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("Wasmer0", "Wasmtime", "Wasmer2", "NearVm")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Wasmer0" -> return io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmer0
                             "Wasmtime" -> return io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmtime
                             "Wasmer2" -> return io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmer2
                             "NearVm" -> return io.github.hosseinkarami_dev.near.rpc.models.VMKind.NearVm
-                            else -> throw SerializationException("Unknown discriminator key for VMKind: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("Wasmer0", "Wasmtime", "Wasmer2", "NearVm")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -123,19 +125,19 @@ object VMKindSerializer : KSerializer<VMKind> {
                             when (chosenGroupKey) {
                                 "Wasmer0" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmer0>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Wasmer0' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Wasmer0' and tf='\$tf'")
                                 }
                                 "Wasmtime" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmtime>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Wasmtime' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Wasmtime' and tf='\$tf'")
                                 }
                                 "Wasmer2" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.VMKind.Wasmer2>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Wasmer2' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Wasmer2' and tf='\$tf'")
                                 }
                                 "NearVm" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.VMKind.NearVm>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NearVm' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NearVm' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

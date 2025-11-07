@@ -98,6 +98,7 @@ object TrackedShardsConfigSerializer : KSerializer<TrackedShardsConfig> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("NoShards", "Shards", "AllShards", "ShadowValidator", "Schedule", "Accounts")
                     if (jobj["Shards"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.Shards(decoder.json.decodeFromJsonElement(ListSerializer(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardUId>()), jobj["Shards"]!!))
                     }
@@ -114,7 +115,8 @@ object TrackedShardsConfigSerializer : KSerializer<TrackedShardsConfig> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Shards" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant Shards: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.Shards>(), obj)
@@ -133,13 +135,13 @@ object TrackedShardsConfigSerializer : KSerializer<TrackedShardsConfig> {
                             }
                             "NoShards" -> return io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.NoShards
                             "AllShards" -> return io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.AllShards
-                            else -> throw SerializationException("Unknown discriminator key for TrackedShardsConfig: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("NoShards", "Shards", "AllShards", "ShadowValidator", "Schedule", "Accounts")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -173,27 +175,27 @@ object TrackedShardsConfigSerializer : KSerializer<TrackedShardsConfig> {
                             when (chosenGroupKey) {
                                 "NoShards" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.NoShards>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NoShards' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NoShards' and tf='\$tf'")
                                 }
                                 "Shards" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.Shards>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Shards' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Shards' and tf='\$tf'")
                                 }
                                 "AllShards" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.AllShards>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AllShards' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AllShards' and tf='\$tf'")
                                 }
                                 "ShadowValidator" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.ShadowValidator>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ShadowValidator' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ShadowValidator' and tf='\$tf'")
                                 }
                                 "Schedule" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.Schedule>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Schedule' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Schedule' and tf='\$tf'")
                                 }
                                 "Accounts" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TrackedShardsConfig.Accounts>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Accounts' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Accounts' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

@@ -108,11 +108,13 @@ object WasmTrapSerializer : KSerializer<WasmTrap> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("Unreachable", "IncorrectCallIndirectSignature", "MemoryOutOfBounds", "CallIndirectOOB", "IllegalArithmetic", "MisalignedAtomicAccess", "IndirectCallToNull", "StackOverflow", "GenericTrap")
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "Unreachable" -> return io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.Unreachable
                             "IncorrectCallIndirectSignature" -> return io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IncorrectCallIndirectSignature
                             "MemoryOutOfBounds" -> return io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.MemoryOutOfBounds
@@ -122,13 +124,13 @@ object WasmTrapSerializer : KSerializer<WasmTrap> {
                             "IndirectCallToNull" -> return io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IndirectCallToNull
                             "StackOverflow" -> return io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.StackOverflow
                             "GenericTrap" -> return io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.GenericTrap
-                            else -> throw SerializationException("Unknown discriminator key for WasmTrap: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("Unreachable", "IncorrectCallIndirectSignature", "MemoryOutOfBounds", "CallIndirectOOB", "IllegalArithmetic", "MisalignedAtomicAccess", "IndirectCallToNull", "StackOverflow", "GenericTrap")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -168,39 +170,39 @@ object WasmTrapSerializer : KSerializer<WasmTrap> {
                             when (chosenGroupKey) {
                                 "Unreachable" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.Unreachable>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Unreachable' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Unreachable' and tf='\$tf'")
                                 }
                                 "IncorrectCallIndirectSignature" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IncorrectCallIndirectSignature>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'IncorrectCallIndirectSignature' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'IncorrectCallIndirectSignature' and tf='\$tf'")
                                 }
                                 "MemoryOutOfBounds" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.MemoryOutOfBounds>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MemoryOutOfBounds' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MemoryOutOfBounds' and tf='\$tf'")
                                 }
                                 "CallIndirectOOB" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.CallIndirectOOB>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CallIndirectOOB' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CallIndirectOOB' and tf='\$tf'")
                                 }
                                 "IllegalArithmetic" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IllegalArithmetic>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'IllegalArithmetic' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'IllegalArithmetic' and tf='\$tf'")
                                 }
                                 "MisalignedAtomicAccess" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.MisalignedAtomicAccess>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'MisalignedAtomicAccess' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'MisalignedAtomicAccess' and tf='\$tf'")
                                 }
                                 "IndirectCallToNull" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.IndirectCallToNull>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'IndirectCallToNull' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'IndirectCallToNull' and tf='\$tf'")
                                 }
                                 "StackOverflow" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.StackOverflow>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'StackOverflow' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'StackOverflow' and tf='\$tf'")
                                 }
                                 "GenericTrap" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.WasmTrap.GenericTrap>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'GenericTrap' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GenericTrap' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

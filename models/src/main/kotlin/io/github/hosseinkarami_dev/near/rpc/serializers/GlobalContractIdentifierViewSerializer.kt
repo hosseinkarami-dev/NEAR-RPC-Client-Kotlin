@@ -74,6 +74,7 @@ object GlobalContractIdentifierViewSerializer : KSerializer<GlobalContractIdenti
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("CryptoHash", "AccountId")
                     if (jobj["CryptoHash"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.CryptoHash(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CryptoHash>(), jobj["CryptoHash"]!!))
                     }
@@ -84,20 +85,21 @@ object GlobalContractIdentifierViewSerializer : KSerializer<GlobalContractIdenti
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "CryptoHash" -> {
                                 return io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.CryptoHash(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CryptoHash>(), valueElem))
                             }
                             "AccountId" -> {
                                 return io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.AccountId(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AccountId>(), valueElem))
                             }
-                            else -> throw SerializationException("Unknown discriminator key for GlobalContractIdentifierView: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("CryptoHash", "AccountId")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -123,11 +125,11 @@ object GlobalContractIdentifierViewSerializer : KSerializer<GlobalContractIdenti
                             when (chosenGroupKey) {
                                 "CryptoHash" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.CryptoHash>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CryptoHash' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CryptoHash' and tf='\$tf'")
                                 }
                                 "AccountId" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.GlobalContractIdentifierView.AccountId>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountId' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AccountId' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

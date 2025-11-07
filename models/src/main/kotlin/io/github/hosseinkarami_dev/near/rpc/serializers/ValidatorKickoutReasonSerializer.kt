@@ -112,6 +112,7 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("_UnusedSlashed", "NotEnoughBlocks", "NotEnoughChunks", "Unstaked", "NotEnoughStake", "DidNotGetASeat", "NotEnoughChunkEndorsements", "ProtocolVersionTooOld")
                     if (jobj["NotEnoughBlocks"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughBlocks(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughBlocks.NotEnoughBlocksPayload>(), jobj["NotEnoughBlocks"]!!))
                     }
@@ -131,7 +132,8 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "NotEnoughBlocks" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant NotEnoughBlocks: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughBlocks>(), obj)
@@ -155,7 +157,8 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
                             "_UnusedSlashed" -> return io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.UnusedSlashed
                             "Unstaked" -> return io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.Unstaked
                             "DidNotGetASeat" -> return io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.DidNotGetASeat
-                            else -> throw SerializationException("Unknown discriminator key for ValidatorKickoutReason: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
@@ -168,7 +171,6 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
                         }
                     }
                     if (typeField == null) {
-                        val knownVariantNames = setOf("_UnusedSlashed", "NotEnoughBlocks", "NotEnoughChunks", "Unstaked", "NotEnoughStake", "DidNotGetASeat", "NotEnoughChunkEndorsements", "ProtocolVersionTooOld")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -206,35 +208,35 @@ object ValidatorKickoutReasonSerializer : KSerializer<ValidatorKickoutReason> {
                             when (chosenGroupKey) {
                                 "_UnusedSlashed" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.UnusedSlashed>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token '_UnusedSlashed' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token '_UnusedSlashed' and tf='\$tf'")
                                 }
                                 "NotEnoughBlocks" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughBlocks>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughBlocks' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughBlocks' and tf='\$tf'")
                                 }
                                 "NotEnoughChunks" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughChunks>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughChunks' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughChunks' and tf='\$tf'")
                                 }
                                 "Unstaked" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.Unstaked>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Unstaked' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Unstaked' and tf='\$tf'")
                                 }
                                 "NotEnoughStake" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughStake>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughStake' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughStake' and tf='\$tf'")
                                 }
                                 "DidNotGetASeat" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.DidNotGetASeat>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'DidNotGetASeat' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DidNotGetASeat' and tf='\$tf'")
                                 }
                                 "NotEnoughChunkEndorsements" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.NotEnoughChunkEndorsements>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughChunkEndorsements' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'NotEnoughChunkEndorsements' and tf='\$tf'")
                                 }
                                 "ProtocolVersionTooOld" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ValidatorKickoutReason.ProtocolVersionTooOld>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ProtocolVersionTooOld' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ProtocolVersionTooOld' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

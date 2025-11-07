@@ -68,6 +68,7 @@ object SyncConfigSerializer : KSerializer<SyncConfig> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("Peers", "ExternalStorage")
                     if (jobj["ExternalStorage"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.ExternalStorage(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ExternalStorageConfig>(), jobj["ExternalStorage"]!!))
                     }
@@ -75,19 +76,20 @@ object SyncConfigSerializer : KSerializer<SyncConfig> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "ExternalStorage" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant ExternalStorage: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.ExternalStorage>(), obj)
                             }
                             "Peers" -> return io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.Peers
-                            else -> throw SerializationException("Unknown discriminator key for SyncConfig: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("Peers", "ExternalStorage")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -113,11 +115,11 @@ object SyncConfigSerializer : KSerializer<SyncConfig> {
                             when (chosenGroupKey) {
                                 "Peers" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.Peers>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'Peers' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'Peers' and tf='\$tf'")
                                 }
                                 "ExternalStorage" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.SyncConfig.ExternalStorage>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'ExternalStorage' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'ExternalStorage' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }

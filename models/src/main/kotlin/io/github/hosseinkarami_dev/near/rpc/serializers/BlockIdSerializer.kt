@@ -74,6 +74,7 @@ object BlockIdSerializer : KSerializer<BlockId> {
 
                 is JsonObject -> {
                     val jobj = element
+                    val knownVariantNames = setOf("block_height", "CryptoHash")
                     if (jobj["block_height"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.BlockId.BlockHeight(decoder.json.decodeFromJsonElement(serializer<kotlin.ULong>(), jobj["block_height"]!!))
                     }
@@ -84,20 +85,21 @@ object BlockIdSerializer : KSerializer<BlockId> {
                         val entry = jobj.entries.first()
                         val key = entry.key
                         val valueElem = entry.value
-                        when (key) {
+                        if (knownVariantNames.contains(key)) {
+                            when (key) {
                             "block_height" -> {
                                 return io.github.hosseinkarami_dev.near.rpc.models.BlockId.BlockHeight(decoder.json.decodeFromJsonElement(serializer<kotlin.ULong>(), valueElem))
                             }
                             "CryptoHash" -> {
                                 return io.github.hosseinkarami_dev.near.rpc.models.BlockId.CryptoHash(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CryptoHash>(), valueElem))
                             }
-                            else -> throw SerializationException("Unknown discriminator key for BlockId: " + key)
+                            else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
+                            }
                         }
                     }
                     var typeField: String? = null
                     val discriminatorCandidates = emptyList<String>()
                     if (typeField == null) {
-                        val knownVariantNames = setOf("block_height", "CryptoHash")
                         for ((k, v) in jobj.entries) {
                             if (v is JsonPrimitive && v.isString) {
                                 val s = v.content
@@ -123,11 +125,11 @@ object BlockIdSerializer : KSerializer<BlockId> {
                             when (chosenGroupKey) {
                                 "block_height" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.BlockId.BlockHeight>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'block_height' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'block_height' and tf='\$tf'")
                                 }
                                 "CryptoHash" -> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.BlockId.CryptoHash>(), jobj) } catch (_: Exception) { }
-                                    throw SerializationException("Cannot disambiguate variant for base token 'CryptoHash' and tf='$tf'")
+                                    throw SerializationException("Cannot disambiguate variant for base token 'CryptoHash' and tf='\$tf'")
                                 }
                                 else -> { /* no group matched */ }
                             }
