@@ -2,11 +2,8 @@
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](#) [![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
 
-A **type-safe**, Kotlin client for the NEAR JSON-RPC API. This repository contains:
+A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 
-- `models`: Generated Kotlin `@Serializable` types for OpenAPI schemas.  
-- `client`: Ergonomic Kotlin client built on Ktor that exposes NEAR JSON-RPC methods as `suspend` functions.  
-- `generator`: CLI tool that parses the NEAR OpenAPI spec and regenerates `models` and `client`.
 ---
 
 ## Table of contents
@@ -110,9 +107,10 @@ The `generator` module is a CLI that parses NEAR's OpenAPI spec and writes gener
 
 Run the generator against NEAR's OpenAPI:
 ```bash
-./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated"
+./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json"
 ```
-
+- Use the `--models-out` argument to specify a custom output directory for generated model classes (e.g. --models-out build/generated/models)
+- Use the `--client-out` argument to specify a custom output directory for generated client classes (e.g. --client-out build/generated/client)
 ---
 
 ## 💡 Basic Usage
