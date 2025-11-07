@@ -1,0 +1,13 @@
+{
+    "blocks_to_catchup": [
+        {
+            "hash": "s",
+            "height": 0
+        }
+    ],
+    "shard_sync_status": {
+        "736": "s"
+    },
+    "sync_block_hash": "s",
+    "sync_block_height": 0
+}

@@ -1,0 +1,51 @@
+{
+    "balance_burnt": "s",
+    "bandwidth_requests": {
+        "V1": {
+            "requests": [
+                {
+                    "requested_values_bitmap": {
+                        "data": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    "to_shard": 0
+                }
+            ]
+        }
+    },
+    "chunk_hash": "s",
+    "congestion_info": {
+        "allowed_shard": 0,
+        "buffered_receipts_gas": "s",
+        "delayed_receipts_gas": "s",
+        "receipt_bytes": 0
+    },
+    "encoded_length": 0,
+    "encoded_merkle_root": "s",
+    "gas_limit": 0,
+    "gas_used": 0,
+    "height_created": 0,
+    "height_included": 0,
+    "outcome_root": "s",
+    "outgoing_receipts_root": "s",
+    "prev_block_hash": "s",
+    "prev_state_root": "s",
+    "rent_paid": "0",
+    "shard_id": 0,
+    "signature": "s",
+    "tx_root": "s",
+    "validator_proposals": [
+        {
+            "account_id": "s",
+            "public_key": "s",
+            "stake": "s",
+            "validator_stake_struct_version": "V1"
+        }
+    ],
+    "validator_reward": "0"
+}

@@ -1,0 +1,9 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "EXPERIMENTAL_light_client_block_proof",
+    "params": {
+        "block_hash": "s",
+        "light_client_head": "s"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "disable_epoch_sync_for_bootstrapping": false,
+    "epoch_sync_horizon": 0,
+    "ignore_epoch_sync_network_requests": false,
+    "timeout_for_epoch_sync": {
+        "nanos": 0,
+        "secs": 0
+    }
+}

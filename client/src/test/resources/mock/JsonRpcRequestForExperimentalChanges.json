@@ -1,0 +1,12 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "EXPERIMENTAL_changes",
+    "params": {
+        "block_id": "s",
+        "account_ids": [
+            "s"
+        ],
+        "changes_type": "account_changes"
+    }
+}

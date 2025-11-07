@@ -1,0 +1,8 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "EXPERIMENTAL_receipt",
+    "params": {
+        "receipt_id": "s"
+    }
+}

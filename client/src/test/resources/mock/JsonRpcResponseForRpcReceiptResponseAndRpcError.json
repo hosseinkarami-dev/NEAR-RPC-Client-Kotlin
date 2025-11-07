@@ -1,0 +1,30 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "result": {
+        "predecessor_id": "s",
+        "priority": 0,
+        "receipt": {
+            "Action": {
+                "actions": [
+                    "CreateAccount"
+                ],
+                "gas_price": "s",
+                "input_data_ids": [
+                    "s"
+                ],
+                "is_promise_yield": false,
+                "output_data_receivers": [
+                    {
+                        "data_id": "s",
+                        "receiver_id": "s"
+                    }
+                ],
+                "signer_id": "s",
+                "signer_public_key": "s"
+            }
+        },
+        "receipt_id": "s",
+        "receiver_id": "s"
+    }
+}

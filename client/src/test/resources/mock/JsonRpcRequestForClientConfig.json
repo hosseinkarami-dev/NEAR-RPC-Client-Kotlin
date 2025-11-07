@@ -1,0 +1,6 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "client_config",
+    "params": null
+}

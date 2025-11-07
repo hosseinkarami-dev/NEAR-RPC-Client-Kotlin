@@ -1,0 +1,9 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "broadcast_tx_async",
+    "params": {
+        "signed_tx_base64": "s",
+        "wait_until": "EXECUTED_OPTIMISTIC"
+    }
+}

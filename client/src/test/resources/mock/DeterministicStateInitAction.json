@@ -1,0 +1,13 @@
+{
+    "deposit": "s",
+    "state_init": {
+        "V1": {
+            "code": {
+                "CodeHash": "s"
+            },
+            "data": {
+                "additionalProp1": "s"
+            }
+        }
+    }
+}

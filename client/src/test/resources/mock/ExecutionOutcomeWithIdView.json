@@ -1,0 +1,25 @@
+{
+    "block_hash": "s",
+    "id": "s",
+    "outcome": {
+        "executor_id": "s",
+        "gas_burnt": 0,
+        "logs": [
+            "s"
+        ],
+        "metadata": {
+            "version": 1
+        },
+        "receipt_ids": [
+            "s"
+        ],
+        "status": "Unknown",
+        "tokens_burnt": "s"
+    },
+    "proof": [
+        {
+            "direction": "Left",
+            "hash": "s"
+        }
+    ]
+}

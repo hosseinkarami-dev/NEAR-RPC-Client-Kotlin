@@ -1,0 +1,8 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "next_light_client_block",
+    "params": {
+        "last_block_hash": "s"
+    }
+}

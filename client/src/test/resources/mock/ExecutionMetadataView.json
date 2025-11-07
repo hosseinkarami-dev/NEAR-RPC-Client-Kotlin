@@ -1,0 +1,10 @@
+{
+    "gas_profile": [
+        {
+            "cost": "s",
+            "cost_category": "s",
+            "gas_used": "s"
+        }
+    ],
+    "version": 0
+}

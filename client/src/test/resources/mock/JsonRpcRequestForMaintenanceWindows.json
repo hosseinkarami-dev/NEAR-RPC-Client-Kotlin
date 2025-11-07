@@ -1,0 +1,8 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "maintenance_windows",
+    "params": {
+        "account_id": "s"
+    }
+}

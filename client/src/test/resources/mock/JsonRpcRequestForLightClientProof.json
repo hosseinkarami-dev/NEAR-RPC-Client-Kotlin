@@ -1,0 +1,11 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "light_client_proof",
+    "params": {
+        "light_client_head": "s",
+        "sender_id": "s",
+        "transaction_hash": "s",
+        "type": "transaction"
+    }
+}

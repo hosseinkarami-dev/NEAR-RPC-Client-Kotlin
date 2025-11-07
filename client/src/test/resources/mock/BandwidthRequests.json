@@ -1,0 +1,18 @@
+{
+    "V1": {
+        "requests": [
+            {
+                "requested_values_bitmap": {
+                    "data": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "to_shard": 0
+            }
+        ]
+    }
+}

@@ -1,0 +1,187 @@
+{
+    "archive": true,
+    "block_fetch_horizon": 0,
+    "block_header_fetch_horizon": 0,
+    "block_production_tracking_delay": [
+        0,
+        0
+    ],
+    "catchup_step_period": [
+        0,
+        0
+    ],
+    "chain_id": "s",
+    "chunk_distribution_network": {
+        "enabled": true,
+        "uris": {
+            "get": "s",
+            "set": "s"
+        }
+    },
+    "chunk_request_retry_period": [
+        0,
+        0
+    ],
+    "chunk_validation_threads": 0,
+    "chunk_wait_mult": [
+        0,
+        0
+    ],
+    "client_background_migration_threads": 0,
+    "cloud_archival_writer": {
+        "archive_block_data": false,
+        "polling_interval": {
+            "nanos": 0,
+            "secs": 1
+        }
+    },
+    "doomslug_step_period": [
+        0,
+        0
+    ],
+    "dynamic_resharding_dry_run": true,
+    "enable_early_prepare_transactions": true,
+    "enable_multiline_logging": true,
+    "enable_statistics_export": true,
+    "epoch_length": 0,
+    "epoch_sync": {
+        "disable_epoch_sync_for_bootstrapping": false,
+        "epoch_sync_horizon": 0,
+        "ignore_epoch_sync_network_requests": false,
+        "timeout_for_epoch_sync": {
+            "nanos": 0,
+            "secs": 0
+        }
+    },
+    "expected_shutdown": "s",
+    "gc": {
+        "gc_blocks_limit": 2,
+        "gc_fork_clean_step": 100,
+        "gc_num_epochs_to_keep": 5,
+        "gc_step_period": {
+            "nanos": 500000000,
+            "secs": 0
+        }
+    },
+    "header_sync_expected_height_per_second": 0,
+    "header_sync_initial_timeout": [
+        0,
+        0
+    ],
+    "header_sync_progress_timeout": [
+        0,
+        0
+    ],
+    "header_sync_stall_ban_timeout": [
+        0,
+        0
+    ],
+    "log_summary_period": [
+        0,
+        0
+    ],
+    "log_summary_style": "plain",
+    "max_block_production_delay": [
+        0,
+        0
+    ],
+    "max_block_wait_delay": [
+        0,
+        0
+    ],
+    "max_gas_burnt_view": 0,
+    "min_block_production_delay": [
+        0,
+        0
+    ],
+    "min_num_peers": 0,
+    "num_block_producer_seats": 0,
+    "orphan_state_witness_max_size": 0,
+    "orphan_state_witness_pool_size": 0,
+    "produce_chunk_add_transactions_time_limit": "s",
+    "produce_empty_blocks": true,
+    "protocol_version_check": "Next",
+    "resharding_config": "s",
+    "rpc_addr": "s",
+    "save_invalid_witnesses": true,
+    "save_latest_witnesses": true,
+    "save_trie_changes": true,
+    "save_tx_outcomes": true,
+    "save_untracked_partial_chunks_parts": true,
+    "skip_sync_wait": true,
+    "state_request_server_threads": 0,
+    "state_request_throttle_period": [
+        0,
+        0
+    ],
+    "state_requests_per_throttle_period": 0,
+    "state_sync": {
+        "concurrency": {
+            "apply": 0,
+            "apply_during_catchup": 0,
+            "peer_downloads": 0,
+            "per_shard": 0
+        },
+        "dump": {
+            "credentials_file": "s",
+            "iteration_delay": {
+                "nanos": 0,
+                "secs": 0
+            },
+            "location": {
+                "S3": {
+                    "bucket": "s",
+                    "region": "s"
+                }
+            },
+            "restart_dump_for_shards": [
+                0
+            ]
+        },
+        "parts_compression_lvl": 1,
+        "sync": "Peers"
+    },
+    "state_sync_enabled": true,
+    "state_sync_external_backoff": [
+        0,
+        0
+    ],
+    "state_sync_external_timeout": [
+        0,
+        0
+    ],
+    "state_sync_p2p_timeout": [
+        0,
+        0
+    ],
+    "state_sync_retry_backoff": [
+        0,
+        0
+    ],
+    "sync_check_period": [
+        0,
+        0
+    ],
+    "sync_height_threshold": 0,
+    "sync_max_block_requests": 0,
+    "sync_step_period": [
+        0,
+        0
+    ],
+    "tracked_shards_config": "NoShards",
+    "transaction_pool_size_limit": 0,
+    "transaction_request_handler_threads": 0,
+    "trie_viewer_state_size_limit": 0,
+    "ttl_account_id_router": [
+        0,
+        0
+    ],
+    "tx_routing_height_horizon": 0,
+    "version": {
+        "build": "s",
+        "commit": "s",
+        "rustc_version": "",
+        "version": "s"
+    },
+    "view_client_threads": 0
+}

@@ -1,0 +1,8 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "EXPERIMENTAL_validators_ordered",
+    "params": {
+        "block_id": "s"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "result": [
+        {
+            "account_id": "s",
+            "public_key": "s",
+            "stake": "s",
+            "validator_stake_struct_version": "V1"
+        }
+    ]
+}

@@ -1,0 +1,6 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "network_info",
+    "params": null
+}

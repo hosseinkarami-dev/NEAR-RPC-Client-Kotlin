@@ -1,0 +1,24 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "result": {
+        "active_peers": [
+            {
+                "account_id": "s",
+                "addr": "s",
+                "id": "s"
+            }
+        ],
+        "known_producers": [
+            {
+                "account_id": "s",
+                "addr": "s",
+                "peer_id": "s"
+            }
+        ],
+        "num_active_peers": 0,
+        "peer_max_count": 0,
+        "received_bytes_per_sec": 0,
+        "sent_bytes_per_sec": 0
+    }
+}

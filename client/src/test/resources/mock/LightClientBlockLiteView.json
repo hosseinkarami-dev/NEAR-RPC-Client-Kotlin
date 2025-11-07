@@ -1,0 +1,15 @@
+{
+    "inner_lite": {
+        "block_merkle_root": "s",
+        "epoch_id": "s",
+        "height": 0,
+        "next_bp_hash": "s",
+        "next_epoch_id": "s",
+        "outcome_root": "s",
+        "prev_state_root": "s",
+        "timestamp": 0,
+        "timestamp_nanosec": "s"
+    },
+    "inner_rest_hash": "s",
+    "prev_block_hash": "s"
+}

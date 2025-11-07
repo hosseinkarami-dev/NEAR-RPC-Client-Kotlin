@@ -1,0 +1,16 @@
+{
+    "cause": {
+        "type": "not_writable_to_disk"
+    },
+    "change": {
+        "account_id": "s",
+        "amount": "s",
+        "code_hash": "s",
+        "global_contract_account_id": "s",
+        "global_contract_hash": "s",
+        "locked": "s",
+        "storage_paid_at": 0,
+        "storage_usage": 0
+    },
+    "type": "account_update"
+}

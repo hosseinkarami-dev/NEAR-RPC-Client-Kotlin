@@ -1,0 +1,100 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "result": {
+        "final_execution_status": "NONE",
+        "receipts": [
+            {
+                "predecessor_id": "s",
+                "priority": 0,
+                "receipt": {
+                    "Action": {
+                        "actions": [
+                            "CreateAccount"
+                        ],
+                        "gas_price": "s",
+                        "input_data_ids": [
+                            "s"
+                        ],
+                        "is_promise_yield": false,
+                        "output_data_receivers": [
+                            {
+                                "data_id": "s",
+                                "receiver_id": "s"
+                            }
+                        ],
+                        "signer_id": "s",
+                        "signer_public_key": "s"
+                    }
+                },
+                "receipt_id": "s",
+                "receiver_id": "s"
+            }
+        ],
+        "receipts_outcome": [
+            {
+                "block_hash": "s",
+                "id": "s",
+                "outcome": {
+                    "executor_id": "s",
+                    "gas_burnt": 0,
+                    "logs": [
+                        "s"
+                    ],
+                    "metadata": {
+                        "version": 1
+                    },
+                    "receipt_ids": [
+                        "s"
+                    ],
+                    "status": "Unknown",
+                    "tokens_burnt": "s"
+                },
+                "proof": [
+                    {
+                        "direction": "Left",
+                        "hash": "s"
+                    }
+                ]
+            }
+        ],
+        "status": "NotStarted",
+        "transaction": {
+            "actions": [
+                "CreateAccount"
+            ],
+            "hash": "s",
+            "nonce": 0,
+            "priority_fee": 0,
+            "public_key": "s",
+            "receiver_id": "s",
+            "signature": "s",
+            "signer_id": "s"
+        },
+        "transaction_outcome": {
+            "block_hash": "s",
+            "id": "s",
+            "outcome": {
+                "executor_id": "s",
+                "gas_burnt": 0,
+                "logs": [
+                    "s"
+                ],
+                "metadata": {
+                    "version": 1
+                },
+                "receipt_ids": [
+                    "s"
+                ],
+                "status": "Unknown",
+                "tokens_burnt": "s"
+            },
+            "proof": [
+                {
+                    "direction": "Left",
+                    "hash": "s"
+                }
+            ]
+        }
+    }
+}

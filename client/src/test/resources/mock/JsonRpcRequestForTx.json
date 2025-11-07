@@ -1,0 +1,9 @@
+{
+    "id": "s",
+    "jsonrpc": "s",
+    "method": "tx",
+    "params": {
+        "wait_until": "EXECUTED_OPTIMISTIC",
+        "signed_tx_base64": "s"
+    }
+}

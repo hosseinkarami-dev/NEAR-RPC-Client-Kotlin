@@ -1,0 +1,9 @@
+{
+    "amount": "s",
+    "code_hash": "s",
+    "global_contract_account_id": "s",
+    "global_contract_hash": "s",
+    "locked": "s",
+    "storage_paid_at": 0,
+    "storage_usage": 0
+}

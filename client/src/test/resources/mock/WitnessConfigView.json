@@ -1,0 +1,5 @@
+{
+    "combined_transactions_size_limit": 0,
+    "main_storage_proof_size_soft_limit": 0,
+    "new_transactions_validation_state_size_soft_limit": 0
+}

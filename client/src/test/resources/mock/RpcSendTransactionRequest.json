@@ -1,0 +1,4 @@
+{
+    "signed_tx_base64": "s",
+    "wait_until": "EXECUTED_OPTIMISTIC"
+}

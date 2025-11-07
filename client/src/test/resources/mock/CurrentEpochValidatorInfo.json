@@ -1,0 +1,20 @@
+{
+    "account_id": "s",
+    "is_slashed": true,
+    "num_expected_blocks": 0,
+    "num_expected_chunks": 0,
+    "num_expected_chunks_per_shard": [],
+    "num_expected_endorsements": 0,
+    "num_expected_endorsements_per_shard": [],
+    "num_produced_blocks": 0,
+    "num_produced_chunks": 0,
+    "num_produced_chunks_per_shard": [],
+    "num_produced_endorsements": 0,
+    "num_produced_endorsements_per_shard": [],
+    "public_key": "s",
+    "shards": [
+        0
+    ],
+    "shards_endorsed": [],
+    "stake": "s"
+}
