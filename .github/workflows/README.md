@@ -1,7 +1,6 @@
 # Workflows
 
 ## Covered workflows
-- **test.yaml** — CI and test matrix.
 - **regenerate-openapi-pr.yml** — regenerates NEAR RPC client from OpenAPI and opens a PR if changes occur and release publishing.
 
 ## How `regenerate-openapi-pr.yml` works

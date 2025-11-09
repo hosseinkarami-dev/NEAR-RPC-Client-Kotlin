@@ -134,9 +134,9 @@ jobs:
         id: tag
         run: |
           set -euo pipefail
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
-          MAJOR=${MAJOR:-0}
+          MAJOR=${MAJOR:-1}
           MINOR=${MINOR:-0}
           PATCH=${PATCH:-0}
 
