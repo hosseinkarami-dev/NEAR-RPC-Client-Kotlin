@@ -3,7 +3,7 @@ name: Regenerate NEAR RPC Client (auto PR, merge & release)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *" # daily run (every day at midnight)
+    - cron: "0 0 * * *" # daily at midnight
 
 permissions:
   contents: write
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Avoid infinite loop triggered by GitHub Actions bot
+      # Avoid infinite loop
       - name: Exit if triggered by GitHub Actions bot
         if: github.actor == 'github-actions[bot]'
         run: |
           echo "Triggered by GitHub Actions bot; exiting to avoid loop."
           exit 0
 
-      # Checkout repository (full history and tags)
+      # Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -35,11 +35,11 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Grant execute permission for Gradlew
+      # Gradlew executable
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # Run Generator (handle missing or invalid JSON gracefully)
+      # Run Generator (safe)
       - name: Run Generator (safe mode)
         id: generator
         run: |
@@ -48,14 +48,14 @@ jobs:
           EXIT_CODE=$?
           set -e
           if [ $EXIT_CODE -ne 0 ]; then
-            echo "⚠️ OpenAPI generation failed (maybe JSON missing or invalid). Skipping regeneration."
+            echo "⚠️ OpenAPI generation failed. Skipping regeneration."
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "Generator completed successfully."
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
 
-      # Build project without tests
+      # Build without tests
       - name: Build project (without tests)
         run: ./gradlew build -x test --stacktrace --no-daemon
 
@@ -86,7 +86,7 @@ jobs:
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
-      # Auto-create and merge PR if changes exist
+      # Auto-create and merge PR
       - name: Auto-create and merge PR
         if: steps.commit.outputs.pr_required == 'true'
         uses: actions/github-script@v6
@@ -97,7 +97,6 @@ jobs:
             const title = `chore: regenerate client from OpenAPI (${branch})`;
             const body = `This PR regenerates the NEAR RPC client and models from the latest OpenAPI spec.\n\nAutomatically merged after generation.`;
 
-            // Create PR
             const pr = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -107,7 +106,6 @@ jobs:
               body
             });
 
-            // Auto-merge PR
             await github.rest.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -115,34 +113,35 @@ jobs:
               merge_method: "squash"
             });
 
-      # Stop if no changes
+      # Output when no changes
       - name: Output when no changes
         if: steps.commit.outputs.pr_required != 'true'
         run: echo "No regenerated changes — nothing to create a PR for."
 
-      # Ensure local main matches remote after merge (prevent race)
+      # Sync main after merge
       - name: Sync main after merge
         if: steps.commit.outputs.pr_required == 'true'
         run: |
           set -euo pipefail
-          echo "Waiting for GitHub to update merge state..."
           sleep 10
           git fetch origin main --tags
           git checkout main
           git reset --hard origin/main
-          echo "Main branch synced successfully."
 
-      # Determine new tag version (v0.1, v0.2, ...)
+      # Determine new tag (SemVer Patch)
       - name: Determine new tag version
         if: steps.commit.outputs.pr_required == 'true'
         id: tag
         run: |
           set -euo pipefail
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0")
-          IFS='.' read -r MAJOR MINOR <<<"${LAST_TAG#v}"
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
           MAJOR=${MAJOR:-0}
           MINOR=${MINOR:-0}
-          NEW_TAG="v${MAJOR}.$((MINOR+1))"
+          PATCH=${PATCH:-0}
+
+          PATCH=$((PATCH+1))
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "Next tag determined: ${NEW_TAG}"
 
@@ -155,10 +154,8 @@ jobs:
         run: |
           set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
-
           git fetch --tags
 
-          # Prevent duplicate tags
           if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
             echo "Tag ${NEW_TAG} already exists. Skipping."
             echo "tag_created=false" >> $GITHUB_OUTPUT
@@ -167,7 +164,6 @@ jobs:
 
           git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
-
           echo "tag_created=true" >> $GITHUB_OUTPUT
           echo "Created tag ${NEW_TAG}"
 
