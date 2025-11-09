@@ -1,9 +1,0 @@
-{
-    "gc_blocks_limit": 2,
-    "gc_fork_clean_step": 100,
-    "gc_num_epochs_to_keep": 5,
-    "gc_step_period": {
-        "nanos": 500000000,
-        "secs": 0
-    }
-}

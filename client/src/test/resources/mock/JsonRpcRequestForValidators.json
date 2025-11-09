@@ -1,6 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "validators",
-    "params": "latest"
-}

@@ -1,8 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "gas_price",
-    "params": {
-        "block_id": "s"
-    }
-}

@@ -1,6 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "EXPERIMENTAL_genesis_config",
-    "params": null
-}

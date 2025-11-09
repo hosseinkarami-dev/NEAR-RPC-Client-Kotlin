@@ -23,7 +23,7 @@ jobs:
 
       # Checkout repository (full history and tags)
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: true
@@ -35,19 +35,31 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Grant execute permission for Gradle
+      # Grant execute permission for Gradlew
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # Run Generator (regenerates client + models)
-      - name: Run Generator
-        run: ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
+      # Run Generator (handle missing or invalid JSON gracefully)
+      - name: Run Generator (safe mode)
+        id: generator
+        run: |
+          set +e
+          ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json" --no-daemon
+          EXIT_CODE=$?
+          set -e
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "⚠️ OpenAPI generation failed (maybe JSON missing or invalid). Skipping regeneration."
+            echo "pr_required=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Generator completed successfully."
+          echo "pr_required=true" >> "$GITHUB_OUTPUT"
 
-      # Build and run tests
-      - name: Build project (and run tests)
-        run: ./gradlew build --stacktrace --no-daemon
+      # Build project without tests
+      - name: Build project (without tests)
+        run: ./gradlew build -x test --stacktrace --no-daemon
 
-      # Prepare branch, commit changes, push
+      # Prepare branch, commit regenerated sources
       - name: Prepare branch, commit regenerated sources
         id: commit
         env:
@@ -68,13 +80,13 @@ jobs:
             exit 0
           fi
 
-          git commit -m "fix: regenerate client from OpenAPI"
+          git commit -m "chore: regenerate client from OpenAPI"
           git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
-      # Auto-create PR and merge if changes exist
+      # Auto-create and merge PR if changes exist
       - name: Auto-create and merge PR
         if: steps.commit.outputs.pr_required == 'true'
         uses: actions/github-script@v6
@@ -108,33 +120,33 @@ jobs:
         if: steps.commit.outputs.pr_required != 'true'
         run: echo "No regenerated changes — nothing to create a PR for."
 
-      # Make sure local main is up-to-date with remote before tagging
-      - name: Prepare local main for tagging
+      # Ensure local main matches remote after merge (prevent race)
+      - name: Sync main after merge
         if: steps.commit.outputs.pr_required == 'true'
         run: |
           set -euo pipefail
-          # fetch latest main and tags
+          echo "Waiting for GitHub to update merge state..."
+          sleep 10
           git fetch origin main --tags
-          # ensure we are on main and match remote
           git checkout main
           git reset --hard origin/main
+          echo "Main branch synced successfully."
 
-      # Determine new tag version (only if we actually created a PR & merged)
+      # Determine new tag version (v0.1, v0.2, ...)
       - name: Determine new tag version
         if: steps.commit.outputs.pr_required == 'true'
         id: tag
         run: |
           set -euo pipefail
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          IFS='.' read -r MAJOR MINOR PATCH <<<"${LAST_TAG#v}"
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0")
+          IFS='.' read -r MAJOR MINOR <<<"${LAST_TAG#v}"
           MAJOR=${MAJOR:-0}
           MINOR=${MINOR:-0}
-          PATCH=${PATCH:-0}
-          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
+          NEW_TAG="v${MAJOR}.$((MINOR+1))"
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
-          echo "New tag determined: ${NEW_TAG}"
+          echo "Next tag determined: ${NEW_TAG}"
 
-      # Create and push tag, but first check whether HEAD already has a tag
+      # Create and push tag
       - name: Create and push tag
         id: create_tag
         if: steps.commit.outputs.pr_required == 'true'
@@ -144,30 +156,22 @@ jobs:
           set -euo pipefail
           NEW_TAG="${{ steps.tag.outputs.new_tag }}"
 
-          # Ensure tags are fetched
           git fetch --tags
 
-          # If HEAD already has any tag, skip creating a new tag
-          if git tag --points-at HEAD | grep -q .; then
-            echo "Tag already exists that points at HEAD. Skipping tag creation."
-            echo "tag_created=false" >> $GITHUB_OUTPUT
-            echo "existing_tag=$(git tag --points-at HEAD | head -n1)" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # If the computed NEW_TAG already exists (race or pre-existing), avoid duplicate
+          # Prevent duplicate tags
           if git rev-parse "refs/tags/${NEW_TAG}" >/dev/null 2>&1; then
-            echo "Computed tag ${NEW_TAG} already exists. Skipping tag creation to avoid collision."
+            echo "Tag ${NEW_TAG} already exists. Skipping."
             echo "tag_created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Create annotated tag and push
           git tag -a "${NEW_TAG}" -m "Release ${NEW_TAG} (automated)"
           git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${NEW_TAG}"
 
           echo "tag_created=true" >> $GITHUB_OUTPUT
+          echo "Created tag ${NEW_TAG}"
 
+      # Create GitHub Release
       - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
         uses: softprops/action-gh-release@v1

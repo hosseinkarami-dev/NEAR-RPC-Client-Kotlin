@@ -1,8 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "block",
-    "params": {
-        "block_id": "s"
-    }
-}

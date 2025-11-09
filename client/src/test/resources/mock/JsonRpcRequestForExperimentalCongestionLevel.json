@@ -1,9 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "EXPERIMENTAL_congestion_level",
-    "params": {
-        "block_id": "s",
-        "shard_id": 0
-    }
-}

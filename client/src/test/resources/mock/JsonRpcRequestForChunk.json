@@ -1,9 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "chunk",
-    "params": {
-        "block_id": "s",
-        "shard_id": 0
-    }
-}

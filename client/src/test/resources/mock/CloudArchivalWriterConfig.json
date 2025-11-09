@@ -1,7 +1,0 @@
-{
-    "archive_block_data": false,
-    "polling_interval": {
-        "nanos": 0,
-        "secs": 1
-    }
-}

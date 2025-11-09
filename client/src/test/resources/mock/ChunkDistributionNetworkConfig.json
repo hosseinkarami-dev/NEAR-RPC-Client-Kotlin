@@ -1,7 +1,0 @@
-{
-    "enabled": true,
-    "uris": {
-        "get": "s",
-        "set": "s"
-    }
-}

@@ -1,6 +1,0 @@
-{
-    "id": "s",
-    "jsonrpc": "s",
-    "method": "EXPERIMENTAL_split_storage_info",
-    "params": {}
-}
