@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/hosseinkarami-dev/NEAR-RPC-Client-Kotlin/ci-cd.yml?branch=main)](https://github.com/hosseinkarami-dev/NEAR-RPC-Client-Kotlin/actions)
 [![License](https://img.shields.io/github/license/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)](./LICENSE)
 [![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
-[![JitPack](https://img.shields.io/jitpack/v/github/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)](https://jitpack.io/#hosseinkarami-dev/NEAR-RPC-Client-Kotlin)
+![Release Badge](https://img.shields.io/github/v/release/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)
 
 A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 
