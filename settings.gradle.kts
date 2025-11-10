@@ -13,6 +13,7 @@ pluginManagement {
 
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -28,3 +29,4 @@ include(":app")
 include(":generator")
 include(":client")
 include(":models")
+include(":examples")

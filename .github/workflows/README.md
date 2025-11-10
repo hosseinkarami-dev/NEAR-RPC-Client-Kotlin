@@ -1,9 +1,9 @@
 # Workflows
 
 ## Covered workflows
-- **regenerate-openapi-pr.yml** — regenerates NEAR RPC client from OpenAPI and opens a PR if changes occur and release publishing.
+- **ci-cd.yml** — regenerates NEAR RPC client from OpenAPI and opens a PR if changes occur and release publishing.
 
-## How `regenerate-openapi-pr.yml` works
+## How `ci-cd.yml` works
 - Runs daily, on push to `main`, and manually.
 - Executes a Gradle generator to regenerate client code from the NEAR OpenAPI spec.
 - Builds/tests the project; if changes exist, opens a PR and updates the main branch.
