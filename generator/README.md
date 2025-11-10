@@ -33,8 +33,9 @@ The generator accepts parameters via `--args`. Example:
 ./gradlew :generator:run --args="--openapi-url https://raw.githubusercontent.com/near/nearcore/master/chain/jsonrpc/openapi/openapi.json --models-out build/generated --client-out build/generated"
 ```
 
-**Parameters:** - `--openapi-url` → URL of the OpenAPI spec (local file
-or remote URL)\
+**Parameters:** 
+- `--openapi-url` → URL of the OpenAPI spec (local file
+or remote URL)
 - `--models-out` → Output directory for generated models
 - `--client-out` → Output directory for the generated client
 

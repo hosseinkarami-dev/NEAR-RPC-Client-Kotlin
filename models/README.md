@@ -12,5 +12,3 @@ It is **fully generated** from NEAR’s official [OpenAPI specification](https:/
 - ✅ Uses [`kotlinx.serialization`](https://github.com/Kotlin/kotlinx.serialization) for cross-platform JSON parsing.
 - ⚙️ Independent from HTTP or networking code — can be used standalone in any project.
 - 🧩 Used internally by [`near-rpc-client`](../near-rpc-client) but may also be consumed directly.
-
----

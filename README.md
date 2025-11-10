@@ -1,6 +1,9 @@
 # NEAR JSON-RPC Kotlin Client
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](#) [![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/hosseinkarami-dev/NEAR-RPC-Client-Kotlin/ci-cd.yml?branch=main)](https://github.com/hosseinkarami-dev/NEAR-RPC-Client-Kotlin/actions)
+[![License](https://img.shields.io/github/license/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)](./LICENSE)
+[![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
+[![JitPack](https://img.shields.io/jitpack/v/github/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)](https://jitpack.io/#hosseinkarami-dev/NEAR-RPC-Client-Kotlin)
 
 A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 
@@ -17,6 +20,7 @@ A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 - [Error Handling](#-error-handling)
 - [Testing](#-testing)
 - [Contributing](#-contributing)
+- [Deployment Guide](#-deployment-guide)
 - [License](#-license)  
 - [Contact & References](#-contact--references)
 
@@ -126,9 +130,6 @@ import io.ktor.client.plugins.contentnegotiation.*
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.launch
 import androidx.lifecycle.lifecycleScope
-import io.github.hosseinkarami_dev.near.rpc.models.RpcBlockResponse
-import io.github.hosseinkarami_dev.near_rpc_client.NearClient
-import io.github.hosseinkarami_dev.near_rpc_models.*
 
 val httpClient = HttpClient(CIO) {
     install(ContentNegotiation) {
@@ -298,6 +299,12 @@ This structured approach to error handling makes it easy to differentiate betwee
 - **Integration Tests:** Validate end-to-end behavior of the client using a mock RPC engine, simulating actual RPC calls without requiring a live network connection.
 - **Decoding Tests:** Ensure all `@Serializable` models correctly parse and map data from mock JSON responses.
 
+
+---
+
+## 📦 Deployment Guide
+
+For detailed instructions on project structure, CI/CD workflow, versioning, and deployment steps, see the [DEPLOYMENT.md](./DEPLOYMENT.md) file.
 
 ---
 
