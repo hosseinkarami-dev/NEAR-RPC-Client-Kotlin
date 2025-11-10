@@ -5,6 +5,7 @@
 [![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
 ![Release Badge](https://img.shields.io/github/v/release/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)
 
+
 A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 
 ---
