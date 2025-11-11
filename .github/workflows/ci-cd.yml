@@ -66,14 +66,27 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           set -euo pipefail
+
+          # Git author for automated commits
           git config --local user.email "automation@github.com"
           git config --local user.name "GitHub Actions Bot"
+
+          # Avoid false diffs caused by line-ending normalization on runner
+          git config --local core.autocrlf false
 
           SHORT_SHA=${GITHUB_SHA:0:8}
           BRANCH="regenerate-openapi-${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
           git checkout -b "$BRANCH"
 
-          git add .
+          # Only add generated source directories (minimizes accidental adds)
+          # adjust these paths if your generator writes elsewhere
+          git add -A models/src/main/kotlin || true
+          git add -A client/src/main/kotlin || true
+
+          echo "=== Git status (after add) ==="
+          git status --porcelain || true
+
+          # If nothing staged, skip creating PR
           if git diff --staged --quiet; then
             echo "No changes to commit"
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
@@ -81,7 +94,7 @@ jobs:
           fi
 
           git commit -m "chore: regenerate client from OpenAPI"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH"
+          git push "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
 
           echo "pr_required=true" >> "$GITHUB_OUTPUT"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
