@@ -112,8 +112,8 @@ Following these rules ensures semantic versioning is consistent and releases ref
 1. After CI/CD runs successfully, a new **GitHub release** is created with the corresponding version tag.
 2. Generated client (`client/`) and models (`models/`) can be included in other Kotlin projects via Gradle:
    ```kotlin
-   implementation("com.github.hosseinkarami-dev.NEAR-RPC-Client-Kotlin:models:<VERSION>")
-   implementation("com.github.hosseinkarami-dev.NEAR-RPC-Client-Kotlin:client:<VERSION>")
+   implementation("com.github.near.near-jsonrpc-client-kotlin:client:<Version>")
+   implementation("com.github.near.near-jsonrpc-client-kotlin:models:<Version>")
    ```
 3. Always use the **latest release tag** in your consuming projects to ensure compatibility.
 
