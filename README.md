@@ -1,8 +1,9 @@
 # NEAR JSON-RPC Kotlin Client
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/hosseinkarami-dev/NEAR-RPC-Client-Kotlin/ci-cd.yml?branch=main)](https://github.com/hosseinkarami-dev/NEAR-RPC-Client-Kotlin/actions)
-[![License](https://img.shields.io/github/license/hosseinkarami-dev/NEAR-RPC-Client-Kotlin)](./LICENSE)
-[![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)](#)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/near/near-jsonrpc-client-kotlin/ci-cd.yml?branch=main)](https://github.com/near/near-jsonrpc-client-kotlin/actions)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
+![Kotlin Multiplatform](https://img.shields.io/badge/kotlin-multiplatform-7f52ff.svg)
+![Release Badge](https://img.shields.io/github/tag/near/near-jsonrpc-client-kotlin.svg?label=release)
 
 A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 
@@ -321,6 +322,7 @@ Contributions welcome!
 ./gradlew :client:test
 ```
 5. Open a PR with clear description.
+6. **More details:** see the [Contributing Overview](https://github.com/near/near-jsonrpc-client-kotlin?tab=contributing-ov-file) tab in this repository.
 
 ---
 
