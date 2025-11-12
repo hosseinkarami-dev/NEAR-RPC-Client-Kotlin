@@ -98,8 +98,7 @@ In your **module-level** `build.gradle.kts`:
 ```kotlin
 
 dependencies {
-    implementation("com.github.hosseinkarami-dev.NEAR-RPC-Client-Kotlin:client:<Version>")
-    implementation("com.github.hosseinkarami-dev.NEAR-RPC-Client-Kotlin:models:<Version>")
+    implementation("com.github.hosseinkarami-dev:NEAR-RPC-Client-Kotlin:<Version>")
 }
 
 ```
