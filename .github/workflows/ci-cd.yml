@@ -79,6 +79,9 @@ jobs:
           # 🧩 Debug: show diff stats before the check
           echo "=== GIT STATUS ==="
           git status
+          
+          git add -A
+          
           echo "=== GIT DIFF SUMMARY ==="
           git diff --staged --stat || true
           echo "=== GIT DIFF FULL (trimmed to 100 lines) ==="
