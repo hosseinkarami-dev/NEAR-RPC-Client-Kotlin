@@ -88,7 +88,7 @@ jobs:
           git diff --staged | head -n 100 || true
 
           # Check for real content differences only (ignores EOL & mode changes)
-          if git diff --staged --ignore-space-at-eol --ignore-all-space --ignore-blank-lines --quiet; then
+          if git diff --name-status | grep -q '^[AM]'; then
             echo "No meaningful changes detected — skipping regeneration."
             echo "pr_required=false" >> "$GITHUB_OUTPUT"
             exit 0
