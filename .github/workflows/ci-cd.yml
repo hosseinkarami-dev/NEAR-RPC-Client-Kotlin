@@ -86,12 +86,15 @@ jobs:
           git diff --staged --stat || true
           echo "=== GIT DIFF FULL (trimmed to 100 lines) ==="
           git diff --staged | head -n 100 || true
-
+          
           # Check for real content differences only (ignores EOL & mode changes)
           if git diff --name-status | grep -q '^[AM]'; then
-            echo "No meaningful changes detected — skipping regeneration."
-            echo "pr_required=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          echo "Changes detected, creating PR."
+          echo "pr_required=true" >> "$GITHUB_OUTPUT"
+          else
+          echo "No meaningful changes detected — skipping regeneration."
+          echo "pr_required=false" >> "$GITHUB_OUTPUT"
+          exit 0
           fi
 
 
