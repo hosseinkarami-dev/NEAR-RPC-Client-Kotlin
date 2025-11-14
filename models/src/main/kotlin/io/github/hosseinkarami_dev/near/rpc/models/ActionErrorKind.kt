@@ -373,4 +373,32 @@ public sealed class ActionErrorKind {
       public val identifier: GlobalContractIdentifier,
     )
   }
+
+  @Serializable
+  public data class GasKeyDoesNotExist(
+    @SerialName("GasKeyDoesNotExist")
+    public val gasKeyDoesNotExist: GasKeyDoesNotExistPayload,
+  ) : ActionErrorKind() {
+    @Serializable
+    public data class GasKeyDoesNotExistPayload(
+      @SerialName("account_id")
+      public val accountId: AccountId,
+      @SerialName("public_key")
+      public val publicKey: PublicKey,
+    )
+  }
+
+  @Serializable
+  public data class GasKeyAlreadyExists(
+    @SerialName("GasKeyAlreadyExists")
+    public val gasKeyAlreadyExists: GasKeyAlreadyExistsPayload,
+  ) : ActionErrorKind() {
+    @Serializable
+    public data class GasKeyAlreadyExistsPayload(
+      @SerialName("account_id")
+      public val accountId: AccountId,
+      @SerialName("public_key")
+      public val publicKey: PublicKey,
+    )
+  }
 }

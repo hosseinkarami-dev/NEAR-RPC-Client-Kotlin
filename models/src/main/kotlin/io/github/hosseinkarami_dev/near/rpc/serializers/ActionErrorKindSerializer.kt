@@ -47,6 +47,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
         element("DelegateActionInvalidNonce", serializer<JsonElement>().descriptor)
         element("DelegateActionNonceTooLarge", serializer<JsonElement>().descriptor)
         element("GlobalContractDoesNotExist", serializer<JsonElement>().descriptor)
+        element("GasKeyDoesNotExist", serializer<JsonElement>().descriptor)
+        element("GasKeyAlreadyExists", serializer<JsonElement>().descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: ActionErrorKind) {
@@ -185,6 +187,18 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     val payload = JsonObject(map)
                     jsonEncoder.encodeJsonElement(payload)
                 }
+                is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["GasKeyDoesNotExist"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist.GasKeyDoesNotExistPayload>(), value.gasKeyDoesNotExist)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
+                is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["GasKeyAlreadyExists"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists.GasKeyAlreadyExistsPayload>(), value.gasKeyAlreadyExists)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
             }
             return
         }
@@ -213,6 +227,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
             is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce -> out.encodeSerializableElement(descriptor, 20, serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge -> out.encodeSerializableElement(descriptor, 21, serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist -> out.encodeSerializableElement(descriptor, 22, serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist -> out.encodeSerializableElement(descriptor, 23, serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists -> out.encodeSerializableElement(descriptor, 24, serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), value)
         }
         out.endStructure(descriptor)
     }
@@ -234,7 +250,7 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
 
                 is JsonObject -> {
                     val jobj = element
-                    val knownVariantNames = setOf("AccountAlreadyExists", "AccountDoesNotExist", "CreateAccountOnlyByRegistrar", "CreateAccountNotAllowed", "ActorNoPermission", "DeleteKeyDoesNotExist", "AddKeyAlreadyExists", "DeleteAccountStaking", "LackBalanceForState", "TriesToUnstake", "TriesToStake", "InsufficientStake", "FunctionCallError", "NewReceiptValidationError", "OnlyImplicitAccountCreationAllowed", "DeleteAccountWithLargeState", "DelegateActionInvalidSignature", "DelegateActionSenderDoesNotMatchTxReceiver", "DelegateActionExpired", "DelegateActionAccessKeyError", "DelegateActionInvalidNonce", "DelegateActionNonceTooLarge", "GlobalContractDoesNotExist")
+                    val knownVariantNames = setOf("AccountAlreadyExists", "AccountDoesNotExist", "CreateAccountOnlyByRegistrar", "CreateAccountNotAllowed", "ActorNoPermission", "DeleteKeyDoesNotExist", "AddKeyAlreadyExists", "DeleteAccountStaking", "LackBalanceForState", "TriesToUnstake", "TriesToStake", "InsufficientStake", "FunctionCallError", "NewReceiptValidationError", "OnlyImplicitAccountCreationAllowed", "DeleteAccountWithLargeState", "DelegateActionInvalidSignature", "DelegateActionSenderDoesNotMatchTxReceiver", "DelegateActionExpired", "DelegateActionAccessKeyError", "DelegateActionInvalidNonce", "DelegateActionNonceTooLarge", "GlobalContractDoesNotExist", "GasKeyDoesNotExist", "GasKeyAlreadyExists")
                     if (jobj["AccountAlreadyExists"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists.AccountAlreadyExistsPayload>(), jobj["AccountAlreadyExists"]!!))
                     }
@@ -297,6 +313,12 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     }
                     if (jobj["GlobalContractDoesNotExist"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist.GlobalContractDoesNotExistPayload>(), jobj["GlobalContractDoesNotExist"]!!))
+                    }
+                    if (jobj["GasKeyDoesNotExist"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist.GasKeyDoesNotExistPayload>(), jobj["GasKeyDoesNotExist"]!!))
+                    }
+                    if (jobj["GasKeyAlreadyExists"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists.GasKeyAlreadyExistsPayload>(), jobj["GasKeyAlreadyExists"]!!))
                     }
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
@@ -388,6 +410,14 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant GlobalContractDoesNotExist: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), obj)
                             }
+                            "GasKeyDoesNotExist" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant GasKeyDoesNotExist: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), obj)
+                            }
+                            "GasKeyAlreadyExists" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant GasKeyAlreadyExists: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), obj)
+                            }
                             "DelegateActionInvalidSignature" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidSignature
                             "DelegateActionExpired" -> return io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionExpired
                             else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
@@ -439,6 +469,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                             "DelegateActionInvalidNonce" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce>(), jobj)
                             "DelegateActionNonceTooLarge" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge>(), jobj)
                             "GlobalContractDoesNotExist" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), jobj)
+                            "GasKeyDoesNotExist" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), jobj)
+                            "GasKeyAlreadyExists" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), jobj)
                             else -> { /* fallthrough to grouped handling */ }
                         }
                         // grouped handling by tf content (if any)
@@ -467,6 +499,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                         if (chosenGroupKey == null && ("DelegateActionInvalidNonce".lowercase() == tfLower || tfLower.contains("DelegateActionInvalidNonce".lowercase()) || "DelegateActionInvalidNonce".lowercase().contains(tfLower))) { chosenGroupKey = "DelegateActionInvalidNonce" }
                         if (chosenGroupKey == null && ("DelegateActionNonceTooLarge".lowercase() == tfLower || tfLower.contains("DelegateActionNonceTooLarge".lowercase()) || "DelegateActionNonceTooLarge".lowercase().contains(tfLower))) { chosenGroupKey = "DelegateActionNonceTooLarge" }
                         if (chosenGroupKey == null && ("GlobalContractDoesNotExist".lowercase() == tfLower || tfLower.contains("GlobalContractDoesNotExist".lowercase()) || "GlobalContractDoesNotExist".lowercase().contains(tfLower))) { chosenGroupKey = "GlobalContractDoesNotExist" }
+                        if (chosenGroupKey == null && ("GasKeyDoesNotExist".lowercase() == tfLower || tfLower.contains("GasKeyDoesNotExist".lowercase()) || "GasKeyDoesNotExist".lowercase().contains(tfLower))) { chosenGroupKey = "GasKeyDoesNotExist" }
+                        if (chosenGroupKey == null && ("GasKeyAlreadyExists".lowercase() == tfLower || tfLower.contains("GasKeyAlreadyExists".lowercase()) || "GasKeyAlreadyExists".lowercase().contains(tfLower))) { chosenGroupKey = "GasKeyAlreadyExists" }
                         if (chosenGroupKey != null) {
                             when (chosenGroupKey) {
                                 "AccountAlreadyExists" -> {
@@ -561,6 +595,14 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), jobj) } catch (_: Exception) { }
                                     throw SerializationException("Cannot disambiguate variant for base token 'GlobalContractDoesNotExist' and tf='\$tf'")
                                 }
+                                "GasKeyDoesNotExist" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GasKeyDoesNotExist' and tf='\$tf'")
+                                }
+                                "GasKeyAlreadyExists" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'GasKeyAlreadyExists' and tf='\$tf'")
+                                }
                                 else -> { /* no group matched */ }
                             }
                         }
@@ -589,6 +631,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     // group: DelegateActionInvalidNonce
                     // group: DelegateActionNonceTooLarge
                     // group: GlobalContractDoesNotExist
+                    // group: GasKeyDoesNotExist
+                    // group: GasKeyAlreadyExists
 
                     val requiredMatches = mutableListOf<Int>()
                     if (jobj.containsKey("AccountAlreadyExists")) requiredMatches.add(0)
@@ -612,6 +656,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     if (jobj.containsKey("DelegateActionInvalidNonce")) requiredMatches.add(20)
                     if (jobj.containsKey("DelegateActionNonceTooLarge")) requiredMatches.add(21)
                     if (jobj.containsKey("GlobalContractDoesNotExist")) requiredMatches.add(22)
+                    if (jobj.containsKey("GasKeyDoesNotExist")) requiredMatches.add(23)
+                    if (jobj.containsKey("GasKeyAlreadyExists")) requiredMatches.add(24)
                     if (requiredMatches.size == 1) {
                         when (requiredMatches[0]) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists>(), jobj)
@@ -637,6 +683,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                             20 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce>(), jobj)
                             21 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge>(), jobj)
                             22 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), jobj)
+                            23 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), jobj)
+                            24 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), jobj)
                             else -> throw SerializationException("Internal required-match dispatch error")
                         }
                     }
@@ -770,6 +818,18 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                         val score = matchCount.toDouble() / 1.toDouble()
                         if (score > bestScore) { bestScore = score; bestIdx = 22 } else if (score == bestScore) { bestIdx = null }
                     }
+                    run {
+                        var matchCount = 0
+                        if (jobj["GasKeyDoesNotExist"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 23 } else if (score == bestScore) { bestIdx = null }
+                    }
+                    run {
+                        var matchCount = 0
+                        if (jobj["GasKeyAlreadyExists"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 24 } else if (score == bestScore) { bestIdx = null }
+                    }
                     if (bestIdx != null && bestScore > 0.0) {
                         when (bestIdx) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.AccountAlreadyExists>(), jobj)
@@ -795,6 +855,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                             20 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce>(), jobj)
                             21 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge>(), jobj)
                             22 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), jobj)
+                            23 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), jobj)
+                            24 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), jobj)
                             else -> throw SerializationException("Internal scoring dispatch error")
                         }
                     }
@@ -819,6 +881,8 @@ object ActionErrorKindSerializer : KSerializer<ActionErrorKind> {
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionInvalidNonce>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.DelegateActionNonceTooLarge>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GlobalContractDoesNotExist>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyDoesNotExist>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ActionErrorKind.GasKeyAlreadyExists>(), jobj) } catch (_: Exception) { }
                     throw SerializationException("Missing discriminator or recognizable variant in ActionErrorKind")
                 }
             }

@@ -2,6 +2,7 @@ package io.github.hosseinkarami_dev.near.rpc.models
 
 import io.github.hosseinkarami_dev.near.rpc.serializers.ActionViewSerializer
 import kotlin.String
+import kotlin.UInt
 import kotlin.collections.Map
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -193,6 +194,52 @@ public sealed class ActionView {
       public val `data`: Map<String, String>,
       @SerialName("deposit")
       public val deposit: NearToken,
+    )
+  }
+
+  @Serializable
+  public data class AddGasKey(
+    @SerialName("AddGasKey")
+    public val addGasKey: AddGasKeyPayload,
+  ) : ActionView() {
+    @Serializable
+    public data class AddGasKeyPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint32
+       */
+      @SerialName("num_nonces")
+      public val numNonces: UInt,
+      @SerialName("permission")
+      public val permission: AccessKeyPermissionView,
+      @SerialName("public_key")
+      public val publicKey: PublicKey,
+    )
+  }
+
+  @Serializable
+  public data class DeleteGasKey(
+    @SerialName("DeleteGasKey")
+    public val deleteGasKey: DeleteGasKeyPayload,
+  ) : ActionView() {
+    @Serializable
+    public data class DeleteGasKeyPayload(
+      @SerialName("public_key")
+      public val publicKey: PublicKey,
+    )
+  }
+
+  @Serializable
+  public data class TransferToGasKey(
+    @SerialName("TransferToGasKey")
+    public val transferToGasKey: TransferToGasKeyPayload,
+  ) : ActionView() {
+    @Serializable
+    public data class TransferToGasKeyPayload(
+      @SerialName("amount")
+      public val amount: NearToken,
+      @SerialName("public_key")
+      public val publicKey: PublicKey,
     )
   }
 }
