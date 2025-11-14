@@ -327,4 +327,38 @@ public sealed class ActionsValidationError {
       public val limit: ULong,
     )
   }
+
+  @Serializable
+  public data class GasKeyPermissionInvalid(
+    @SerialName("GasKeyPermissionInvalid")
+    public val gasKeyPermissionInvalid: GasKeyPermissionInvalidPayload,
+  ) : ActionsValidationError() {
+    @Serializable
+    public data class GasKeyPermissionInvalidPayload(
+      @SerialName("permission")
+      public val permission: AccessKeyPermission,
+    )
+  }
+
+  @Serializable
+  public data class GasKeyTooManyNoncesRequested(
+    @SerialName("GasKeyTooManyNoncesRequested")
+    public val gasKeyTooManyNoncesRequested: GasKeyTooManyNoncesRequestedPayload,
+  ) : ActionsValidationError() {
+    @Serializable
+    public data class GasKeyTooManyNoncesRequestedPayload(
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint32
+       */
+      @SerialName("limit")
+      public val limit: UInt,
+      /**
+       *  * Minimum: 0.0
+       *  * Format: uint32
+       */
+      @SerialName("requested_nonces")
+      public val requestedNonces: UInt,
+    )
+  }
 }

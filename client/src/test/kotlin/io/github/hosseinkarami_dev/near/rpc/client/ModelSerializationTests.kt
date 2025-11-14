@@ -328,6 +328,22 @@ class ModelSerializationTests {
     }
 
     @Test
+    fun testAddGasKeyActionEncodeDecode() {
+        val data = loadMockJson("AddGasKeyAction.json")
+        assertNotNull(data, "Mock file AddGasKeyAction.json does not exist!")
+
+        try {
+            val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AddGasKeyAction.serializer(), data)
+            val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.AddGasKeyAction.serializer(), decoded)
+            val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.AddGasKeyAction.serializer(), encoded)
+            assertEquals(decoded, decoded2)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail("Serialization test failed for AddGasKeyAction: ${e.message}")
+        }
+    }
+
+    @Test
     fun testAddKeyActionEncodeDecode() {
         val data = loadMockJson("AddKeyAction.json")
         assertNotNull(data, "Mock file AddKeyAction.json does not exist!")
@@ -756,6 +772,22 @@ class ModelSerializationTests {
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for DeleteAccountAction: ${e.message}")
+        }
+    }
+
+    @Test
+    fun testDeleteGasKeyActionEncodeDecode() {
+        val data = loadMockJson("DeleteGasKeyAction.json")
+        assertNotNull(data, "Mock file DeleteGasKeyAction.json does not exist!")
+
+        try {
+            val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeleteGasKeyAction.serializer(), data)
+            val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.DeleteGasKeyAction.serializer(), decoded)
+            val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.DeleteGasKeyAction.serializer(), encoded)
+            assertEquals(decoded, decoded2)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail("Serialization test failed for DeleteGasKeyAction: ${e.message}")
         }
     }
 
@@ -3812,6 +3844,22 @@ class ModelSerializationTests {
         } catch (e: Exception) {
             e.printStackTrace()
             fail("Serialization test failed for TransferAction: ${e.message}")
+        }
+    }
+
+    @Test
+    fun testTransferToGasKeyActionEncodeDecode() {
+        val data = loadMockJson("TransferToGasKeyAction.json")
+        assertNotNull(data, "Mock file TransferToGasKeyAction.json does not exist!")
+
+        try {
+            val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TransferToGasKeyAction.serializer(), data)
+            val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.TransferToGasKeyAction.serializer(), decoded)
+            val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.TransferToGasKeyAction.serializer(), encoded)
+            assertEquals(decoded, decoded2)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail("Serialization test failed for TransferToGasKeyAction: ${e.message}")
         }
     }
 

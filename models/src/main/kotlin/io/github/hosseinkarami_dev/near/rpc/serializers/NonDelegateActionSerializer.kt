@@ -35,6 +35,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
         element("DeployGlobalContract", serializer<JsonElement>().descriptor)
         element("UseGlobalContract", serializer<JsonElement>().descriptor)
         element("DeterministicStateInit", serializer<JsonElement>().descriptor)
+        element("AddGasKey", serializer<JsonElement>().descriptor)
+        element("DeleteGasKey", serializer<JsonElement>().descriptor)
+        element("TransferToGasKey", serializer<JsonElement>().descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: NonDelegateAction) {
@@ -107,6 +110,24 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                     val payload = JsonObject(map)
                     jsonEncoder.encodeJsonElement(payload)
                 }
+                is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["AddGasKey"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AddGasKeyAction>(), value.addGasKey)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
+                is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["DeleteGasKey"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.DeleteGasKeyAction>(), value.deleteGasKey)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
+                is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["TransferToGasKey"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TransferToGasKeyAction>(), value.transferToGasKey)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
             }
             return
         }
@@ -123,6 +144,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
             is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract -> out.encodeSerializableElement(descriptor, 8, serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract -> out.encodeSerializableElement(descriptor, 9, serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit -> out.encodeSerializableElement(descriptor, 10, serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey -> out.encodeSerializableElement(descriptor, 11, serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey -> out.encodeSerializableElement(descriptor, 12, serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey -> out.encodeSerializableElement(descriptor, 13, serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), value)
         }
         out.endStructure(descriptor)
     }
@@ -142,7 +166,7 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
 
                 is JsonObject -> {
                     val jobj = element
-                    val knownVariantNames = setOf("CreateAccount", "DeployContract", "FunctionCall", "Transfer", "Stake", "AddKey", "DeleteKey", "DeleteAccount", "DeployGlobalContract", "UseGlobalContract", "DeterministicStateInit")
+                    val knownVariantNames = setOf("CreateAccount", "DeployContract", "FunctionCall", "Transfer", "Stake", "AddKey", "DeleteKey", "DeleteAccount", "DeployGlobalContract", "UseGlobalContract", "DeterministicStateInit", "AddGasKey", "DeleteGasKey", "TransferToGasKey")
                     if (jobj["CreateAccount"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.CreateAccount(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.CreateAccountAction>(), jobj["CreateAccount"]!!))
                     }
@@ -175,6 +199,15 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                     }
                     if (jobj["DeterministicStateInit"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.DeterministicStateInitAction>(), jobj["DeterministicStateInit"]!!))
+                    }
+                    if (jobj["AddGasKey"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.AddGasKeyAction>(), jobj["AddGasKey"]!!))
+                    }
+                    if (jobj["DeleteGasKey"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.DeleteGasKeyAction>(), jobj["DeleteGasKey"]!!))
+                    }
+                    if (jobj["TransferToGasKey"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.TransferToGasKeyAction>(), jobj["TransferToGasKey"]!!))
                     }
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
@@ -226,6 +259,18 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant DeterministicStateInit: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), obj)
                             }
+                            "AddGasKey" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant AddGasKey: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), obj)
+                            }
+                            "DeleteGasKey" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant DeleteGasKey: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), obj)
+                            }
+                            "TransferToGasKey" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant TransferToGasKey: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), obj)
+                            }
                             else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
                             }
                         }
@@ -256,6 +301,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                             "DeployGlobalContract" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract>(), jobj)
                             "UseGlobalContract" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract>(), jobj)
                             "DeterministicStateInit" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), jobj)
+                            "AddGasKey" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), jobj)
+                            "DeleteGasKey" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), jobj)
+                            "TransferToGasKey" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), jobj)
                             else -> { /* fallthrough to grouped handling */ }
                         }
                         // grouped handling by tf content (if any)
@@ -272,6 +320,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                         if (chosenGroupKey == null && ("DeployGlobalContract".lowercase() == tfLower || tfLower.contains("DeployGlobalContract".lowercase()) || "DeployGlobalContract".lowercase().contains(tfLower))) { chosenGroupKey = "DeployGlobalContract" }
                         if (chosenGroupKey == null && ("UseGlobalContract".lowercase() == tfLower || tfLower.contains("UseGlobalContract".lowercase()) || "UseGlobalContract".lowercase().contains(tfLower))) { chosenGroupKey = "UseGlobalContract" }
                         if (chosenGroupKey == null && ("DeterministicStateInit".lowercase() == tfLower || tfLower.contains("DeterministicStateInit".lowercase()) || "DeterministicStateInit".lowercase().contains(tfLower))) { chosenGroupKey = "DeterministicStateInit" }
+                        if (chosenGroupKey == null && ("AddGasKey".lowercase() == tfLower || tfLower.contains("AddGasKey".lowercase()) || "AddGasKey".lowercase().contains(tfLower))) { chosenGroupKey = "AddGasKey" }
+                        if (chosenGroupKey == null && ("DeleteGasKey".lowercase() == tfLower || tfLower.contains("DeleteGasKey".lowercase()) || "DeleteGasKey".lowercase().contains(tfLower))) { chosenGroupKey = "DeleteGasKey" }
+                        if (chosenGroupKey == null && ("TransferToGasKey".lowercase() == tfLower || tfLower.contains("TransferToGasKey".lowercase()) || "TransferToGasKey".lowercase().contains(tfLower))) { chosenGroupKey = "TransferToGasKey" }
                         if (chosenGroupKey != null) {
                             when (chosenGroupKey) {
                                 "CreateAccount" -> {
@@ -318,6 +369,18 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), jobj) } catch (_: Exception) { }
                                     throw SerializationException("Cannot disambiguate variant for base token 'DeterministicStateInit' and tf='\$tf'")
                                 }
+                                "AddGasKey" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'AddGasKey' and tf='\$tf'")
+                                }
+                                "DeleteGasKey" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'DeleteGasKey' and tf='\$tf'")
+                                }
+                                "TransferToGasKey" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'TransferToGasKey' and tf='\$tf'")
+                                }
                                 else -> { /* no group matched */ }
                             }
                         }
@@ -334,6 +397,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                     // group: DeployGlobalContract
                     // group: UseGlobalContract
                     // group: DeterministicStateInit
+                    // group: AddGasKey
+                    // group: DeleteGasKey
+                    // group: TransferToGasKey
 
                     val requiredMatches = mutableListOf<Int>()
                     if (jobj.containsKey("CreateAccount")) requiredMatches.add(0)
@@ -347,6 +413,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                     if (jobj.containsKey("DeployGlobalContract")) requiredMatches.add(8)
                     if (jobj.containsKey("UseGlobalContract")) requiredMatches.add(9)
                     if (jobj.containsKey("DeterministicStateInit")) requiredMatches.add(10)
+                    if (jobj.containsKey("AddGasKey")) requiredMatches.add(11)
+                    if (jobj.containsKey("DeleteGasKey")) requiredMatches.add(12)
+                    if (jobj.containsKey("TransferToGasKey")) requiredMatches.add(13)
                     if (requiredMatches.size == 1) {
                         when (requiredMatches[0]) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.CreateAccount>(), jobj)
@@ -360,6 +429,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                             8 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract>(), jobj)
                             9 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract>(), jobj)
                             10 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), jobj)
+                            11 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), jobj)
+                            12 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), jobj)
+                            13 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), jobj)
                             else -> throw SerializationException("Internal required-match dispatch error")
                         }
                     }
@@ -431,6 +503,24 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                         val score = matchCount.toDouble() / 1.toDouble()
                         if (score > bestScore) { bestScore = score; bestIdx = 10 } else if (score == bestScore) { bestIdx = null }
                     }
+                    run {
+                        var matchCount = 0
+                        if (jobj["AddGasKey"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 11 } else if (score == bestScore) { bestIdx = null }
+                    }
+                    run {
+                        var matchCount = 0
+                        if (jobj["DeleteGasKey"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 12 } else if (score == bestScore) { bestIdx = null }
+                    }
+                    run {
+                        var matchCount = 0
+                        if (jobj["TransferToGasKey"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 13 } else if (score == bestScore) { bestIdx = null }
+                    }
                     if (bestIdx != null && bestScore > 0.0) {
                         when (bestIdx) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.CreateAccount>(), jobj)
@@ -444,6 +534,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                             8 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract>(), jobj)
                             9 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract>(), jobj)
                             10 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), jobj)
+                            11 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), jobj)
+                            12 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), jobj)
+                            13 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), jobj)
                             else -> throw SerializationException("Internal scoring dispatch error")
                         }
                     }
@@ -458,6 +551,9 @@ object NonDelegateActionSerializer : KSerializer<NonDelegateAction> {
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeployGlobalContract>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.UseGlobalContract>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeterministicStateInit>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.AddGasKey>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.DeleteGasKey>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.NonDelegateAction.TransferToGasKey>(), jobj) } catch (_: Exception) { }
                     throw SerializationException("Missing discriminator or recognizable variant in NonDelegateAction")
                 }
             }
