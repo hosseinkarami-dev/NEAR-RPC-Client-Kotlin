@@ -32,6 +32,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
         element("NumberInputDataDependenciesExceeded", serializer<JsonElement>().descriptor)
         element("ActionsValidation", serializer<JsonElement>().descriptor)
         element("ReceiptSizeExceeded", serializer<JsonElement>().descriptor)
+        element("InvalidRefundTo", serializer<JsonElement>().descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: ReceiptValidationError) {
@@ -86,6 +87,12 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                     val payload = JsonObject(map)
                     jsonEncoder.encodeJsonElement(payload)
                 }
+                is io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["InvalidRefundTo"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo.InvalidRefundToPayload>(), value.invalidRefundTo)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
             }
             return
         }
@@ -99,6 +106,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
             is io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded -> out.encodeSerializableElement(descriptor, 5, serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation -> out.encodeSerializableElement(descriptor, 6, serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded -> out.encodeSerializableElement(descriptor, 7, serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo -> out.encodeSerializableElement(descriptor, 8, serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), value)
         }
         out.endStructure(descriptor)
     }
@@ -118,7 +126,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
 
                 is JsonObject -> {
                     val jobj = element
-                    val knownVariantNames = setOf("InvalidPredecessorId", "InvalidReceiverId", "InvalidSignerId", "InvalidDataReceiverId", "ReturnedValueLengthExceeded", "NumberInputDataDependenciesExceeded", "ActionsValidation", "ReceiptSizeExceeded")
+                    val knownVariantNames = setOf("InvalidPredecessorId", "InvalidReceiverId", "InvalidSignerId", "InvalidDataReceiverId", "ReturnedValueLengthExceeded", "NumberInputDataDependenciesExceeded", "ActionsValidation", "ReceiptSizeExceeded", "InvalidRefundTo")
                     if (jobj["InvalidPredecessorId"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId.InvalidPredecessorIdPayload>(), jobj["InvalidPredecessorId"]!!))
                     }
@@ -142,6 +150,9 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                     }
                     if (jobj["ReceiptSizeExceeded"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded.ReceiptSizeExceededPayload>(), jobj["ReceiptSizeExceeded"]!!))
+                    }
+                    if (jobj["InvalidRefundTo"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo.InvalidRefundToPayload>(), jobj["InvalidRefundTo"]!!))
                     }
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
@@ -181,6 +192,10 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant ReceiptSizeExceeded: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), obj)
                             }
+                            "InvalidRefundTo" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant InvalidRefundTo: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), obj)
+                            }
                             else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
                             }
                         }
@@ -215,6 +230,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                             "NumberInputDataDependenciesExceeded" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded>(), jobj)
                             "ActionsValidation" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation>(), jobj)
                             "ReceiptSizeExceeded" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), jobj)
+                            "InvalidRefundTo" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), jobj)
                             else -> { /* fallthrough to grouped handling */ }
                         }
                         // grouped handling by tf content (if any)
@@ -228,6 +244,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                         if (chosenGroupKey == null && ("NumberInputDataDependenciesExceeded".lowercase() == tfLower || tfLower.contains("NumberInputDataDependenciesExceeded".lowercase()) || "NumberInputDataDependenciesExceeded".lowercase().contains(tfLower))) { chosenGroupKey = "NumberInputDataDependenciesExceeded" }
                         if (chosenGroupKey == null && ("ActionsValidation".lowercase() == tfLower || tfLower.contains("ActionsValidation".lowercase()) || "ActionsValidation".lowercase().contains(tfLower))) { chosenGroupKey = "ActionsValidation" }
                         if (chosenGroupKey == null && ("ReceiptSizeExceeded".lowercase() == tfLower || tfLower.contains("ReceiptSizeExceeded".lowercase()) || "ReceiptSizeExceeded".lowercase().contains(tfLower))) { chosenGroupKey = "ReceiptSizeExceeded" }
+                        if (chosenGroupKey == null && ("InvalidRefundTo".lowercase() == tfLower || tfLower.contains("InvalidRefundTo".lowercase()) || "InvalidRefundTo".lowercase().contains(tfLower))) { chosenGroupKey = "InvalidRefundTo" }
                         if (chosenGroupKey != null) {
                             when (chosenGroupKey) {
                                 "InvalidPredecessorId" -> {
@@ -262,6 +279,10 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), jobj) } catch (_: Exception) { }
                                     throw SerializationException("Cannot disambiguate variant for base token 'ReceiptSizeExceeded' and tf='\$tf'")
                                 }
+                                "InvalidRefundTo" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'InvalidRefundTo' and tf='\$tf'")
+                                }
                                 else -> { /* no group matched */ }
                             }
                         }
@@ -275,6 +296,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                     // group: NumberInputDataDependenciesExceeded
                     // group: ActionsValidation
                     // group: ReceiptSizeExceeded
+                    // group: InvalidRefundTo
 
                     val requiredMatches = mutableListOf<Int>()
                     if (jobj.containsKey("InvalidPredecessorId")) requiredMatches.add(0)
@@ -285,6 +307,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                     if (jobj.containsKey("NumberInputDataDependenciesExceeded")) requiredMatches.add(5)
                     if (jobj.containsKey("ActionsValidation")) requiredMatches.add(6)
                     if (jobj.containsKey("ReceiptSizeExceeded")) requiredMatches.add(7)
+                    if (jobj.containsKey("InvalidRefundTo")) requiredMatches.add(8)
                     if (requiredMatches.size == 1) {
                         when (requiredMatches[0]) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId>(), jobj)
@@ -295,6 +318,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                             5 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded>(), jobj)
                             6 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation>(), jobj)
                             7 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), jobj)
+                            8 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), jobj)
                             else -> throw SerializationException("Internal required-match dispatch error")
                         }
                     }
@@ -348,6 +372,12 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                         val score = matchCount.toDouble() / 1.toDouble()
                         if (score > bestScore) { bestScore = score; bestIdx = 7 } else if (score == bestScore) { bestIdx = null }
                     }
+                    run {
+                        var matchCount = 0
+                        if (jobj["InvalidRefundTo"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 8 } else if (score == bestScore) { bestIdx = null }
+                    }
                     if (bestIdx != null && bestScore > 0.0) {
                         when (bestIdx) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidPredecessorId>(), jobj)
@@ -358,6 +388,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                             5 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded>(), jobj)
                             6 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation>(), jobj)
                             7 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), jobj)
+                            8 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), jobj)
                             else -> throw SerializationException("Internal scoring dispatch error")
                         }
                     }
@@ -369,6 +400,7 @@ object ReceiptValidationErrorSerializer : KSerializer<ReceiptValidationError> {
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.NumberInputDataDependenciesExceeded>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ActionsValidation>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.ReceiptSizeExceeded>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ReceiptValidationError.InvalidRefundTo>(), jobj) } catch (_: Exception) { }
                     throw SerializationException("Missing discriminator or recognizable variant in ReceiptValidationError")
                 }
             }

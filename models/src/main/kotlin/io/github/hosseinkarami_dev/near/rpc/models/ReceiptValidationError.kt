@@ -154,4 +154,19 @@ public sealed class ReceiptValidationError {
       public val size: ULong,
     )
   }
+
+  /**
+   *  * The `refund_to` of an ActionReceipt is not valid.
+   */
+  @Serializable
+  public data class InvalidRefundTo(
+    @SerialName("InvalidRefundTo")
+    public val invalidRefundTo: InvalidRefundToPayload,
+  ) : ReceiptValidationError() {
+    @Serializable
+    public data class InvalidRefundToPayload(
+      @SerialName("account_id")
+      public val accountId: String,
+    )
+  }
 }
