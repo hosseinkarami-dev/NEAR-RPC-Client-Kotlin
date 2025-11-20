@@ -17,7 +17,7 @@ A **type-safe**, Kotlin client for the NEAR JSON-RPC API.
 - [Quickstart](#-quickstart)
 - [Generator - Reproduce models & client](#-generator---reproduce-models--client)
 - [Basic Usage](#-basic-usage)
-- [Error Handling](#-error-handling)
+- [Handling Responses](#-handling-responses)
 - [Testing](#-testing)
 - [Contributing](#-contributing)
 - [Deployment Guide](#-deployment-guide)
@@ -180,7 +180,7 @@ when (val r = nearClient.broadcastTxAsync(req)) {
 
 ---
 
-## 🛠 Error Handling
+## 🛠 Handling Responses
 
 This client leverages Kotlin's `sealed class` pattern to represent both successful and failed RPC responses in a type-safe and expressive way.
 
@@ -236,21 +236,38 @@ when (response) {
     }
     is RpcResponse.Failure -> {
         when (val error = response.error) {
-            is ErrorResult.Rpc -> {
+            is ErrorResult.Rpc<*> -> {
                 when (error.error) {
-                    is RpcError.HandlerError -> {
-                        println("❌ RPC Handler Error: ${(error.error as RpcError.HandlerError).message}")
+                    is RpcBlockError -> {
+                        println("🛑 RpcBlockError Error: ${error.error.toString()}")
                     }
 
-                    is RpcError.InternalError -> {
-                        println("❌ RPC Internal Error: ${(error.error as RpcError.InternalError).message}")
+                    is RpcChunkError -> {
+                        println("⚠️ RpcChunkError Error: ${error.error.toString()}")
                     }
 
-                    is RpcError.RequestValidationError -> {
-                        println("❌ RPC Internal Error: ${(error.error as RpcError.RequestValidationError).message}")
+                    is RpcQueryError -> {
+                        println("🔍 RpcQueryError Error: ${error.error.toString()}")
+                    }
+
+                    is RpcReceiptError -> {
+                        println("📄 RpcReceiptError Error: ${error.error.toString()}")
+                    }
+
+                    is RpcTransactionError -> {
+                        println("💰 RpcTransactionError Error: ${error.error.toString()}")
+                    }
+
+                    is RpcValidatorError -> {
+                        println("🔒 RpcValidatorError Error: ${error.error.toString()}")
+                    }
+
+                    else -> {
+                        println("⚠️ Rpc Error: ${error.error.toString()}")
                     }
                 }
             }
+            
             is ErrorResult.Http -> {
                 println("❌ HTTP Error: Status ${error.statusCode}, body: ${error.body}")
             }

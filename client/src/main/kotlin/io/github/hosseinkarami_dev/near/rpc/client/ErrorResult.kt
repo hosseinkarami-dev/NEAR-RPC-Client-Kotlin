@@ -1,9 +1,7 @@
 package io.github.hosseinkarami_dev.near.rpc.client
 
-import io.github.hosseinkarami_dev.near.rpc.models.RpcError
-
 sealed class ErrorResult {
-    data class Rpc(val error: RpcError): ErrorResult()
+    data class Rpc<T>(val error: T): ErrorResult()
     data class RpcRuntime(val error: String): ErrorResult()
 
     data class Http(

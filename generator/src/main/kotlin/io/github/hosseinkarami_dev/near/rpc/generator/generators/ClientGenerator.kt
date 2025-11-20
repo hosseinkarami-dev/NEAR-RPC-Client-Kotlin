@@ -24,6 +24,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 import kotlin.collections.iterator
+import kotlin.system.exitProcess
 
 // PathGenerator: generates a NearClient class with typed suspend functions for each operation.
 object ClientGenerator {
@@ -42,7 +43,6 @@ object ClientGenerator {
 
         val rpcResponseClass = ClassName(clientPackage, "RpcResponse")
         val errorResultClass = ClassName(clientPackage, "ErrorResult")
-        val rpcErrorClassGuess = toClassNameOrBestGuess("$modelsPackage.RpcError")
 
         val classBuilder = TypeSpec.classBuilder(clientClassName)
             .addModifiers(KModifier.PUBLIC)
@@ -97,6 +97,9 @@ object ClientGenerator {
                 continue
             }
 
+            val rpcErrorClassGuess =
+                resolveErrorClassFromSchema(spec, clientPackage, op, modelsPackage)
+
             val reqWrapperClassName = toClassNameOrBestGuess(reqWrapperStr)
             val respWrapperClassName = toClassNameOrBestGuess(respWrapperStr)
 
@@ -120,6 +123,7 @@ object ClientGenerator {
                 if (cleaned.isEmpty()) return "params"
                 return cleaned.replaceFirstChar { it.lowercaseChar() }
             }
+
             val paramName = paramNameFromType(paramsTypeStr)
 
             val funBuilder = FunSpec.builder(methodName)
@@ -168,9 +172,8 @@ object ClientGenerator {
 
             val containsDeprecatedTag =
                 (summary?.contains("[Deprecated]") == true) || (description?.contains("[Deprecated]") == true)
-            val isDeprecated = containsDeprecatedTag
 
-            if (isDeprecated) {
+            if (containsDeprecatedTag) {
                 val depMessage = buildString {
                     if (summary != null) append(summary)
                     else append(description)
@@ -245,8 +248,14 @@ object ClientGenerator {
             // Begin network call + robust error handling
             cb.addStatement("try {")
             cb.addStatement("    val httpResponse = httpClient.post(baseUrl) {")
-            cb.addStatement("        contentType(%T.Application.Json)", ClassName("io.ktor.http", "ContentType"))
-            cb.addStatement("        setBody(json.encodeToString(%T.serializer(), request))", reqWrapperClassName)
+            cb.addStatement(
+                "        contentType(%T.Application.Json)",
+                ClassName("io.ktor.http", "ContentType")
+            )
+            cb.addStatement(
+                "        setBody(json.encodeToString(%T.serializer(), request))",
+                reqWrapperClassName
+            )
             cb.addStatement("    }")
             cb.addStatement("")
             cb.addStatement("    val status = httpResponse.status.value")
@@ -257,28 +266,54 @@ object ClientGenerator {
             cb.addStatement("        try {")
             cb.addStatement("            val root = json.parseToJsonElement(respBody).jsonObject")
             cb.addStatement("            if (root.containsKey(\"error\")) {")
-            cb.addStatement("                val rpcErr = json.decodeFromString(%T.serializer(), root[\"error\"].toString())", rpcErrorClassGuess)
-            cb.addStatement("                return %T.Failure(%T.Rpc(error = rpcErr))", rpcResponseClass, errorResultClass)
+            cb.addStatement(
+                "                val rpcErr = json.decodeFromString(%T.serializer(), root[\"error\"].toString())",
+                rpcErrorClassGuess
+            )
+            cb.addStatement(
+                "                return %T.Failure(%T.Rpc(error = rpcErr))",
+                rpcResponseClass,
+                errorResultClass
+            )
             cb.addStatement("            }")
             cb.addStatement("            val resultEl = root[\"result\"]")
             cb.addStatement("            if (resultEl?.jsonObject?.containsKey(\"error\") == true) {")
             cb.addStatement("                val errJson = resultEl!!.jsonObject[\"error\"].toString()")
-            cb.addStatement("                val rpcErr = runCatching { json.decodeFromString(%T.serializer(), errJson) }.getOrNull()", rpcErrorClassGuess)
+            cb.addStatement(
+                "                val rpcErr = runCatching { json.decodeFromString(%T.serializer(), errJson) }.getOrNull()",
+                rpcErrorClassGuess
+            )
             cb.addStatement(
                 "                return if (rpcErr != null) %T.Failure(%T.Rpc(error = rpcErr)) else %T.Failure(%T.RpcRuntime(errJson))",
                 rpcResponseClass, errorResultClass, rpcResponseClass, errorResultClass
             )
             cb.addStatement("            }")
             cb.addStatement("        } catch (_: Exception) { /* ignore parse error */ }")
-            cb.addStatement("        return %T.Failure(%T.Http(status, respBody))", rpcResponseClass, errorResultClass)
+            cb.addStatement(
+                "        return %T.Failure(%T.Http(status, respBody))",
+                rpcResponseClass,
+                errorResultClass
+            )
             cb.addStatement("    }")
             cb.addStatement("")
 // Successful status -> try decode expected wrapper
             cb.addStatement("    try {")
-            cb.addStatement("        val decoded = json.decodeFromString(%T.serializer(), respBody)", respWrapperClassName)
+            cb.addStatement(
+                "        val decoded = json.decodeFromString(%T.serializer(), respBody)",
+                respWrapperClassName
+            )
             cb.addStatement("        return when (decoded) {")
-            cb.addStatement("            is %T.Result -> %T.Success(decoded.result)", respWrapperClassName, rpcResponseClass)
-            cb.addStatement("            is %T.Error -> %T.Failure(%T.Rpc(error = decoded.error))", respWrapperClassName, rpcResponseClass, errorResultClass)
+            cb.addStatement(
+                "            is %T.Result -> %T.Success(decoded.result)",
+                respWrapperClassName,
+                rpcResponseClass
+            )
+            cb.addStatement(
+                "            is %T.Error -> %T.Failure(%T.Rpc(error = decoded.error))",
+                respWrapperClassName,
+                rpcResponseClass,
+                errorResultClass
+            )
             cb.addStatement("        }")
             cb.addStatement("    } catch (serEx: Exception) {")
             cb.addStatement("        try {")
@@ -286,21 +321,37 @@ object ClientGenerator {
             cb.addStatement("            val resultEl = root[\"result\"]")
             cb.addStatement("            if (resultEl?.jsonObject?.containsKey(\"error\") == true) {")
             cb.addStatement("                val errJson = resultEl.jsonObject[\"error\"].toString()")
-            cb.addStatement("                val rpcErr = runCatching { json.decodeFromString(%T.serializer(), errJson) }.getOrNull()", rpcErrorClassGuess)
+            cb.addStatement(
+                "                val rpcErr = runCatching { json.decodeFromString(%T.serializer(), errJson) }.getOrNull()",
+                rpcErrorClassGuess
+            )
             cb.addStatement(
                 "                return if (rpcErr != null) %T.Failure(%T.Rpc(error = rpcErr)) else %T.Failure(%T.RpcRuntime(errJson))",
                 rpcResponseClass, errorResultClass, rpcResponseClass, errorResultClass
             )
             cb.addStatement("            }")
             cb.addStatement("        } catch (_: Exception) { /* ignore parse error */ }")
-            cb.addStatement("        return %T.Failure(%T.Deserialization(serEx, respBody))", rpcResponseClass, errorResultClass)
+            cb.addStatement(
+                "        return %T.Failure(%T.Deserialization(serEx, respBody))",
+                rpcResponseClass,
+                errorResultClass
+            )
             cb.addStatement("    }")
             cb.addStatement("} catch (e: Throwable) {")
             cb.addStatement("    val mapped = when (e) {")
-            cb.addStatement("        is java.util.concurrent.CancellationException -> %T.Cancellation(e)", errorResultClass)
-            cb.addStatement("        is java.net.SocketTimeoutException, is io.ktor.client.plugins.HttpRequestTimeoutException -> %T.Timeout(e)", errorResultClass)
+            cb.addStatement(
+                "        is java.util.concurrent.CancellationException -> %T.Cancellation(e)",
+                errorResultClass
+            )
+            cb.addStatement(
+                "        is java.net.SocketTimeoutException, is io.ktor.client.plugins.HttpRequestTimeoutException -> %T.Timeout(e)",
+                errorResultClass
+            )
             cb.addStatement("        is java.io.IOException -> %T.Network(e)", errorResultClass)
-            cb.addStatement("        else -> %T.Unknown(e.message ?: \"Unknown\", e)", errorResultClass)
+            cb.addStatement(
+                "        else -> %T.Unknown(e.message ?: \"Unknown\", e)",
+                errorResultClass
+            )
             cb.addStatement("    }")
             cb.addStatement("    return %T.Failure(mapped)", rpcResponseClass)
             cb.addStatement("}")
@@ -359,10 +410,45 @@ object ClientGenerator {
         }
     }
 
+    private fun resolveErrorClassFromSchema(
+        spec: OpenApiSpec,
+        clientPackage: String,
+        op: Operation,
+        modelsPackage: String
+    ): ClassName {
+        val candidate =
+            op.responses["200"] ?: op.responses["default"] ?: op.responses.values.firstOrNull()
+        val media =
+            candidate?.content?.get("application/json") ?: candidate?.content?.values?.firstOrNull()
+        val schema = media?.schema ?: return ClassName(clientPackage, "RpcError")
+
+        val responseRef = schema.jsonObject["\$ref"]?.jsonPrimitive?.contentOrNull
+        if (responseRef != null) {
+            val responseClassName = responseRef.substringAfterLast("/")
+
+            val responseSchema =
+                spec.components.schemas.entries.find { it.key == responseClassName }?.value
+
+            responseSchema?.let { schema ->
+                val errorClassName = schema.oneOf?.find { it.properties?.containsKey("error") == true }
+                    ?.let { it.properties?.get("error") }?.ref?.replace(
+                        "#/components/schemas/",
+                        ""
+                    )?.pascalCase()
+                    ?.replace("ErrorWrapperFor", "")
+
+                return toClassNameOrBestGuess("$modelsPackage.$errorClassName")
+            }
+        }
+
+        // If no response reference is found, fallback to RpcError
+        return ClassName(clientPackage, "RpcError")
+    }
+
     private fun toClassNameOrBestGuess(typeString: String): ClassName {
         val lastDot = typeString.lastIndexOf('.')
         return if (lastDot > 0) {
-            val pkg = typeString.substring(0, lastDot)
+            val pkg = typeString.take(lastDot)
             val simple = typeString.substring(lastDot + 1)
             ClassName(pkg, simple)
         } else {
