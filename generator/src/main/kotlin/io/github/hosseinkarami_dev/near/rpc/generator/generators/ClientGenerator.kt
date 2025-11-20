@@ -262,7 +262,7 @@ object ClientGenerator {
             cb.addStatement("    val respBody = httpResponse.bodyAsText()")
             cb.addStatement("")
 // If non-2xx -> try to extract RpcError from body, otherwise return Http error
-            cb.addStatement("    if (status !in 200..299) {")
+            cb.addStatement("    if (status in 500..599) {")
             cb.addStatement("        try {")
             cb.addStatement("            val root = json.parseToJsonElement(respBody).jsonObject")
             cb.addStatement("            if (root.containsKey(\"error\")) {")
