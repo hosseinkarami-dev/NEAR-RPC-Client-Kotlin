@@ -1,0 +1,29 @@
+package io.github.hosseinkarami_dev.near.rpc.models
+
+import io.github.hosseinkarami_dev.near.rpc.serializers.JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcStateChangesErrorSerializer
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable(with = JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcStateChangesErrorSerializer::class)
+public sealed class JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcStateChangesError {
+  @Serializable
+  public data class Result(
+    @SerialName("result")
+    public val result: RpcStateChangesInBlockByTypeResponse,
+    @SerialName("id")
+    public val id: String,
+    @SerialName("jsonrpc")
+    public val jsonrpc: String,
+  ) : JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcStateChangesError()
+
+  @Serializable
+  public data class Error(
+    @SerialName("error")
+    public val error: ErrorWrapperForRpcStateChangesError,
+    @SerialName("id")
+    public val id: String,
+    @SerialName("jsonrpc")
+    public val jsonrpc: String,
+  ) : JsonRpcResponseForRpcStateChangesInBlockByTypeResponseAndRpcStateChangesError()
+}
