@@ -20,7 +20,7 @@ public data class RuntimeConfigView(
   public val congestionControlConfig: CongestionControlConfigView? = null,
   /**
    *  * Amount of yN per byte required to have on the account.  See
-   * <https://nomicon.io/Economics/Economic#state-stake> for details.
+   * <https://nomicon.io/Economics/Economics.html#state-stake> for details.
    */
   @SerialName("storage_amount_per_byte")
   public val storageAmountPerByte: NearToken? = null,
