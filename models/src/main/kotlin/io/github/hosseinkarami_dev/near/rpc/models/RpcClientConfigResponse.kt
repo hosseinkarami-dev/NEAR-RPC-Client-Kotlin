@@ -82,6 +82,15 @@ public data class RpcClientConfigResponse(
   @SerialName("chunk_wait_mult")
   public val chunkWaitMult: List<Int>? = null,
   /**
+   *  * Height horizon for the chunk cache. A chunk is removed from the cache
+   * if its height + chunks_cache_height_horizon < largest_seen_height.
+   * The default value is DEFAULT_CHUNKS_CACHE_HEIGHT_HORIZON.
+   *  * Minimum: 0.0
+   *  * Format: uint64
+   */
+  @SerialName("chunks_cache_height_horizon")
+  public val chunksCacheHeightHorizon: ULong? = null,
+  /**
    *  * Number of threads to execute background migration work in client.
    *  * Minimum: 0.0
    *  * Format: uint
