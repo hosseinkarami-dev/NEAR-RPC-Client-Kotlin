@@ -26,6 +26,8 @@ public sealed class ReceiptEnumView {
       public val isPromiseYield: Boolean? = false,
       @SerialName("output_data_receivers")
       public val outputDataReceivers: List<DataReceiverView>,
+      @SerialName("refund_to")
+      public val refundTo: AccountId? = null,
       @SerialName("signer_id")
       public val signerId: AccountId,
       @SerialName("signer_public_key")
