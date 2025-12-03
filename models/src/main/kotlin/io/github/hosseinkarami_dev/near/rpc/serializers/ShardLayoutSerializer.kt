@@ -27,6 +27,7 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
         element("V0", serializer<JsonElement>().descriptor)
         element("V1", serializer<JsonElement>().descriptor)
         element("V2", serializer<JsonElement>().descriptor)
+        element("V3", serializer<JsonElement>().descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: ShardLayout) {
@@ -51,6 +52,12 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                     val payload = JsonObject(map)
                     jsonEncoder.encodeJsonElement(payload)
                 }
+                is io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3 -> {
+                    val map = mutableMapOf<String, JsonElement>()
+                    map["V3"] = jsonEncoder.json.encodeToJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV3>(), value.v3)
+                    val payload = JsonObject(map)
+                    jsonEncoder.encodeJsonElement(payload)
+                }
             }
             return
         }
@@ -59,6 +66,7 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
             is io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0 -> out.encodeSerializableElement(descriptor, 0, serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1 -> out.encodeSerializableElement(descriptor, 1, serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1>(), value)
             is io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2 -> out.encodeSerializableElement(descriptor, 2, serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), value)
+            is io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3 -> out.encodeSerializableElement(descriptor, 3, serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), value)
         }
         out.endStructure(descriptor)
     }
@@ -78,7 +86,7 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
 
                 is JsonObject -> {
                     val jobj = element
-                    val knownVariantNames = setOf("V0", "V1", "V2")
+                    val knownVariantNames = setOf("V0", "V1", "V2", "V3")
                     if (jobj["V0"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV0>(), jobj["V0"]!!))
                     }
@@ -87,6 +95,9 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                     }
                     if (jobj["V2"] != null) {
                         return io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV2>(), jobj["V2"]!!))
+                    }
+                    if (jobj["V3"] != null) {
+                        return io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3(decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV3>(), jobj["V3"]!!))
                     }
                     if (jobj.size == 1) {
                         val entry = jobj.entries.first()
@@ -105,6 +116,10 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                             "V2" -> {
                                 val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant V2: " + key)
                                 return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), obj)
+                            }
+                            "V3" -> {
+                                val obj = valueElem as? JsonObject ?: throw SerializationException("Expected object payload for variant V3: " + key)
+                                return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), obj)
                             }
                             else -> { /* knownVariantNames.contains(key) guards this branch; shouldn't reach here */ }
                             }
@@ -128,6 +143,7 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                             "V0" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), jobj)
                             "V1" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1>(), jobj)
                             "V2" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), jobj)
+                            "V3" -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), jobj)
                             else -> { /* fallthrough to grouped handling */ }
                         }
                         // grouped handling by tf content (if any)
@@ -136,6 +152,7 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                         if (chosenGroupKey == null && ("V0".lowercase() == tfLower || tfLower.contains("V0".lowercase()) || "V0".lowercase().contains(tfLower))) { chosenGroupKey = "V0" }
                         if (chosenGroupKey == null && ("V1".lowercase() == tfLower || tfLower.contains("V1".lowercase()) || "V1".lowercase().contains(tfLower))) { chosenGroupKey = "V1" }
                         if (chosenGroupKey == null && ("V2".lowercase() == tfLower || tfLower.contains("V2".lowercase()) || "V2".lowercase().contains(tfLower))) { chosenGroupKey = "V2" }
+                        if (chosenGroupKey == null && ("V3".lowercase() == tfLower || tfLower.contains("V3".lowercase()) || "V3".lowercase().contains(tfLower))) { chosenGroupKey = "V3" }
                         if (chosenGroupKey != null) {
                             when (chosenGroupKey) {
                                 "V0" -> {
@@ -150,6 +167,10 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), jobj) } catch (_: Exception) { }
                                     throw SerializationException("Cannot disambiguate variant for base token 'V2' and tf='\$tf'")
                                 }
+                                "V3" -> {
+                                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), jobj) } catch (_: Exception) { }
+                                    throw SerializationException("Cannot disambiguate variant for base token 'V3' and tf='\$tf'")
+                                }
                                 else -> { /* no group matched */ }
                             }
                         }
@@ -158,16 +179,19 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                     // group: V0
                     // group: V1
                     // group: V2
+                    // group: V3
 
                     val requiredMatches = mutableListOf<Int>()
                     if (jobj.containsKey("V0")) requiredMatches.add(0)
                     if (jobj.containsKey("V1")) requiredMatches.add(1)
                     if (jobj.containsKey("V2")) requiredMatches.add(2)
+                    if (jobj.containsKey("V3")) requiredMatches.add(3)
                     if (requiredMatches.size == 1) {
                         when (requiredMatches[0]) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), jobj)
                             1 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1>(), jobj)
                             2 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), jobj)
+                            3 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), jobj)
                             else -> throw SerializationException("Internal required-match dispatch error")
                         }
                     }
@@ -191,17 +215,25 @@ object ShardLayoutSerializer : KSerializer<ShardLayout> {
                         val score = matchCount.toDouble() / 1.toDouble()
                         if (score > bestScore) { bestScore = score; bestIdx = 2 } else if (score == bestScore) { bestIdx = null }
                     }
+                    run {
+                        var matchCount = 0
+                        if (jobj["V3"] != null) matchCount++
+                        val score = matchCount.toDouble() / 1.toDouble()
+                        if (score > bestScore) { bestScore = score; bestIdx = 3 } else if (score == bestScore) { bestIdx = null }
+                    }
                     if (bestIdx != null && bestScore > 0.0) {
                         when (bestIdx) {
                             0 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), jobj)
                             1 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1>(), jobj)
                             2 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), jobj)
+                            3 -> return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), jobj)
                             else -> throw SerializationException("Internal scoring dispatch error")
                         }
                     }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V0>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V1>(), jobj) } catch (_: Exception) { }
                     try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V2>(), jobj) } catch (_: Exception) { }
+                    try { return decoder.json.decodeFromJsonElement(serializer<io.github.hosseinkarami_dev.near.rpc.models.ShardLayout.V3>(), jobj) } catch (_: Exception) { }
                     throw SerializationException("Missing discriminator or recognizable variant in ShardLayout")
                 }
             }
