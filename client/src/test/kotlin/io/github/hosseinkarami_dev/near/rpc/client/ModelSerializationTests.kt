@@ -4088,6 +4088,22 @@ class ModelSerializationTests {
     }
 
     @Test
+    fun testShardLayoutV3EncodeDecode() {
+        val data = loadMockJson("ShardLayoutV3.json")
+        assertNotNull(data, "Mock file ShardLayoutV3.json does not exist!")
+
+        try {
+            val decoded = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV3.serializer(), data)
+            val encoded = json.encodeToString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV3.serializer(), decoded)
+            val decoded2 = json.decodeFromString(io.github.hosseinkarami_dev.near.rpc.models.ShardLayoutV3.serializer(), encoded)
+            assertEquals(decoded, decoded2)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fail("Serialization test failed for ShardLayoutV3: ${e.message}")
+        }
+    }
+
+    @Test
     fun testShardUIdEncodeDecode() {
         val data = loadMockJson("ShardUId.json")
         assertNotNull(data, "Mock file ShardUId.json does not exist!")

@@ -33,4 +33,10 @@ public sealed class ShardLayout {
     @SerialName("V2")
     public val v2: ShardLayoutV2,
   ) : ShardLayout()
+
+  @Serializable
+  public data class V3(
+    @SerialName("V3")
+    public val v3: ShardLayoutV3,
+  ) : ShardLayout()
 }
