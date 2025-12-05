@@ -46,7 +46,7 @@ public data class VMConfigView(
   @SerialName("grow_mem_cost")
   public val growMemCost: UInt? = null,
   /**
-   *  * See [VMConfig::implicit_account_creation](crate::vm::Config::implicit_account_creation).
+   *  * Deprecated
    */
   @SerialName("implicit_account_creation")
   public val implicitAccountCreation: Boolean? = null,
